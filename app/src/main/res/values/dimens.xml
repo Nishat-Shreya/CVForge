@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="screen_padding">20dp</dimen>
+    <dimen name="card_gap">12dp</dimen>
+    <dimen name="card_radius">20dp</dimen>
+    <dimen name="hero_radius">28dp</dimen>
+    <dimen name="card_stroke">1dp</dimen>
+    <dimen name="button_height">44dp</dimen>
+    <dimen name="button_height_main">52dp</dimen>
+    <dimen name="icon_button_size">44dp</dimen>
+    <dimen name="bottom_nav_height">76dp</dimen>
+</resources>

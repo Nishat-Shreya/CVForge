@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Text and dark surfaces -->
+    <color name="ink">#14123A</color>
+    <color name="muted">#6A6890</color>
+
+    <!-- Violet: main brand color -->
+    <color name="violet">#5B3DF5</color>
+    <color name="violet_text">#4527D6</color>
+    <color name="violet_tint">#EFEBFF</color>
+
+    <!-- Coral: highlights, skip, alerts -->
+    <color name="coral">#FF5C7A</color>
+    <color name="coral_tint">#FFE8EC</color>
+    <color name="coral_text">#B3123A</color>
+
+    <!-- Teal: success, verified, match, offer -->
+    <color name="teal">#00B8A9</color>
+    <color name="teal_tint">#D9F6F2</color>
+    <color name="teal_text">#006B62</color>
+
+    <!-- Amber: accent, streak, interview -->
+    <color name="amber">#FFB020</color>
+    <color name="amber_tint">#FFF2D4</color>
+    <color name="amber_text">#7A4B00</color>
+
+    <!-- Sky: Applied column -->
+    <color name="sky">#3AA0FF</color>
+    <color name="sky_tint">#E1F0FF</color>
+    <color name="sky_text">#0B5CAD</color>
+
+    <!-- Backgrounds -->
+    <color name="ground">#F7F6FC</color>
+    <color name="card">#FFFFFF</color>
+    <color name="border">#E7E4F5</color>
+
+    <color name="white">#FFFFFFFF</color>
+</resources>
