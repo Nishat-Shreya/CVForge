@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reusable status chip. Default is violet. For other colors set backgroundTint and textColor from the matching tint and text pair (for example teal_tint with teal_text). Always put a text label on it. -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textChip"
+    style="@style/ChipTint"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- One decorative circle. centerX and centerY are fractions of the view size (0 to 1). -->
+    <declare-styleable name="CircleDecorationView">
+        <attr name="circleColor" format="color" />
+        <attr name="circleCenterX" format="float" />
+        <attr name="circleCenterY" format="float" />
+        <attr name="circleRadius" format="dimension" />
+    </declare-styleable>
+</resources>
