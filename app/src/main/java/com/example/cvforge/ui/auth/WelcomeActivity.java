@@ -1,6 +1,7 @@
 package com.example.cvforge.ui.auth;
 
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -40,9 +41,9 @@ public class WelcomeActivity extends AppCompatActivity {
         setUpSystemBars();
         setUpCards();
 
-        // sign up, login and Google sign in are added in the next checkpoints
+        // login and Google sign in are added in the next checkpoints
         content.btnGoogle.setOnClickListener(v -> showComingSoon());
-        content.btnEmailSignUp.setOnClickListener(v -> showComingSoon());
+        content.btnEmailSignUp.setOnClickListener(v -> openSignUp());
         content.textLogIn.setOnClickListener(v -> showComingSoon());
     }
 
@@ -117,6 +118,15 @@ public class WelcomeActivity extends AppCompatActivity {
         card.cardIcon.setBackgroundTintList(ContextCompat.getColorStateList(this, colorRes));
         card.cardTitle.setText(titleRes);
         card.cardSub.setText(subRes);
+    }
+
+    /** Explicit Intent to the sign up screen, with the chosen role as an extra. */
+    private void openSignUp() {
+        View chip = content.groupRole.findViewById(content.groupRole.getCheckedChipId());
+        Intent intent = new Intent(this, SignUpActivity.class);
+        intent.putExtra(SignUpActivity.EXTRA_ROLE, (String) chip.getTag());
+        startActivity(intent);
+        AnimUtils.fadeTransition(this);
     }
 
     private void showComingSoon() {

@@ -20,4 +20,13 @@
     <string name="already_have_account">Already have an account?</string>
     <string name="log_in">Log in</string>
     <string name="coming_soon">Coming soon</string>
+    <string name="create_account">Create account</string>
+    <string name="creating_account">Creating account…</string>
+    <string name="hint_name">Full name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password (6 or more characters)</string>
+    <string name="approval_note">An admin must approve this account before you can post.</string>
+    <string name="error_name">Enter your name</string>
+    <string name="error_email">Enter a valid email</string>
+    <string name="error_password">Use at least 6 characters</string>
 </resources>

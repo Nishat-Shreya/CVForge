@@ -17,6 +17,9 @@
         android:theme="@style/Theme.CVForge"
         tools:targetApi="31">
         <activity
+            android:name=".ui.auth.SignUpActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.auth.WelcomeActivity"
             android:exported="true">
             <intent-filter>
