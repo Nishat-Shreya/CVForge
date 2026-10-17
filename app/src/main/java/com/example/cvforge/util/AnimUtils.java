@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.provider.Settings;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
 /**
@@ -53,6 +54,22 @@ public class AnimUtils {
         animator.setRepeatMode(ObjectAnimator.REVERSE);
         animator.setRepeatCount(ObjectAnimator.INFINITE);
         animator.start();
+        return animator;
+    }
+
+    /** A5: float up and down by 8dp, 4 s loop. startOffsetMs shifts where the loop starts. */
+    public static ObjectAnimator floatUpDown(View view, long startOffsetMs) {
+        if (!animationsEnabled(view.getContext())) {
+            return null;
+        }
+        float distance = 8 * view.getResources().getDisplayMetrics().density;
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, -distance, distance);
+        animator.setDuration(2000);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.setRepeatMode(ObjectAnimator.REVERSE);
+        animator.setRepeatCount(ObjectAnimator.INFINITE);
+        animator.start();
+        animator.setCurrentPlayTime(startOffsetMs);
         return animator;
     }
 

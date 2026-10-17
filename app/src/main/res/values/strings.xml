@@ -1,4 +1,23 @@
 <resources>
     <string name="app_name">CVForge</string>
     <string name="back">Back</string>
+    <string name="logo_cv">CV</string>
+    <string name="welcome_headline">Build it. Match it. Land it.</string>
+    <string name="welcome_subtitle">Your CV, internships and applications in one smart place.</string>
+    <string name="welcome_card_match_title">86% match</string>
+    <string name="welcome_card_match_sub">Orbit Soft · Backend</string>
+    <string name="welcome_card_interview_title">Interview tomorrow</string>
+    <string name="welcome_card_interview_sub">11:00 AM · Nexa Labs</string>
+    <string name="welcome_card_verified_title">Verified by Dr. Rahman</string>
+    <string name="welcome_card_verified_sub">Java skill endorsed</string>
+    <string name="i_am_a">I am a</string>
+    <string name="role_student">Student</string>
+    <string name="role_company">Company</string>
+    <string name="role_teacher">Teacher</string>
+    <string name="role_alumni">Alumni</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="sign_up_with_email">Sign up with email</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="log_in">Log in</string>
+    <string name="coming_soon">Coming soon</string>
 </resources>

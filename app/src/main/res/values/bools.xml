@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- False on short screens (under 640dp high). The Welcome screen then hides the third card and the subtitle. -->
+    <bool name="is_tall_screen">false</bool>
+</resources>
