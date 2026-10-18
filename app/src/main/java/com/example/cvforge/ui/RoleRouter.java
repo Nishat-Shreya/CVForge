@@ -7,6 +7,7 @@ import com.example.cvforge.data.model.User;
 import com.example.cvforge.ui.admin.AdminActivity;
 import com.example.cvforge.ui.auth.PendingActivity;
 import com.example.cvforge.ui.auth.RolePlaceholderActivity;
+import com.example.cvforge.ui.student.StudentActivity;
 import com.example.cvforge.util.AnimUtils;
 
 /** Decides which home screen a signed-in user sees, based on the role in the users document. */
@@ -33,7 +34,10 @@ public class RoleRouter {
         if (User.needsApproval(user.getRole()) && !user.isVerified()) {
             return PendingActivity.class;
         }
-        // the real screens for each role come in checkpoint 12
+        if (User.ROLE_STUDENT.equals(user.getRole())) {
+            return StudentActivity.class;
+        }
+        // the real screens for Company, Teacher and Alumni come in checkpoint 12
         return RolePlaceholderActivity.class;
     }
 }

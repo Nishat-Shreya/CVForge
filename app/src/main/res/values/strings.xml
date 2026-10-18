@@ -49,4 +49,14 @@
     <string name="google_failed">Google sign in did not work. Check your internet and try again.</string>
     <string name="google_choose_role">Who are you?</string>
     <string name="google_role_note">Company and Alumni accounts are checked by an admin before they can post.</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_discover">Discover</string>
+    <string name="tab_cv">CV</string>
+    <string name="tab_tracker">Tracker</string>
+    <string name="tab_profile">Profile</string>
+    <string name="screen_home">Home</string>
+    <string name="screen_discover">Discover</string>
+    <string name="screen_cv_builder">CV Builder</string>
+    <string name="screen_tracker">Tracker</string>
+    <string name="screen_profile">Profile</string>
 </resources>
