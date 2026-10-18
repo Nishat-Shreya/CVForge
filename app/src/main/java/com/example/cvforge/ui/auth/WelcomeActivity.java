@@ -16,9 +16,13 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.example.cvforge.R;
+import com.example.cvforge.data.UserListener;
+import com.example.cvforge.data.UserRepository;
+import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.ActivityWelcomeBinding;
 import com.example.cvforge.databinding.ContentWelcomeBinding;
 import com.example.cvforge.databinding.IncludeWelcomeCardBinding;
+import com.example.cvforge.ui.RoleRouter;
 import com.example.cvforge.util.AnimUtils;
 
 import java.util.ArrayList;
@@ -29,6 +33,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private ContentWelcomeBinding content;
     private boolean tallScreen;
     private final List<ObjectAnimator> floatAnimators = new ArrayList<>();
+    private final UserRepository userRepository = new UserRepository();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +46,12 @@ public class WelcomeActivity extends AppCompatActivity {
         setUpSystemBars();
         setUpCards();
 
-        // login and Google sign in are added in the next checkpoints
+        routeIfLoggedIn();
+
+        // Google sign in is added in checkpoint 8
         content.btnGoogle.setOnClickListener(v -> showComingSoon());
         content.btnEmailSignUp.setOnClickListener(v -> openSignUp());
-        content.textLogIn.setOnClickListener(v -> showComingSoon());
+        content.textLogIn.setOnClickListener(v -> openLogin());
     }
 
     /**
@@ -127,6 +134,29 @@ public class WelcomeActivity extends AppCompatActivity {
         intent.putExtra(SignUpActivity.EXTRA_ROLE, (String) chip.getTag());
         startActivity(intent);
         AnimUtils.fadeTransition(this);
+    }
+
+    private void openLogin() {
+        startActivity(new Intent(this, LoginActivity.class));
+        AnimUtils.fadeTransition(this);
+    }
+
+    /** Already signed in from an earlier visit: skip Welcome and go to the role screen. */
+    private void routeIfLoggedIn() {
+        if (!userRepository.isLoggedIn()) {
+            return;
+        }
+        userRepository.loadCurrentUser(new UserListener() {
+            @Override
+            public void onUser(User user) {
+                RoleRouter.open(WelcomeActivity.this, user);
+            }
+
+            @Override
+            public void onError(String message) {
+                // stay on Welcome so the user can log in again
+            }
+        });
     }
 
     private void showComingSoon() {

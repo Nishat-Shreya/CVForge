@@ -29,4 +29,10 @@
     <string name="error_name">Enter your name</string>
     <string name="error_email">Enter a valid email</string>
     <string name="error_password">Use at least 6 characters</string>
+    <string name="hint_password_login">Password</string>
+    <string name="error_password_empty">Enter your password</string>
+    <string name="logging_in">Logging in…</string>
+    <string name="log_out">Log out</string>
+    <string name="hello_name">Hello, %1$s</string>
+    <string name="signed_in_as">Signed in as %1$s</string>
 </resources>

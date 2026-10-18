@@ -3,15 +3,16 @@ package com.example.cvforge.ui.auth;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.cvforge.R;
 import com.example.cvforge.data.ResultListener;
+import com.example.cvforge.data.UserListener;
 import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.ActivitySignUpBinding;
+import com.example.cvforge.ui.RoleRouter;
 import com.example.cvforge.util.AnimUtils;
 import com.google.android.material.chip.Chip;
 
@@ -75,20 +76,34 @@ public class SignUpActivity extends AppCompatActivity {
         userRepository.signUp(name, email, password, getSelectedRole(), new ResultListener() {
             @Override
             public void onSuccess() {
-                setLoading(false);
-                Toast.makeText(SignUpActivity.this, R.string.account_created, Toast.LENGTH_SHORT).show();
-                // the role screens are added in later checkpoints, for now go back
-                finish();
-                AnimUtils.fadeTransition(SignUpActivity.this);
+                openHomeForRole();
             }
 
             @Override
             public void onError(String message) {
-                setLoading(false);
-                binding.textError.setText(message);
-                binding.textError.setVisibility(View.VISIBLE);
+                showError(message);
             }
         });
+    }
+
+    private void openHomeForRole() {
+        userRepository.loadCurrentUser(new UserListener() {
+            @Override
+            public void onUser(User user) {
+                RoleRouter.open(SignUpActivity.this, user);
+            }
+
+            @Override
+            public void onError(String message) {
+                showError(message);
+            }
+        });
+    }
+
+    private void showError(String message) {
+        setLoading(false);
+        binding.textError.setText(message);
+        binding.textError.setVisibility(View.VISIBLE);
     }
 
     private boolean isInputValid(String name, String email, String password) {
