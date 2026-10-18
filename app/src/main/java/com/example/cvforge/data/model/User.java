@@ -10,6 +10,7 @@ public class User {
     public static final String ROLE_COMPANY = "company";
     public static final String ROLE_TEACHER = "teacher";
     public static final String ROLE_ALUMNI = "alumni";
+    public static final String ROLE_ADMIN = "admin";
 
     private String uid;
     private String name;

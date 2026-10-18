@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.example.cvforge.data.model.User;
+import com.example.cvforge.ui.admin.AdminActivity;
+import com.example.cvforge.ui.auth.PendingActivity;
 import com.example.cvforge.ui.auth.RolePlaceholderActivity;
 import com.example.cvforge.util.AnimUtils;
 
@@ -15,12 +17,23 @@ public class RoleRouter {
 
     /** Opens the screen for this user and closes the login screens. */
     public static void open(Activity from, User user) {
-        // every role has the same temporary screen for now, the real ones come in checkpoint 12
-        Intent intent = new Intent(from, RolePlaceholderActivity.class);
+        Intent intent = new Intent(from, targetFor(user));
         intent.putExtra(RolePlaceholderActivity.EXTRA_ROLE, user.getRole());
         intent.putExtra(RolePlaceholderActivity.EXTRA_NAME, user.getName());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         from.startActivity(intent);
         AnimUtils.fadeTransition(from);
+    }
+
+    private static Class<? extends Activity> targetFor(User user) {
+        if (User.ROLE_ADMIN.equals(user.getRole())) {
+            return AdminActivity.class;
+        }
+        // Company and Alumni wait for the admin
+        if (User.needsApproval(user.getRole()) && !user.isVerified()) {
+            return PendingActivity.class;
+        }
+        // the real screens for each role come in checkpoint 12
+        return RolePlaceholderActivity.class;
     }
 }

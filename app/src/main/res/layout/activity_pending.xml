@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/violet"
+    android:clipChildren="true"
+    tools:context=".ui.auth.PendingActivity">
+
+    <com.example.cvforge.ui.view.CircleDecorationView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:circleCenterX="1"
+        app:circleCenterY="0"
+        app:circleColor="@color/coral"
+        app:circleRadius="130dp" />
+
+    <com.example.cvforge.ui.view.CircleDecorationView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:circleCenterX="0"
+        app:circleCenterY="0.4"
+        app:circleColor="@color/amber"
+        app:circleRadius="60dp" />
+
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/screen_padding">
+
+        <TextView
+            android:id="@+id/textStatus"
+            style="@style/ChipTint.Amber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pending" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/sora"
+            android:text="@string/pending_title"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:alpha="0.9"
+            android:text="@string/pending_message"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCheckAgain"
+            style="@style/ButtonPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:backgroundTint="@color/amber"
+            android:text="@string/check_again"
+            android:textColor="@color/ink" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLogout"
+            style="@style/ButtonOutline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/log_out" />
+    </LinearLayout>
+</FrameLayout>

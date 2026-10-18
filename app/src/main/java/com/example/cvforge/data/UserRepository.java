@@ -5,6 +5,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** Accounts: Firebase Authentication plus the "users" document in Firestore. */
 public class UserRepository {
 
@@ -59,6 +62,28 @@ public class UserRepository {
                         listener.onUser(user);
                     }
                 })
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
+    /** Company and Alumni accounts that an admin has not approved yet. */
+    public void loadPendingUsers(UserListListener listener) {
+        db.collection(USERS).whereEqualTo("verified", false).get()
+                .addOnSuccessListener(snapshot -> {
+                    List<User> pending = new ArrayList<>();
+                    for (User user : snapshot.toObjects(User.class)) {
+                        if (User.needsApproval(user.getRole())) {
+                            pending.add(user);
+                        }
+                    }
+                    listener.onUsers(pending);
+                })
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
+    /** Admin approves an account: sets verified = true. */
+    public void approveUser(String uid, ResultListener listener) {
+        db.collection(USERS).document(uid).update("verified", true)
+                .addOnSuccessListener(unused -> listener.onSuccess())
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 

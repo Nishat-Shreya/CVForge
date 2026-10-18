@@ -35,4 +35,15 @@
     <string name="log_out">Log out</string>
     <string name="hello_name">Hello, %1$s</string>
     <string name="signed_in_as">Signed in as %1$s</string>
+    <string name="pending">Pending approval</string>
+    <string name="pending_title">Waiting for approval</string>
+    <string name="pending_message">An admin checks Company and Alumni accounts before they can post. This keeps fake postings out.</string>
+    <string name="check_again">Check again</string>
+    <string name="still_pending">Still waiting for approval</string>
+    <string name="approve_accounts">Approve accounts</string>
+    <string name="approve">Approve</string>
+    <string name="role_pending">%1$s · Pending</string>
+    <string name="nothing_pending">Nothing to approve</string>
+    <string name="nothing_pending_message">New Company and Alumni accounts will show up here.</string>
+    <string name="error_loading">Could not load the list</string>
 </resources>
