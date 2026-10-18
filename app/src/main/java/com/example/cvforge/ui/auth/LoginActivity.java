@@ -29,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         binding.toolbar.textTitle.setText(R.string.log_in);
         binding.toolbar.btnBack.setOnClickListener(v -> finish());
         binding.btnLogin.setOnClickListener(v -> logIn());
+        binding.btnGoogle.setOnClickListener(v -> signInWithGoogle());
 
         AnimUtils.slideUpIn(binding.formContainer, 0);
     }
@@ -51,6 +52,25 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onError(String message) {
                 showError(message);
+            }
+        });
+    }
+
+    /** A new Google account has no role yet here, so the helper asks for it. */
+    private void signInWithGoogle() {
+        binding.textError.setVisibility(View.GONE);
+        new GoogleSignInHelper(this).start(null, new GoogleSignInHelper.Callback() {
+            @Override
+            public void onStarted() {
+                binding.btnGoogle.setEnabled(false);
+            }
+
+            @Override
+            public void onStopped(String errorMessage) {
+                binding.btnGoogle.setEnabled(true);
+                if (errorMessage != null) {
+                    showError(errorMessage);
+                }
             }
         });
     }

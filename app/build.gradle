@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.cvforge"
@@ -55,6 +55,11 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
+
+    // Google sign in with Credential Manager (checkpoint 8)
+    implementation 'androidx.credentials:credentials:1.2.2'
+    implementation 'androidx.credentials:credentials-play-services-auth:1.2.2'
+    implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

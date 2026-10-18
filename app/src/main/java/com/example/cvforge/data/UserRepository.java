@@ -65,6 +65,39 @@ public class UserRepository {
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
+    /**
+     * Like loadCurrentUser, but a missing profile is not an error: the listener gets null.
+     * Used after Google sign in, where the account can be new and has no profile yet.
+     */
+    public void findCurrentUser(UserListener listener) {
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        if (firebaseUser == null) {
+            listener.onError("You are not logged in.");
+            return;
+        }
+        db.collection(USERS).document(firebaseUser.getUid()).get()
+                .addOnSuccessListener(snapshot -> listener.onUser(snapshot.toObject(User.class)))
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
+    /**
+     * Saves the users document for an account that already exists in Firebase Authentication
+     * (Google sign in). The name and email come from the Google account.
+     */
+    public void createProfileForCurrentAccount(String role, ResultListener listener) {
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        if (firebaseUser == null) {
+            listener.onError("You are not logged in.");
+            return;
+        }
+        String email = firebaseUser.getEmail() == null ? "" : firebaseUser.getEmail();
+        String name = firebaseUser.getDisplayName();
+        if (name == null || name.trim().isEmpty()) {
+            name = email.contains("@") ? email.substring(0, email.indexOf('@')) : "CVForge user";
+        }
+        saveUser(new User(firebaseUser.getUid(), name, email, role, !User.needsApproval(role)), listener);
+    }
+
     /** Company and Alumni accounts that an admin has not approved yet. */
     public void loadPendingUsers(UserListListener listener) {
         db.collection(USERS).whereEqualTo("verified", false).get()

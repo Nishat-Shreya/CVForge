@@ -19,7 +19,6 @@
     <string name="sign_up_with_email">Sign up with email</string>
     <string name="already_have_account">Already have an account?</string>
     <string name="log_in">Log in</string>
-    <string name="coming_soon">Coming soon</string>
     <string name="create_account">Create account</string>
     <string name="creating_account">Creating account…</string>
     <string name="hint_name">Full name</string>
@@ -46,4 +45,8 @@
     <string name="nothing_pending">Nothing to approve</string>
     <string name="nothing_pending_message">New Company and Alumni accounts will show up here.</string>
     <string name="error_loading">Could not load the list</string>
+    <string name="google_no_account">No Google account found on this phone. Add one in the phone settings and try again.</string>
+    <string name="google_failed">Google sign in did not work. Check your internet and try again.</string>
+    <string name="google_choose_role">Who are you?</string>
+    <string name="google_role_note">Company and Alumni accounts are checked by an admin before they can post.</string>
 </resources>

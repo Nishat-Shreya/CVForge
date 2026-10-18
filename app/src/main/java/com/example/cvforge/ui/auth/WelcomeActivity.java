@@ -48,8 +48,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         routeIfLoggedIn();
 
-        // Google sign in is added in checkpoint 8
-        content.btnGoogle.setOnClickListener(v -> showComingSoon());
+        content.btnGoogle.setOnClickListener(v -> signInWithGoogle());
         content.btnEmailSignUp.setOnClickListener(v -> openSignUp());
         content.textLogIn.setOnClickListener(v -> openLogin());
     }
@@ -131,7 +130,8 @@ public class WelcomeActivity extends AppCompatActivity {
     private void openSignUp() {
         View chip = content.groupRole.findViewById(content.groupRole.getCheckedChipId());
         Intent intent = new Intent(this, SignUpActivity.class);
-        intent.putExtra(SignUpActivity.EXTRA_ROLE, (String) chip.getTag());
+        // Student is the default, so the button never crashes when no chip is checked
+        intent.putExtra(SignUpActivity.EXTRA_ROLE, chip == null ? User.ROLE_STUDENT : (String) chip.getTag());
         startActivity(intent);
         AnimUtils.fadeTransition(this);
     }
@@ -159,7 +159,23 @@ public class WelcomeActivity extends AppCompatActivity {
         });
     }
 
-    private void showComingSoon() {
-        Toast.makeText(this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
+    /** The role on the chips is used only if this Google account is new. */
+    private void signInWithGoogle() {
+        View chip = content.groupRole.findViewById(content.groupRole.getCheckedChipId());
+        String role = chip == null ? null : (String) chip.getTag();
+        new GoogleSignInHelper(this).start(role, new GoogleSignInHelper.Callback() {
+            @Override
+            public void onStarted() {
+                content.btnGoogle.setEnabled(false);
+            }
+
+            @Override
+            public void onStopped(String errorMessage) {
+                content.btnGoogle.setEnabled(true);
+                if (errorMessage != null) {
+                    Toast.makeText(WelcomeActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 }
