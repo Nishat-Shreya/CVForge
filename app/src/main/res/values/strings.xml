@@ -33,7 +33,6 @@
     <string name="logging_in">Logging in…</string>
     <string name="log_out">Log out</string>
     <string name="hello_name">Hello, %1$s</string>
-    <string name="signed_in_as">Signed in as %1$s</string>
     <string name="pending">Pending approval</string>
     <string name="pending_title">Waiting for approval</string>
     <string name="pending_message">An admin checks Company and Alumni accounts before they can post. This keeps fake postings out.</string>
@@ -59,4 +58,9 @@
     <string name="screen_cv_builder">CV Builder</string>
     <string name="screen_tracker">Tracker</string>
     <string name="screen_profile">Profile</string>
+    <string name="tab_dashboard">Dashboard</string>
+    <string name="tab_postings">Postings</string>
+    <string name="tab_applicants">Applicants</string>
+    <string name="teacher_subtitle">Endorse your students and see department activity here soon.</string>
+    <string name="alumni_subtitle">Post opportunities, endorse skills and open mentor slots here soon.</string>
 </resources>

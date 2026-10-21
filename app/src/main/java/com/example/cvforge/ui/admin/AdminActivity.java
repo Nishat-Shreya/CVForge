@@ -1,6 +1,5 @@
 package com.example.cvforge.ui.admin;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -14,8 +13,7 @@ import com.example.cvforge.data.UserListListener;
 import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.ActivityAdminBinding;
-import com.example.cvforge.ui.auth.WelcomeActivity;
-import com.example.cvforge.util.AnimUtils;
+import com.example.cvforge.ui.auth.LogoutHelper;
 
 import java.util.List;
 
@@ -39,7 +37,7 @@ public class AdminActivity extends AppCompatActivity {
         binding.listPending.setLayoutManager(new LinearLayoutManager(this));
         binding.listPending.setAdapter(adapter);
 
-        binding.btnLogout.setOnClickListener(v -> logOut());
+        binding.btnLogout.setOnClickListener(v -> LogoutHelper.logOut(this));
         loadPending();
     }
 
@@ -81,14 +79,5 @@ public class AdminActivity extends AppCompatActivity {
         binding.empty.textEmptyTitle.setText(title);
         binding.empty.textEmptyMessage.setText(message);
         binding.empty.emptyState.setVisibility(adapter.isEmpty() ? View.VISIBLE : View.GONE);
-    }
-
-    /** Signs out and goes back to the Welcome screen. */
-    private void logOut() {
-        userRepository.logout();
-        Intent intent = new Intent(this, WelcomeActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        AnimUtils.fadeTransition(this);
     }
 }

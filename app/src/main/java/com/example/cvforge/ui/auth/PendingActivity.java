@@ -1,6 +1,5 @@
 package com.example.cvforge.ui.auth;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -27,18 +26,9 @@ public class PendingActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         binding.btnCheckAgain.setOnClickListener(v -> checkApproval());
-        binding.btnLogout.setOnClickListener(v -> logOut());
+        binding.btnLogout.setOnClickListener(v -> LogoutHelper.logOut(this));
 
         AnimUtils.slideUpIn(binding.content, 0);
-    }
-
-    /** Signs out and goes back to the Welcome screen. */
-    private void logOut() {
-        userRepository.logout();
-        Intent intent = new Intent(this, WelcomeActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        AnimUtils.fadeTransition(this);
     }
 
     /** Reads the user again. If an admin approved the account, RoleRouter opens the real screen. */

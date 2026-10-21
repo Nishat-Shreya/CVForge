@@ -1,0 +1,39 @@
+package com.example.cvforge.ui.alumni;
+
+import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.cvforge.R;
+import com.example.cvforge.data.UserListener;
+import com.example.cvforge.data.UserRepository;
+import com.example.cvforge.data.model.User;
+import com.example.cvforge.databinding.ActivityAlumniBinding;
+import com.example.cvforge.ui.auth.LogoutHelper;
+import com.example.cvforge.util.AnimUtils;
+
+/** Alumni home screen. The real features are added in later checkpoints. */
+public class AlumniActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ActivityAlumniBinding binding = ActivityAlumniBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        binding.btnLogout.setOnClickListener(v -> LogoutHelper.logOut(this));
+        AnimUtils.slideUpIn(binding.heroCard, 0);
+
+        new UserRepository().loadCurrentUser(new UserListener() {
+            @Override
+            public void onUser(User user) {
+                binding.textGreeting.setText(getString(R.string.hello_name, user.getName()));
+            }
+
+            @Override
+            public void onError(String message) {
+                binding.textGreeting.setText(message);
+            }
+        });
+    }
+}

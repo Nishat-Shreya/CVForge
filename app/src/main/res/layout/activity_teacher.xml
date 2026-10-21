@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Teacher dashboard shell. The department dashboard and endorsements come in later checkpoints. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding"
+    tools:context=".ui.teacher.TeacherActivity">
+
+    <FrameLayout
+        android:id="@+id/heroCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_hero_teal"
+        android:clipChildren="true"
+        android:clipToOutline="true">
+
+        <com.example.cvforge.ui.view.CircleDecorationView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:circleCenterX="1"
+            app:circleCenterY="0"
+            app:circleColor="@color/coral"
+            app:circleRadius="50dp" />
+
+        <com.example.cvforge.ui.view.CircleDecorationView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:circleCenterX="0.7"
+            app:circleCenterY="1"
+            app:circleColor="@color/amber"
+            app:circleRadius="34dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:id="@+id/textGreeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/sora"
+                android:textColor="@color/ink"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/teacher_subtitle"
+                android:textColor="@color/ink"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLogout"
+        style="@style/ButtonOutline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/log_out" />
+</LinearLayout>

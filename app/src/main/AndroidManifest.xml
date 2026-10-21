@@ -26,7 +26,13 @@
             android:name=".ui.auth.PendingActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.auth.RolePlaceholderActivity"
+            android:name=".ui.company.CompanyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.teacher.TeacherActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.alumni.AlumniActivity"
             android:exported="false" />
         <activity
             android:name=".ui.auth.LoginActivity"
