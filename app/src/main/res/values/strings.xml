@@ -81,4 +81,25 @@
     <string name="saving">Saving…</string>
     <string name="default_cv_title">My CV</string>
     <string name="cv_saved">CV saved on this phone</string>
+    <string name="section_skills">Skills</string>
+    <string name="hint_skills">Skills, separated by commas (Java, SQL, Firebase)</string>
+    <string name="section_projects">Projects</string>
+    <string name="section_experience">Experience</string>
+    <string name="section_certificates">Certificates</string>
+    <string name="section_links">Links</string>
+    <string name="add_project">Add project</string>
+    <string name="add_experience">Add experience</string>
+    <string name="add_certificate">Add certificate</string>
+    <string name="add_link">Add link</string>
+    <string name="hint_bullets">What you did, one point per line</string>
+    <string name="hint_certificate_name">Certificate name</string>
+    <string name="hint_company">Company</string>
+    <string name="hint_issuer">Issued by</string>
+    <string name="hint_link_label">Label (GitHub, LinkedIn, Portfolio)</string>
+    <string name="hint_link_url">Link</string>
+    <string name="hint_project_description">What it does and what you built</string>
+    <string name="hint_project_name">Project name</string>
+    <string name="hint_project_tags">Tags, separated by commas (Java, Room)</string>
+    <string name="hint_role">Role</string>
+    <string name="hint_year">Year</string>
 </resources>

@@ -150,9 +150,62 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Skills: one line, separated by commas -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardSkills"
+                style="@style/CardBase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/screen_padding">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        style="@style/TextSectionTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/section_skills" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/InputBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="@string/hint_skills">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editSkills"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapWords|textMultiLine"
+                            android:minHeight="48dp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- Lists: each one is the same reusable section layout -->
             <include
                 android:id="@+id/sectionEducation"
+                layout="@layout/include_list_section" />
+
+            <include
+                android:id="@+id/sectionProjects"
+                layout="@layout/include_list_section" />
+
+            <include
+                android:id="@+id/sectionExperience"
+                layout="@layout/include_list_section" />
+
+            <include
+                android:id="@+id/sectionCertificates"
+                layout="@layout/include_list_section" />
+
+            <include
+                android:id="@+id/sectionLinks"
                 layout="@layout/include_list_section" />
         </LinearLayout>
     </ScrollView>
