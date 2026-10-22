@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cvforge.R;
+import com.example.cvforge.data.CvRepository;
+import com.example.cvforge.data.ResultListener;
 import com.example.cvforge.data.UserRepository;
-import com.example.cvforge.data.local.AppDatabase;
-import com.example.cvforge.data.local.CvEntity;
 import com.example.cvforge.data.model.Cv;
 import com.example.cvforge.databinding.ActivityCvEditorBinding;
 import com.example.cvforge.databinding.IncludeListSectionBinding;
@@ -22,14 +22,15 @@ import java.util.UUID;
 
 /**
  * Form for the CV: personal info, skills, education, projects, experience,
- * certificates and links. Save stores the CV in Room on this phone, on a background thread.
- * Firestore and autosave come in checkpoint 16.
+ * certificates and links. Save writes to Room and to Firestore, and the draft is kept on
+ * the phone every time the screen goes to the background (W8 lifecycle, onPause).
  */
 public class CvEditorActivity extends AppCompatActivity {
 
     private ActivityCvEditorBinding binding;
-    private final Cv cv = new Cv();
+    private CvRepository cvRepository;
     private String uid;
+    private Cv cv = new Cv();
 
     private EducationAdapter educationAdapter;
     private ProjectAdapter projectAdapter;
@@ -42,6 +43,8 @@ public class CvEditorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityCvEditorBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        cvRepository = new CvRepository(this);
         uid = new UserRepository().getCurrentUid();
 
         binding.toolbar.textTitle.setText(R.string.edit_cv);
@@ -50,9 +53,10 @@ public class CvEditorActivity extends AppCompatActivity {
 
         setUpLists();
         playEntranceAnimation();
+        loadCv();
     }
 
-    /** Creates the five adapters for the Cv and connects the Add buttons. */
+    /** Creates the five adapters for the current Cv and connects the Add buttons. */
     private void setUpLists() {
         educationAdapter = new EducationAdapter(cv.education);
         projectAdapter = new ProjectAdapter(cv.projects);
@@ -89,6 +93,29 @@ public class CvEditorActivity extends AppCompatActivity {
         AnimUtils.slideUpIn(binding.sectionProjects.sectionRoot, 3);
     }
 
+    /** Opens the newest saved CV of this student, if there is one (Room first, then Firestore). */
+    private void loadCv() {
+        cvRepository.loadLatest(uid, loaded -> {
+            if (loaded != null && !isDestroyed()) {
+                showCv(loaded);
+            }
+        });
+    }
+
+    private void showCv(Cv loaded) {
+        cv = loaded;
+        binding.editTitle.setText(cv.title);
+        binding.editFullName.setText(cv.fullName);
+        binding.editHeadline.setText(cv.headline);
+        binding.editEmail.setText(cv.email);
+        binding.editPhone.setText(cv.phone);
+        binding.editLocation.setText(cv.location);
+        binding.editSummary.setText(cv.summary);
+        binding.editSkills.setText(ListText.join(cv.skills, ", "));
+
+        setUpLists();
+    }
+
     private void readFields() {
         String title = binding.editTitle.getText().toString().trim();
         cv.title = title.isEmpty() ? getString(R.string.default_cv_title) : title;
@@ -101,25 +128,51 @@ public class CvEditorActivity extends AppCompatActivity {
         cv.skills = ListText.split(binding.editSkills.getText().toString(), ",");
     }
 
-    /** Room does not allow database calls on the main thread, so the insert runs in the executor. */
     private void saveCv() {
+        prepareForSave();
+        binding.btnSave.setEnabled(false);
+        binding.btnSave.setText(R.string.saving);
+        cvRepository.save(cv, new ResultListener() {
+            @Override
+            public void onSuccess() {
+                finishSaving(getString(R.string.cv_saved));
+            }
+
+            @Override
+            public void onError(String message) {
+                finishSaving(getString(R.string.cv_saved_offline));
+            }
+        });
+    }
+
+    private void finishSaving(String message) {
+        binding.btnSave.setEnabled(true);
+        binding.btnSave.setText(R.string.save);
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    /** Reads the form and gives a new CV its id and owner. */
+    private void prepareForSave() {
         readFields();
         if (cv.id == null) {
             cv.id = UUID.randomUUID().toString();
             cv.ownerUid = uid;
         }
         cv.updatedAt = System.currentTimeMillis();
+    }
 
-        binding.btnSave.setEnabled(false);
-        binding.btnSave.setText(R.string.saving);
-        CvEntity entity = CvEntity.fromCv(cv);
-        AppDatabase.databaseExecutor.execute(() -> {
-            AppDatabase.getInstance(getApplicationContext()).cvDao().insert(entity);
-            runOnUiThread(() -> {
-                binding.btnSave.setEnabled(true);
-                binding.btnSave.setText(R.string.save);
-                Toast.makeText(this, R.string.cv_saved, Toast.LENGTH_SHORT).show();
-            });
-        });
+    /**
+     * W8 lifecycle: when the screen goes to the background (home button, another app,
+     * back) the draft is kept on the phone. An empty new CV is not saved.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        readFields();
+        boolean hasContent = cv.id != null || !cv.fullName.isEmpty() || !cv.headline.isEmpty();
+        if (hasContent) {
+            prepareForSave();
+            cvRepository.saveDraft(cv);
+        }
     }
 }

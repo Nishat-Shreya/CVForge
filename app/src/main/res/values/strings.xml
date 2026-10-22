@@ -80,7 +80,7 @@
     <string name="save">Save</string>
     <string name="saving">Saving…</string>
     <string name="default_cv_title">My CV</string>
-    <string name="cv_saved">CV saved on this phone</string>
+    <string name="cv_saved">CV saved</string>
     <string name="section_skills">Skills</string>
     <string name="hint_skills">Skills, separated by commas (Java, SQL, Firebase)</string>
     <string name="section_projects">Projects</string>
@@ -102,4 +102,5 @@
     <string name="hint_project_tags">Tags, separated by commas (Java, Room)</string>
     <string name="hint_role">Role</string>
     <string name="hint_year">Year</string>
+    <string name="cv_saved_offline">Saved on this phone. It will not reach the cloud until you are online.</string>
 </resources>
