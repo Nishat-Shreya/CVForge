@@ -38,6 +38,12 @@ public class UserRepository {
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
+    /** Firebase uid of the signed-in account, or null when nobody is signed in. */
+    public String getCurrentUid() {
+        FirebaseUser user = auth.getCurrentUser();
+        return user == null ? null : user.getUid();
+    }
+
     public boolean isLoggedIn() {
         return auth.getCurrentUser() != null;
     }

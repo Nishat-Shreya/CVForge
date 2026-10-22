@@ -63,4 +63,22 @@
     <string name="tab_applicants">Applicants</string>
     <string name="teacher_subtitle">Endorse your students and see department activity here soon.</string>
     <string name="alumni_subtitle">Post opportunities, endorse skills and open mentor slots here soon.</string>
+    <string name="edit_cv">Edit CV</string>
+    <string name="section_personal">Personal info</string>
+    <string name="section_education">Education</string>
+    <string name="hint_version_name">Version name</string>
+    <string name="hint_full_name">Full name</string>
+    <string name="hint_headline">Headline (for example Android Developer)</string>
+    <string name="hint_phone">Phone</string>
+    <string name="hint_location">City, country</string>
+    <string name="hint_summary">Short summary</string>
+    <string name="hint_school">School or university</string>
+    <string name="hint_degree">Degree or program</string>
+    <string name="hint_years">Years (for example 2022 - 2026)</string>
+    <string name="add_education">Add education</string>
+    <string name="remove">Remove</string>
+    <string name="save">Save</string>
+    <string name="saving">Saving…</string>
+    <string name="default_cv_title">My CV</string>
+    <string name="cv_saved">CV saved on this phone</string>
 </resources>

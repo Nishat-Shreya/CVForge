@@ -1,5 +1,6 @@
 package com.example.cvforge.ui.student;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.cvforge.databinding.FragmentCvBuilderBinding;
+import com.example.cvforge.ui.cv.CvEditorActivity;
 import com.example.cvforge.util.AnimUtils;
 
-/** Placeholder tab, the real screen is built in a later checkpoint. */
+/** CV tab. For now it only has a button that opens the CV editor (explicit Intent). */
 public class CvBuilderFragment extends Fragment {
 
     private FragmentCvBuilderBinding binding;
@@ -29,6 +31,10 @@ public class CvBuilderFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         AnimUtils.slideUpIn(binding.textTitle, 0);
+        binding.btnEditCv.setOnClickListener(v -> {
+            startActivity(new Intent(requireContext(), CvEditorActivity.class));
+            AnimUtils.fadeTransition(requireActivity());
+        });
     }
 
     @Override
