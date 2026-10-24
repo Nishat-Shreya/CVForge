@@ -103,4 +103,7 @@
     <string name="hint_role">Role</string>
     <string name="hint_year">Year</string>
     <string name="cv_saved_offline">Saved on this phone. It will not reach the cloud until you are online.</string>
+    <string name="template_modern">Modern</string>
+    <string name="template_classic">Classic</string>
+    <string name="template_minimal">Minimal</string>
 </resources>

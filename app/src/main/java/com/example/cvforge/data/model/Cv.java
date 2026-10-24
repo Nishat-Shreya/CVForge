@@ -9,10 +9,15 @@ import java.util.List;
  */
 public class Cv {
 
+    public static final String TEMPLATE_MODERN = "modern";
+    public static final String TEMPLATE_CLASSIC = "classic";
+    public static final String TEMPLATE_MINIMAL = "minimal";
+
     public String id;
     public String ownerUid;
     /** Name of this version, for example "Backend internship". */
     public String title;
+    public String template = TEMPLATE_MODERN;
     public long updatedAt;
 
     // personal info
