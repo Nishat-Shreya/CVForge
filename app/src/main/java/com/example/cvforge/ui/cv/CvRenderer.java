@@ -1,6 +1,7 @@
 package com.example.cvforge.ui.cv;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -15,6 +16,7 @@ import androidx.core.content.res.ResourcesCompat;
 import com.example.cvforge.R;
 import com.example.cvforge.data.model.Cv;
 import com.example.cvforge.util.ListText;
+import com.example.cvforge.util.QrHelper;
 
 import java.util.List;
 
@@ -41,6 +43,9 @@ public class CvRenderer {
     // set for every draw call
     private Canvas canvas;
     private CvTemplate template;
+    private String qrLink;
+    private Bitmap qrBitmap;
+    private String bitmapLink;
 
     public CvRenderer(Context context) {
         this.context = context;
@@ -54,6 +59,7 @@ public class CvRenderer {
     public float draw(Canvas canvas, Cv cv, CvTemplate template) {
         this.canvas = canvas;
         this.template = template;
+        this.qrLink = QrHelper.profileLink(cv.ownerUid);
 
         float y = drawHeader(cv);
 
@@ -64,7 +70,32 @@ public class CvRenderer {
         y = drawExperience(cv, y);
         y = drawCertificates(cv, y);
         y = drawLinks(cv, y);
+        if (template != CvTemplate.MODERN) {
+            y = drawQrFooter(y);
+        }
         return y + MARGIN;
+    }
+
+    /** Classic and Minimal have no header tile, so the QR code sits at the bottom right. */
+    private float drawQrFooter(float y) {
+        float size = 52f;
+        if (canvas != null) {
+            drawQr(new RectF(PAGE_WIDTH - MARGIN - size, y, PAGE_WIDTH - MARGIN, y + size), qrLink);
+            drawText("Scan to open my profile", paint(body, 9.5f, color(R.color.muted)),
+                    MARGIN, y + size / 2f - 6f, CONTENT_WIDTH - size - 12f, true);
+        }
+        return y + size;
+    }
+
+    /** Draws the QR code picture inside the rectangle. The picture is made once per link. */
+    private void drawQr(RectF target, String link) {
+        if (qrBitmap == null || !link.equals(bitmapLink)) {
+            qrBitmap = QrHelper.create(link, 200);
+            bitmapLink = link;
+        }
+        if (qrBitmap != null) {
+            canvas.drawBitmap(qrBitmap, null, target, null);
+        }
     }
 
     // ---------- header ----------
@@ -84,7 +115,7 @@ public class CvRenderer {
         }
     }
 
-    /** Violet band with the name on the left and a white tile on the right (the QR code is added in checkpoint 20). */
+    /** Violet band with the name on the left and a white tile for the QR code on the right. */
     private float drawModernHeader(String name, String headline, String contact) {
         float qrSize = 56f;
         float textWidth = CONTENT_WIDTH - qrSize - 12f;
@@ -102,6 +133,7 @@ public class CvRenderer {
             canvas.drawRect(0, 0, PAGE_WIDTH, bandHeight, fill(color(R.color.violet)));
             RectF tile = new RectF(PAGE_WIDTH - MARGIN - qrSize, y, PAGE_WIDTH - MARGIN, y + qrSize);
             canvas.drawRoundRect(tile, 10f, 10f, fill(color(R.color.white)));
+            drawQr(new RectF(tile.left + 5f, tile.top + 5f, tile.right - 5f, tile.bottom - 5f), qrLink);
             drawText(name, paint(headingBold, 20f, color(R.color.white)), MARGIN, y, textWidth, true);
             drawText(headline, paint(body, 12f, color(R.color.white)), MARGIN, y + nameH + 2f, textWidth, true);
             drawText(contact, paint(body, 10f, color(R.color.white)), MARGIN, y + nameH + headH + 6f, textWidth, true);
