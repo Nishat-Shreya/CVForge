@@ -21,6 +21,7 @@ import com.example.cvforge.ui.cv.CvEditorActivity;
 import com.example.cvforge.ui.cv.CvSample;
 import com.example.cvforge.ui.cv.CvTemplate;
 import com.example.cvforge.util.AnimUtils;
+import com.example.cvforge.util.StrengthScore;
 
 /** CV tab: template pills and a live preview of the newest CV. */
 public class CvBuilderFragment extends Fragment {
@@ -54,6 +55,7 @@ public class CvBuilderFragment extends Fragment {
         AnimUtils.slideUpIn(binding.textTitle, 0);
         AnimUtils.slideUpIn(binding.rowTemplates, 1);
         AnimUtils.slideUpIn(binding.cardPreview, 2);
+        AnimUtils.slideUpIn(binding.cardStrength, 3);
     }
 
     /** Loads the newest CV every time the tab is shown, so edits from the editor appear. */
@@ -72,6 +74,15 @@ public class CvBuilderFragment extends Fragment {
         // until the student saves a CV, the preview shows an example
         binding.preview.setCv(loaded == null ? CvSample.create() : cv);
         showTemplate(CvTemplate.fromId(cv.template));
+        showStrength();
+    }
+
+    /** A3: the strength bar grows to the score of the shown CV. */
+    private void showStrength() {
+        StrengthScore.Result result = StrengthScore.of(cv);
+        binding.textStrengthPercent.setText(getString(R.string.percent, result.score));
+        binding.textStrengthTip.setText(result.tipRes == 0 ? R.string.strength_complete : result.tipRes);
+        AnimUtils.growBar(binding.barStrength, result.score);
     }
 
     private void chooseTemplate(CvTemplate template) {

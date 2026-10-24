@@ -7,4 +7,14 @@
         <attr name="circleCenterY" format="float" />
         <attr name="circleRadius" format="dimension" />
     </declare-styleable>
+
+    <!-- Round progress ring, drawn on a Canvas -->
+    <declare-styleable name="ProfileStrengthRing">
+        <attr name="ringColor" format="color" />
+        <attr name="ringTrackColor" format="color" />
+        <attr name="ringTextColor" format="color" />
+        <attr name="ringStrokeWidth" format="dimension" />
+        <attr name="ringTextSize" format="dimension" />
+        <attr name="ringShowPercentSign" format="boolean" />
+    </declare-styleable>
 </resources>

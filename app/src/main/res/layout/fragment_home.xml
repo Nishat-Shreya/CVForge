@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Placeholder, replaced when this screen is built -->
+<!-- Temporary Home: only the strength ring. The real Home screen is built in checkpoint 19. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -12,4 +13,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/screen_home" />
+
+    <com.example.cvforge.ui.view.ProfileStrengthRing
+        android:id="@+id/ringStrength"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="24dp"
+        android:contentDescription="@string/profile_strength"
+        app:ringColor="@color/amber"
+        app:ringStrokeWidth="12dp"
+        app:ringTextColor="@color/ink"
+        app:ringTextSize="26sp"
+        app:ringTrackColor="@color/violet_tint" />
+
+    <TextView
+        android:id="@+id/textTip"
+        style="@style/TextMuted"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp" />
 </LinearLayout>

@@ -106,4 +106,19 @@
     <string name="template_modern">Modern</string>
     <string name="template_classic">Classic</string>
     <string name="template_minimal">Minimal</string>
+    <string name="cv_strength">CV strength</string>
+    <string name="percent">%1$d%%</string>
+    <string name="strength_complete">Your CV is complete. Great work!</string>
+    <string name="tip_name">Add your full name.</string>
+    <string name="tip_headline">Add a headline, like Android Developer.</string>
+    <string name="tip_contact">Add an email or phone number.</string>
+    <string name="tip_summary">Write a short summary.</string>
+    <string name="tip_skills">Add at least 3 skills.</string>
+    <string name="tip_education">Add your education.</string>
+    <string name="tip_project">Add your first project.</string>
+    <string name="tip_second_project">Add a second project to reach 80%.</string>
+    <string name="tip_experience">Add some experience.</string>
+    <string name="tip_certificate">Add a certificate.</string>
+    <string name="tip_link">Add a link, like GitHub.</string>
+    <string name="profile_strength">Profile Strength</string>
 </resources>
