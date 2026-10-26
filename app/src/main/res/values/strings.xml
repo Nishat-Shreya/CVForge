@@ -148,5 +148,5 @@
     <string name="exporting_pdf">Exporting…</string>
     <string name="save_cv_first">Save your CV first, then export it.</string>
     <string name="pdf_error">Could not create the PDF: %1$s</string>
-    <string name="pdf_saved">PDF saved: %1$s</string>
+    <string name="share_cv">Share your CV</string>
 </resources>

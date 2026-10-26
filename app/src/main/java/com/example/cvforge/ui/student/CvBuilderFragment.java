@@ -23,6 +23,7 @@ import com.example.cvforge.ui.cv.CvSample;
 import com.example.cvforge.ui.cv.CvTemplate;
 import com.example.cvforge.util.AnimUtils;
 import com.example.cvforge.util.PdfExporter;
+import com.example.cvforge.util.ShareHelper;
 import com.example.cvforge.util.StrengthScore;
 
 import java.io.File;
@@ -82,7 +83,7 @@ public class CvBuilderFragment extends Fragment {
         showStrength();
     }
 
-    /** Makes the PDF on a background thread (PdfDocument). Sharing it comes in checkpoint 22. */
+    /** Makes the PDF on a background thread (PdfDocument), then opens the share sheet. */
     private void exportPdf() {
         if (cv.id == null) {
             Toast.makeText(requireContext(), R.string.save_cv_first, Toast.LENGTH_SHORT).show();
@@ -93,7 +94,10 @@ public class CvBuilderFragment extends Fragment {
         PdfExporter.export(requireContext(), cv, CvTemplate.fromId(cv.template), new PdfExporter.Listener() {
             @Override
             public void onDone(File pdf) {
-                finishExport(getString(R.string.pdf_saved, pdf.getName()));
+                finishExport(null);
+                if (binding != null) {
+                    ShareHelper.sharePdf(requireContext(), pdf);
+                }
             }
 
             @Override
@@ -109,7 +113,9 @@ public class CvBuilderFragment extends Fragment {
         }
         binding.btnExportPdf.setEnabled(true);
         binding.btnExportPdf.setText(R.string.export_pdf);
-        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
+        if (message != null) {
+            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
+        }
     }
 
     /** A3: the strength bar grows to the score of the shown CV. */
