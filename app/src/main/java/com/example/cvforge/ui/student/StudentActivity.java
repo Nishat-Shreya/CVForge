@@ -72,4 +72,10 @@ public class StudentActivity extends AppCompatActivity {
                 return new HomeFragment();
         }
     }
+
+    /** Lets a fragment switch tab, for example the Improve CV button on Home. */
+    public void openTab(int index) {
+        binding.bottomNav.select(index, true);
+        showTab(index);
+    }
 }

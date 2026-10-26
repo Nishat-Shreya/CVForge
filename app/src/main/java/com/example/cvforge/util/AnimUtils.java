@@ -8,6 +8,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ProgressBar;
 
 /**
  * Small helpers for the animations in DESIGN.md section 6.
@@ -71,6 +72,19 @@ public class AnimUtils {
         animator.start();
         animator.setCurrentPlayTime(startOffsetMs);
         return animator;
+    }
+
+    /** A3: the bar grows from the left to the value (0 to 100) in 1.2 s. */
+    public static void growBar(ProgressBar bar, int value) {
+        int target = value * 10; // the bar has max 1000 so the growth looks smooth
+        if (!animationsEnabled(bar.getContext())) {
+            bar.setProgress(target);
+            return;
+        }
+        ObjectAnimator animator = ObjectAnimator.ofInt(bar, "progress", 0, target);
+        animator.setDuration(1200);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.start();
     }
 
     /** A12: fade-through between screens, 200 ms. Call right after startActivity or finish. */

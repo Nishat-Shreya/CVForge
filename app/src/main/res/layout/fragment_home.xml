@@ -1,15 +1,335 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Placeholder, replaced when this screen is built -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Home, matches Docs/02-home.png -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/screen_padding">
+    android:clipToPadding="false"
+    android:paddingHorizontal="@dimen/screen_padding">
 
-    <TextView
-        android:id="@+id/textTitle"
-        style="@style/TextScreenTitle"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/screen_home" />
-</LinearLayout>
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/screen_padding">
+
+        <!-- Greeting row -->
+        <LinearLayout
+            android:id="@+id/rowGreeting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="16dp">
+
+            <include
+                android:id="@+id/avatar"
+                layout="@layout/include_avatar" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textGreeting"
+                    style="@style/TextMuted"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/textName"
+                    style="@style/TextSectionTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sora"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <!-- Chat button with count badge -->
+            <FrameLayout
+                android:layout_width="52dp"
+                android:layout_height="52dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnChat"
+                    style="@style/IconCircleButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="bottom|start"
+                    android:contentDescription="@string/open_chat"
+                    app:icon="@drawable/ic_chat" />
+
+                <TextView
+                    android:id="@+id/textChatBadge"
+                    style="@style/ChipTint.Coral"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_gravity="top|end"
+                    android:backgroundTint="@color/coral"
+                    android:minWidth="20dp"
+                    android:paddingHorizontal="6dp"
+                    android:textColor="@color/ink"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+            <!-- Bell with pulsing amber dot -->
+            <FrameLayout
+                android:layout_width="52dp"
+                android:layout_height="52dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBell"
+                    style="@style/IconCircleButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="bottom|start"
+                    android:contentDescription="@string/open_notifications"
+                    app:icon="@drawable/ic_bell" />
+
+                <View
+                    android:id="@+id/dotBell"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_avatar"
+                    android:backgroundTint="@color/amber" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Streak and level chips -->
+        <LinearLayout
+            android:id="@+id/rowChips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/chipStreak"
+                style="@style/ChipTint.Amber"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:drawableStart="@drawable/ic_flame"
+                android:drawablePadding="6dp"
+                android:paddingHorizontal="14dp"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/chipLevel"
+                style="@style/ChipTint.Violet"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:paddingHorizontal="14dp"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- Hero card with the Profile Strength Ring -->
+        <FrameLayout
+            android:id="@+id/cardHero"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_hero_violet"
+            android:clipToOutline="true">
+
+            <com.example.cvforge.ui.view.CircleDecorationView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:circleCenterX="1"
+                app:circleCenterY="0"
+                app:circleColor="@color/coral"
+                app:circleRadius="50dp" />
+
+            <com.example.cvforge.ui.view.CircleDecorationView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:circleCenterX="0.78"
+                app:circleCenterY="1"
+                app:circleColor="@color/amber"
+                app:circleRadius="34dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="20dp">
+
+                <com.example.cvforge.ui.view.ProfileStrengthRing
+                    android:id="@+id/ringStrength"
+                    android:layout_width="92dp"
+                    android:layout_height="92dp"
+                    android:contentDescription="@string/profile_strength"
+                    app:ringColor="@color/amber"
+                    app:ringStrokeWidth="10dp"
+                    app:ringTextColor="@color/white"
+                    app:ringTextSize="22sp"
+                    app:ringTrackColor="#33FFFFFF" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/sora"
+                        android:text="@string/profile_strength"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textTip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:alpha="0.9"
+                        android:textColor="@color/white"
+                        android:textSize="13sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnImproveCv"
+                        style="@style/ButtonBase"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint="@color/amber"
+                        android:text="@string/improve_cv"
+                        android:textColor="@color/ink" />
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- Stat tiles -->
+        <LinearLayout
+            android:id="@+id/rowStats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/card_gap"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tile"
+                android:backgroundTint="@color/sky_tint"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <TextView
+                    android:id="@+id/textStatApplied"
+                    style="@style/TextBigNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/sky_text"
+                    android:textSize="24sp" />
+
+                <TextView
+                    style="@style/TextBody"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stat_applied"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tile"
+                android:backgroundTint="@color/teal_tint"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <TextView
+                    android:id="@+id/textStatShortlisted"
+                    style="@style/TextBigNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/teal_text"
+                    android:textSize="24sp" />
+
+                <TextView
+                    style="@style/TextBody"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stat_shortlisted"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tile"
+                android:backgroundTint="@color/coral_tint"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <TextView
+                    android:id="@+id/textStatInterviews"
+                    style="@style/TextBigNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/coral_text"
+                    android:textSize="24sp" />
+
+                <TextView
+                    style="@style/TextBody"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stat_interviews"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Today's Focus -->
+        <LinearLayout
+            android:id="@+id/rowFocusTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextSectionTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/todays_focus" />
+
+            <TextView
+                android:id="@+id/textSeeAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/dm_sans"
+                android:gravity="center"
+                android:minHeight="48dp"
+                android:text="@string/see_all"
+                android:textColor="@color/violet_text"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listFocus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
+    </LinearLayout>
+</ScrollView>
