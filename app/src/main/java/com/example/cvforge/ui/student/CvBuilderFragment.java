@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +22,10 @@ import com.example.cvforge.ui.cv.CvEditorActivity;
 import com.example.cvforge.ui.cv.CvSample;
 import com.example.cvforge.ui.cv.CvTemplate;
 import com.example.cvforge.util.AnimUtils;
+import com.example.cvforge.util.PdfExporter;
 import com.example.cvforge.util.StrengthScore;
+
+import java.io.File;
 
 /** CV tab: template pills and a live preview of the newest CV. */
 public class CvBuilderFragment extends Fragment {
@@ -47,6 +51,7 @@ public class CvBuilderFragment extends Fragment {
         binding.pillModern.setOnClickListener(v -> chooseTemplate(CvTemplate.MODERN));
         binding.pillClassic.setOnClickListener(v -> chooseTemplate(CvTemplate.CLASSIC));
         binding.pillMinimal.setOnClickListener(v -> chooseTemplate(CvTemplate.MINIMAL));
+        binding.btnExportPdf.setOnClickListener(v -> exportPdf());
         binding.btnEditCv.setOnClickListener(v -> openEditor());
 
         showTemplate(CvTemplate.MODERN);
@@ -75,6 +80,36 @@ public class CvBuilderFragment extends Fragment {
         binding.preview.setCv(loaded == null ? CvSample.create() : cv);
         showTemplate(CvTemplate.fromId(cv.template));
         showStrength();
+    }
+
+    /** Makes the PDF on a background thread (PdfDocument). Sharing it comes in checkpoint 22. */
+    private void exportPdf() {
+        if (cv.id == null) {
+            Toast.makeText(requireContext(), R.string.save_cv_first, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        binding.btnExportPdf.setEnabled(false);
+        binding.btnExportPdf.setText(R.string.exporting_pdf);
+        PdfExporter.export(requireContext(), cv, CvTemplate.fromId(cv.template), new PdfExporter.Listener() {
+            @Override
+            public void onDone(File pdf) {
+                finishExport(getString(R.string.pdf_saved, pdf.getName()));
+            }
+
+            @Override
+            public void onError(String message) {
+                finishExport(getString(R.string.pdf_error, message));
+            }
+        });
+    }
+
+    private void finishExport(String message) {
+        if (binding == null) {
+            return;
+        }
+        binding.btnExportPdf.setEnabled(true);
+        binding.btnExportPdf.setText(R.string.export_pdf);
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
     }
 
     /** A3: the strength bar grows to the score of the shown CV. */

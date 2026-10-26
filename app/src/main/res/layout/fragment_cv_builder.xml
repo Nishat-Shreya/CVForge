@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- CV Builder, matches Docs/04-cv-builder.png. Export PDF, versions and the
+<!-- CV Builder, matches Docs/04-cv-builder.png. Versions and the
      other buttons are added in later checkpoints. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,14 +14,35 @@
         android:orientation="vertical"
         android:paddingBottom="@dimen/screen_padding">
 
-        <TextView
-            android:id="@+id/textTitle"
-            style="@style/TextScreenTitle"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:minHeight="56dp"
-            android:paddingTop="16dp"
-            android:text="@string/screen_cv_builder" />
+            android:orientation="horizontal"
+            android:paddingTop="16dp">
+
+            <TextView
+                android:id="@+id/textTitle"
+                style="@style/TextScreenTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/screen_cv_builder" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExportPdf"
+                style="@style/ButtonBase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/violet"
+                android:text="@string/export_pdf"
+                android:textColor="@color/white"
+                app:icon="@drawable/ic_download"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:iconTint="@color/white" />
+        </LinearLayout>
 
         <!-- Template pills -->
         <LinearLayout

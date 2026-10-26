@@ -144,4 +144,9 @@
     <string name="focus_discover_title">Find internships</string>
     <string name="focus_discover_subtitle">Browse and apply to roles that match you</string>
     <string name="coming_soon">Coming soon</string>
+    <string name="export_pdf">Export PDF</string>
+    <string name="exporting_pdf">Exporting…</string>
+    <string name="save_cv_first">Save your CV first, then export it.</string>
+    <string name="pdf_error">Could not create the PDF: %1$s</string>
+    <string name="pdf_saved">PDF saved: %1$s</string>
 </resources>
