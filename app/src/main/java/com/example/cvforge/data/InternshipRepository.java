@@ -54,6 +54,23 @@ public class InternshipRepository {
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
+    /** Loads the posts students can apply to: open and not past the deadline. Newest first. */
+    public void loadOpen(InternshipListListener listener) {
+        db.collection(INTERNSHIPS).whereEqualTo("status", Internship.STATUS_OPEN).get()
+                .addOnSuccessListener(snapshot -> {
+                    long now = System.currentTimeMillis();
+                    List<Internship> list = new ArrayList<>();
+                    for (Internship internship : snapshot.toObjects(Internship.class)) {
+                        if (internship.deadline >= now) {
+                            list.add(internship);
+                        }
+                    }
+                    Collections.sort(list, (a, b) -> Long.compare(b.createdAt, a.createdAt));
+                    listener.onLoaded(list);
+                })
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
     public void loadById(String id, InternshipListener listener) {
         db.collection(INTERNSHIPS).document(id).get()
                 .addOnSuccessListener(snapshot -> listener.onLoaded(snapshot.toObject(Internship.class)))

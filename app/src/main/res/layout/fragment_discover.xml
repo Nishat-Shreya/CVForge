@@ -1,15 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Placeholder, replaced when this screen is built -->
+<!-- Discover list, matches the top of Docs/03-discover.png. Search, filters and the swipe cards come in later checkpoints. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/screen_padding">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textTitle"
-        style="@style/TextScreenTitle"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/rowTitle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/screen_discover" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/screen_padding"
+        android:paddingTop="16dp">
+
+        <TextView
+            android:id="@+id/textTitle"
+            style="@style/TextScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/screen_discover" />
+
+    </LinearLayout>
+
+    <!-- Quick filters. "For you" shows everything. -->
+    <HorizontalScrollView
+        android:id="@+id/scrollChips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/screen_padding">
+
+            <TextView
+                android:id="@+id/chipForYou"
+                style="@style/ChipTint"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="20dp"
+                android:text="@string/filter_for_you"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/chipRemote"
+                style="@style/ChipTint"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="20dp"
+                android:text="@string/type_remote"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/chipPaidOnly"
+                style="@style/ChipTint"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="20dp"
+                android:text="@string/filter_paid"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listInternships"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/screen_padding" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/violet" />
+
+        <include
+            android:id="@+id/empty"
+            layout="@layout/include_empty_state"
+            android:visibility="gone" />
+    </FrameLayout>
 </LinearLayout>

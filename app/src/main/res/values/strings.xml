@@ -210,4 +210,13 @@
     <string name="scam_high_stipend">The stipend is unusually high.</string>
     <string name="scam_payment_request">It asks for money (a fee or deposit).</string>
     <string name="scam_personal_chat">It asks students to talk only on a personal chat app.</string>
+    <string name="chip_warning">Warning: looks suspicious</string>
+    <string name="closes_today">Closes today</string>
+    <string name="filter_for_you">For you</string>
+    <string name="filter_paid">Paid</string>
+    <string name="no_internships_message">New internships will show up here.</string>
+    <string name="no_internships_title">No internships yet</string>
+    <string name="no_match_message">Try another filter.</string>
+    <string name="no_match_title">Nothing matches</string>
+    <string name="paid_format">Paid · %1$d</string>
 </resources>

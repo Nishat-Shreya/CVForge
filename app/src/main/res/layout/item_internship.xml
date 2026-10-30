@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One internship in the Discover list -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/CardBase"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/card_gap"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="14dp">
+
+        <!-- Company logo tile with initials -->
+        <TextView
+            android:id="@+id/textLogo"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_tile"
+            android:backgroundTint="@color/ink"
+            android:fontFamily="@font/sora"
+            android:gravity="center"
+            android:importantForAccessibility="no"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textTitle"
+                style="@style/TextCardTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/sora"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/textMeta"
+                style="@style/TextMuted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Chips: work type, stipend, deadline, warning. Chips without a value are hidden. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/chipType"
+                    style="@style/ChipTint.Violet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/chipPaid"
+                    style="@style/ChipTint.Teal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp" />
+
+                <TextView
+                    android:id="@+id/chipDeadline"
+                    style="@style/ChipTint.Amber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/chipWarning"
+                style="@style/ChipTint.Coral"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/chip_warning"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
