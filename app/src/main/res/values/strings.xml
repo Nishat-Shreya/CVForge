@@ -149,4 +149,12 @@
     <string name="save_cv_first">Save your CV first, then export it.</string>
     <string name="pdf_error">Could not create the PDF: %1$s</string>
     <string name="share_cv">Share your CV</string>
+    <string name="new_version">+ New version</string>
+    <string name="version_name_hint">Version name (for example Backend internship)</string>
+    <string name="new_version_title">New CV version</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_version_title">Delete this version?</string>
+    <string name="delete_version_message">%1$s will be removed from this phone and from the cloud.</string>
+    <string name="delete">Delete</string>
 </resources>

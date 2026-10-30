@@ -27,6 +27,9 @@ import java.util.UUID;
  */
 public class CvEditorActivity extends AppCompatActivity {
 
+    /** Id of the CV version to edit. Without it the editor starts a new CV. */
+    public static final String EXTRA_CV_ID = "cv_id";
+
     private ActivityCvEditorBinding binding;
     private CvRepository cvRepository;
     private String uid;
@@ -93,9 +96,13 @@ public class CvEditorActivity extends AppCompatActivity {
         AnimUtils.slideUpIn(binding.sectionProjects.sectionRoot, 3);
     }
 
-    /** Opens the newest saved CV of this student, if there is one (Room first, then Firestore). */
+    /** Opens the CV version from the Intent, if one was given. */
     private void loadCv() {
-        cvRepository.loadLatest(uid, loaded -> {
+        String id = getIntent().getStringExtra(EXTRA_CV_ID);
+        if (id == null) {
+            return;
+        }
+        cvRepository.loadById(id, loaded -> {
             if (loaded != null && !isDestroyed()) {
                 showCv(loaded);
             }

@@ -1,6 +1,8 @@
 package com.example.cvforge.data;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.example.cvforge.data.local.AppDatabase;
 import com.example.cvforge.data.local.CvDao;
@@ -8,7 +10,11 @@ import com.example.cvforge.data.local.CvEntity;
 import com.example.cvforge.data.model.Cv;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * CVs live in two places: Firestore (the real copy) and Room (a copy on the phone,
@@ -20,6 +26,7 @@ public class CvRepository {
 
     private final CvDao cvDao;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public CvRepository(Context context) {
         cvDao = AppDatabase.getInstance(context).cvDao();
@@ -67,6 +74,63 @@ public class CvRepository {
                     })
                     .addOnFailureListener(e -> listener.onLoaded(local));
         });
+    }
+
+    /**
+     * Loads every CV version of a student, newest first. When the same CV exists in Room and
+     * in Firestore, the newer copy is used. With no internet only the Room copies are returned.
+     */
+    public void loadAll(String ownerUid, CvListListener listener) {
+        AppDatabase.databaseExecutor.execute(() -> {
+            Map<String, Cv> byId = new HashMap<>();
+            for (CvEntity entity : cvDao.getAllForOwner(ownerUid)) {
+                Cv cv = entity.toCv();
+                byId.put(cv.id, cv);
+            }
+
+            db.collection(CVS).whereEqualTo("ownerUid", ownerUid).get()
+                    .addOnSuccessListener(snapshot -> {
+                        List<CvEntity> toCache = new ArrayList<>();
+                        for (Cv cloud : snapshot.toObjects(Cv.class)) {
+                            Cv local = byId.get(cloud.id);
+                            if (local == null || cloud.updatedAt > local.updatedAt) {
+                                byId.put(cloud.id, cloud);
+                                toCache.add(CvEntity.fromCv(cloud));
+                            }
+                        }
+                        AppDatabase.databaseExecutor.execute(() -> cvDao.insertAll(toCache));
+                        listener.onLoaded(sortedNewestFirst(byId));
+                    })
+                    .addOnFailureListener(e -> listener.onLoaded(sortedNewestFirst(byId)));
+        });
+    }
+
+    /** Loads one CV by id. Room is tried first, then Firestore. The listener gets null if it is not found. */
+    public void loadById(String id, CvListener listener) {
+        AppDatabase.databaseExecutor.execute(() -> {
+            CvEntity entity = cvDao.getById(id);
+            if (entity != null) {
+                Cv cv = entity.toCv();
+                mainHandler.post(() -> listener.onLoaded(cv));
+                return;
+            }
+            db.collection(CVS).document(id).get()
+                    .addOnSuccessListener(snapshot -> listener.onLoaded(snapshot.toObject(Cv.class)))
+                    .addOnFailureListener(e -> listener.onLoaded(null));
+        });
+    }
+
+    /** Deletes a CV from Room and from Firestore. */
+    public void delete(Cv cv) {
+        CvEntity entity = CvEntity.fromCv(cv);
+        AppDatabase.databaseExecutor.execute(() -> cvDao.delete(entity));
+        db.collection(CVS).document(cv.id).delete();
+    }
+
+    private List<Cv> sortedNewestFirst(Map<String, Cv> byId) {
+        List<Cv> list = new ArrayList<>(byId.values());
+        Collections.sort(list, (a, b) -> Long.compare(b.updatedAt, a.updatedAt));
+        return list;
     }
 
     private Cv newest(List<Cv> cvs) {
