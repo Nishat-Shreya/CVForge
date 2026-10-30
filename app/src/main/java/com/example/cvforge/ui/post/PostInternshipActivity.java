@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.cvforge.R;
@@ -17,11 +18,13 @@ import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.ActivityPostInternshipBinding;
 import com.example.cvforge.util.AnimUtils;
 import com.example.cvforge.util.ListText;
+import com.example.cvforge.util.ScamChecker;
 import com.google.android.material.chip.Chip;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /** Form for a Company, Teacher or Alumni to post an internship (feature 3). */
 public class PostInternshipActivity extends AppCompatActivity {
@@ -119,7 +122,7 @@ public class PostInternshipActivity extends AppCompatActivity {
         userRepository.loadCurrentUser(new UserListener() {
             @Override
             public void onUser(User user) {
-                post(buildInternship(user));
+                checkAndPost(buildInternship(user), user);
             }
 
             @Override
@@ -143,6 +146,35 @@ public class PostInternshipActivity extends AppCompatActivity {
         internship.type = selectedType();
         internship.deadline = deadlineMillis();
         return internship;
+    }
+
+    /**
+     * Feature 14: the rule checks run before the post goes live. A suspicious post can be
+     * fixed, or posted anyway. Then it is marked as flagged and goes to the admin.
+     */
+    private void checkAndPost(Internship internship, User poster) {
+        List<ScamChecker.Problem> problems = ScamChecker.check(internship.title, internship.description,
+                internship.stipend, poster.getRole(), poster.getEmail());
+        internship.flagged = !problems.isEmpty();
+        internship.flagReasons.clear();
+
+        if (problems.isEmpty()) {
+            post(internship);
+            return;
+        }
+
+        StringBuilder list = new StringBuilder();
+        for (ScamChecker.Problem problem : problems) {
+            internship.flagReasons.add(getString(problem.messageRes));
+            list.append("• ").append(getString(problem.messageRes)).append("\n");
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.scam_dialog_title)
+                .setMessage(getString(R.string.scam_dialog_message, list.toString().trim()))
+                .setPositiveButton(R.string.post_anyway, (dialog, which) -> post(internship))
+                .setNegativeButton(R.string.fix_post, (dialog, which) -> setLoading(false))
+                .setOnCancelListener(dialog -> setLoading(false))
+                .show();
     }
 
     private void post(Internship internship) {

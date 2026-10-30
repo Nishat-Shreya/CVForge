@@ -33,6 +33,10 @@ public class Internship {
     /** Last day to apply, in milliseconds since 1970. */
     public long deadline;
     public String status = STATUS_OPEN;
+    /** Set by the scam check (checkpoint 27) when the post looks suspicious. */
+    public boolean flagged;
+    /** Why the post was flagged, shown to the admin. */
+    public List<String> flagReasons = new ArrayList<>();
     public long createdAt;
 
     // Firestore needs an empty constructor

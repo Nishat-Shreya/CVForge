@@ -202,4 +202,12 @@
     <string name="save_changes">Save changes</string>
     <string name="status_closed">Closed</string>
     <string name="status_open">Open</string>
+    <string name="fix_post">Edit post</string>
+    <string name="post_anyway">Post anyway</string>
+    <string name="scam_dialog_message">%1$s\n\nFlagged posts show a warning to students and are sent to the admin for review.</string>
+    <string name="scam_dialog_title">This post looks suspicious</string>
+    <string name="scam_free_email">A company account with a free email address (like Gmail).</string>
+    <string name="scam_high_stipend">The stipend is unusually high.</string>
+    <string name="scam_payment_request">It asks for money (a fee or deposit).</string>
+    <string name="scam_personal_chat">It asks students to talk only on a personal chat app.</string>
 </resources>
