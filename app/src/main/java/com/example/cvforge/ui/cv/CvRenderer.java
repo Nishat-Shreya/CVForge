@@ -222,8 +222,12 @@ public class CvRenderer {
         }
         y = drawSectionTitle("Projects", y);
         for (Cv.Project project : cv.projects) {
+            float nameWidth = project.fromGithub ? CONTENT_WIDTH - 90f : CONTENT_WIDTH;
             float nameHeight = drawText(orBlank(project.name), paint(bodyBold, 12f, color(R.color.ink)),
-                    MARGIN, y, CONTENT_WIDTH, true);
+                    MARGIN, y, nameWidth, true);
+            if (project.fromGithub) {
+                drawGithubChip(project.stars, PAGE_WIDTH - MARGIN, y);
+            }
             y += nameHeight;
             if (!isEmpty(project.description)) {
                 y += drawText(project.description, paint(body, 10.5f, color(R.color.muted)),
@@ -361,6 +365,21 @@ public class CvRenderer {
             index++;
         }
         return top + chipHeight - y;
+    }
+
+    /** Dark "From GitHub" chip with an amber star, right aligned at rightEdge. */
+    private void drawGithubChip(int stars, float rightEdge, float top) {
+        if (canvas == null) {
+            return;
+        }
+        String label = stars > 0 ? "From GitHub " + stars : "From GitHub";
+        TextPaint paint = paint(bodyBold, 9f, color(R.color.white));
+        float width = paint.measureText(label) + 26f;
+        RectF chip = new RectF(rightEdge - width, top, rightEdge, top + 17f);
+        canvas.drawRoundRect(chip, 8.5f, 8.5f, fill(color(R.color.ink)));
+        TextPaint star = paint(bodyBold, 9f, color(R.color.amber));
+        canvas.drawText("★", chip.left + 7f, top + 12f, star);
+        canvas.drawText(label, chip.left + 18f, top + 12f, paint);
     }
 
     // ---------- small helpers ----------

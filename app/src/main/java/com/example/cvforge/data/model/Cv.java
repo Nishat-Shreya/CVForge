@@ -52,6 +52,10 @@ public class Cv {
         public String name;
         public String description;
         public List<String> tags = new ArrayList<>();
+        /** True when the project was imported from GitHub (feature 18). */
+        public boolean fromGithub;
+        public int stars;
+        public String url;
 
         public Project() {
         }

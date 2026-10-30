@@ -157,4 +157,18 @@
     <string name="delete_version_title">Delete this version?</string>
     <string name="delete_version_message">%1$s will be removed from this phone and from the cloud.</string>
     <string name="delete">Delete</string>
+    <string name="add_to_cv">Add to CV</string>
+    <string name="error_github_username">Enter a GitHub username</string>
+    <string name="find">Find</string>
+    <string name="github_empty_message">This user has no public repositories that are not forks.</string>
+    <string name="github_empty_title">No repositories</string>
+    <string name="github_error_code">GitHub answered with error %1$d.</string>
+    <string name="github_error_title">Could not load repositories</string>
+    <string name="github_not_found">This GitHub user does not exist.</string>
+    <string name="github_rate_limit">GitHub allows 60 requests per hour without a key. Try again later.</string>
+    <string name="hint_github_username">GitHub username</string>
+    <string name="import_from_github">Import from GitHub</string>
+    <string name="no_internet">No internet connection.</string>
+    <string name="projects_added">%1$d projects added to your CV</string>
+    <string name="stars_format">★ %1$d</string>
 </resources>

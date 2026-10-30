@@ -106,6 +106,18 @@
                 android:layout_height="wrap_content" />
         </com.google.android.material.card.MaterialCardView>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnImportGithub"
+            style="@style/ButtonDark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/card_gap"
+            android:text="@string/import_from_github"
+            app:icon="@drawable/ic_branch"
+            app:iconGravity="textStart"
+            app:iconPadding="10dp"
+            app:iconTint="@color/white" />
+
         <!-- CV strength: bar grows to the score (A3) -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardStrength"

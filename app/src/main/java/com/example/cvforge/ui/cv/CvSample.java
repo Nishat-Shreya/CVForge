@@ -32,6 +32,8 @@ public class CvSample {
         project.tags.add("Java");
         project.tags.add("Room");
         project.tags.add("Firebase");
+        project.fromGithub = true;
+        project.stars = 24;
         cv.projects.add(project);
         return cv;
     }

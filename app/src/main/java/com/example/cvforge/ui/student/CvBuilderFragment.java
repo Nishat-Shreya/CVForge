@@ -25,6 +25,7 @@ import com.example.cvforge.ui.cv.CvEditorActivity;
 import com.example.cvforge.ui.cv.CvSample;
 import com.example.cvforge.ui.cv.CvTemplate;
 import com.example.cvforge.ui.cv.CvVersionAdapter;
+import com.example.cvforge.ui.cv.GithubImportActivity;
 import com.example.cvforge.util.AnimUtils;
 import com.example.cvforge.util.PdfExporter;
 import com.example.cvforge.util.ShareHelper;
@@ -68,6 +69,7 @@ public class CvBuilderFragment extends Fragment implements CvVersionAdapter.List
         binding.pillMinimal.setOnClickListener(v -> chooseTemplate(CvTemplate.MINIMAL));
         binding.btnExportPdf.setOnClickListener(v -> exportPdf());
         binding.btnEditCv.setOnClickListener(v -> openEditor());
+        binding.btnImportGithub.setOnClickListener(v -> openGithubImport());
 
         showTemplate(CvTemplate.MODERN);
 
@@ -243,6 +245,17 @@ public class CvBuilderFragment extends Fragment implements CvVersionAdapter.List
         int text = isSelected ? R.color.white : template.textColor;
         pill.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), background));
         pill.setTextColor(ContextCompat.getColor(requireContext(), text));
+    }
+
+    private void openGithubImport() {
+        if (cv.id == null) {
+            Toast.makeText(requireContext(), R.string.save_cv_first, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = new Intent(requireContext(), GithubImportActivity.class);
+        intent.putExtra(GithubImportActivity.EXTRA_CV_ID, cv.id);
+        startActivity(intent);
+        AnimUtils.fadeTransition(requireActivity());
     }
 
     /** Explicit Intent: opens the CV editor. */
