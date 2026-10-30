@@ -188,4 +188,18 @@
     <string name="type_hybrid">Hybrid</string>
     <string name="type_onsite">On-site</string>
     <string name="type_remote">Remote</string>
+    <string name="close_post">Close</string>
+    <string name="delete_post_message">%1$s will be removed for everyone.</string>
+    <string name="delete_post_title">Delete this post?</string>
+    <string name="edit">Edit</string>
+    <string name="edit_post">Edit post</string>
+    <string name="my_postings">My postings</string>
+    <string name="no_posts_message">Tap Post internship to add your first one.</string>
+    <string name="no_posts_title">No postings yet</string>
+    <string name="post_meta">%1$s · %2$s</string>
+    <string name="post_saved">Changes saved</string>
+    <string name="reopen_post">Reopen</string>
+    <string name="save_changes">Save changes</string>
+    <string name="status_closed">Closed</string>
+    <string name="status_open">Open</string>
 </resources>

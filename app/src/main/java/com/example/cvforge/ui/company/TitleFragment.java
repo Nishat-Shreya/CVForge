@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.cvforge.databinding.FragmentCompanyTabBinding;
 import com.example.cvforge.ui.auth.LogoutHelper;
-import com.example.cvforge.ui.post.PostInternshipActivity;
+import com.example.cvforge.ui.post.MyPostsActivity;
 import com.example.cvforge.util.AnimUtils;
 
 /**
@@ -54,10 +54,10 @@ public class TitleFragment extends Fragment {
         binding.btnLogout.setVisibility(showLogout ? View.VISIBLE : View.GONE);
         binding.btnLogout.setOnClickListener(v -> LogoutHelper.logOut(requireActivity()));
 
-        // the Postings tab has a button to post a new internship
+        // the Postings tab has a button that opens the poster's own postings
         binding.btnPost.setVisibility(requireArguments().getBoolean(ARG_POST) ? View.VISIBLE : View.GONE);
         binding.btnPost.setOnClickListener(v -> {
-            startActivity(new Intent(requireContext(), PostInternshipActivity.class));
+            startActivity(new Intent(requireContext(), MyPostsActivity.class));
             AnimUtils.fadeTransition(requireActivity());
         });
 
