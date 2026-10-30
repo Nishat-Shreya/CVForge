@@ -54,13 +54,13 @@ public class CompanyActivity extends AppCompatActivity {
     private Fragment createFragment(int index) {
         switch (index) {
             case 1:
-                return TitleFragment.newInstance(R.string.tab_postings, false);
+                return TitleFragment.newInstance(R.string.tab_postings, false, true);
             case 2:
-                return TitleFragment.newInstance(R.string.tab_applicants, false);
+                return TitleFragment.newInstance(R.string.tab_applicants, false, false);
             case 3:
-                return TitleFragment.newInstance(R.string.tab_profile, true);
+                return TitleFragment.newInstance(R.string.tab_profile, true, false);
             default:
-                return TitleFragment.newInstance(R.string.tab_dashboard, false);
+                return TitleFragment.newInstance(R.string.tab_dashboard, false, false);
         }
     }
 }

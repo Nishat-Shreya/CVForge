@@ -171,4 +171,21 @@
     <string name="no_internet">No internet connection.</string>
     <string name="projects_added">%1$d projects added to your CV</string>
     <string name="stars_format">★ %1$d</string>
+    <string name="deadline_format">Deadline: %1$s</string>
+    <string name="error_post_description">Describe the internship</string>
+    <string name="error_post_location">Enter a location</string>
+    <string name="error_post_skills">Add at least one skill</string>
+    <string name="error_post_title">Enter a title</string>
+    <string name="hint_post_description">What the intern will do</string>
+    <string name="hint_post_skills">Required skills, separated by commas</string>
+    <string name="hint_post_stipend">Monthly stipend (leave empty if unpaid)</string>
+    <string name="hint_post_title">Title (for example Android Intern)</string>
+    <string name="new_post">New post</string>
+    <string name="post_done">Internship posted</string>
+    <string name="post_internship">Post internship</string>
+    <string name="post_work_type">Work type</string>
+    <string name="posting">Posting…</string>
+    <string name="type_hybrid">Hybrid</string>
+    <string name="type_onsite">On-site</string>
+    <string name="type_remote">Remote</string>
 </resources>
