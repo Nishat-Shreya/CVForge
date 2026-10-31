@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.cvforge.R;
 import com.example.cvforge.data.InternshipRepository;
+import com.example.cvforge.data.JobRepository;
 import com.example.cvforge.data.model.Internship;
 import com.example.cvforge.databinding.FragmentDiscoverBinding;
 import com.example.cvforge.ui.discover.BookmarksActivity;
@@ -25,6 +26,8 @@ import com.example.cvforge.ui.discover.InternshipAdapter;
 import com.example.cvforge.ui.discover.InternshipDetailActivity;
 import com.example.cvforge.ui.discover.InternshipFilter;
 import com.example.cvforge.util.AnimUtils;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +39,12 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
     private InternshipAdapter adapter;
     private final InternshipRepository repository = new InternshipRepository();
 
-    /** All open internships from Firestore. The search and the filters work on this list. */
+    private final JobRepository jobRepository = new JobRepository();
+
+    /** Internships posted in CVForge, and real jobs from other websites. */
+    private List<Internship> cvforgeInternships = new ArrayList<>();
+    private List<Internship> externalJobs = new ArrayList<>();
+    /** Both lists together. The search and the filters work on this list. */
     private List<Internship> all = new ArrayList<>();
     /** What the student searched and filtered for. */
     private InternshipFilter filter = new InternshipFilter();
@@ -107,8 +115,9 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
                     return;
                 }
                 binding.progress.setVisibility(View.GONE);
-                all = internships;
-                applyFilter();
+                cvforgeInternships = internships;
+                combine();
+                loadExternalJobs();
             }
 
             @Override
@@ -122,10 +131,39 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
         });
     }
 
+    /** Jobs from other websites arrive later. If they fail, the CVForge posts are still shown. */
+    private void loadExternalJobs() {
+        jobRepository.loadExternalJobs(new JobRepository.Listener() {
+            @Override
+            public void onLoaded(List<Internship> jobs) {
+                if (binding == null) {
+                    return;
+                }
+                externalJobs = jobs;
+                combine();
+            }
+
+            @Override
+            public void onError(String message) {
+                // the CVForge posts stay on the screen
+            }
+        });
+    }
+
+    private void combine() {
+        all = new ArrayList<>(cvforgeInternships);
+        all.addAll(externalJobs);
+        applyFilter();
+    }
+
     /** Explicit Intent: opens the detail screen and passes the internship id. */
     private void openDetails(Internship internship) {
         Intent intent = new Intent(requireContext(), InternshipDetailActivity.class);
         intent.putExtra(InternshipDetailActivity.EXTRA_INTERNSHIP_ID, internship.id);
+        // a job from another website is not in Firestore, so the whole job travels with the Intent
+        if (internship.isExternal()) {
+            intent.putExtra(InternshipDetailActivity.EXTRA_INTERNSHIP_JSON, new Gson().toJson(internship));
+        }
         startActivity(intent);
         AnimUtils.fadeTransition(requireActivity());
     }

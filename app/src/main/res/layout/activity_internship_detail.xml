@@ -149,6 +149,15 @@
                     app:chipSpacingHorizontal="6dp"
                     app:chipSpacingVertical="6dp" />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnOpenLink"
+                    style="@style/ButtonOutline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/open_link"
+                    android:visibility="gone" />
+
                 <TextView
                     android:id="@+id/textError"
                     style="@style/TextMuted"

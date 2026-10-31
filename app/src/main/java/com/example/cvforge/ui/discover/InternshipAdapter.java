@@ -92,12 +92,23 @@ public class InternshipAdapter extends RecyclerView.Adapter<InternshipAdapter.Vi
             }
             showDeadline(context, post);
             binding.chipWarning.setVisibility(post.flagged ? View.VISIBLE : View.GONE);
+            showSource(context, post);
 
             binding.getRoot().setOnClickListener(v -> listener.onInternshipClick(post));
             binding.getRoot().setOnLongClickListener(longClickListener == null ? null : v -> {
                 longClickListener.onInternshipClick(post);
                 return true;
             });
+        }
+
+        /** Jobs from other websites say where they come from, for example "via Remotive". */
+        private void showSource(Context context, Internship post) {
+            if (post.isExternal()) {
+                binding.chipSource.setText(context.getString(R.string.via_source, sourceName(post.source)));
+                binding.chipSource.setVisibility(View.VISIBLE);
+            } else {
+                binding.chipSource.setVisibility(View.GONE);
+            }
         }
 
         /** "Closes in 2 days" only appears when the deadline is close. */
@@ -112,6 +123,10 @@ public class InternshipAdapter extends RecyclerView.Adapter<InternshipAdapter.Vi
                 binding.chipDeadline.setVisibility(View.GONE);
             }
         }
+    }
+
+    static String sourceName(String source) {
+        return Internship.SOURCE_REMOTIVE.equals(source) ? "Remotive" : "Arbeitnow";
     }
 
     static String typeName(Context context, String type) {

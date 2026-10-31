@@ -1,5 +1,8 @@
 package com.example.cvforge.ui.discover;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,8 @@ import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.ActivityInternshipDetailBinding;
 import com.example.cvforge.util.AnimUtils;
 
+import com.google.gson.Gson;
+
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +39,8 @@ public class InternshipDetailActivity extends AppCompatActivity {
 
     /** Explicit Intent extra: the id of the internship to show. */
     public static final String EXTRA_INTERNSHIP_ID = "internship_id";
+    /** For jobs from other websites: the whole job as JSON, because it is not in Firestore. */
+    public static final String EXTRA_INTERNSHIP_JSON = "internship_json";
 
     private ActivityInternshipDetailBinding binding;
     private final InternshipRepository internshipRepository = new InternshipRepository();
@@ -56,6 +63,14 @@ public class InternshipDetailActivity extends AppCompatActivity {
         binding.btnSave.setOnClickListener(v -> saveInternship());
         binding.btnApply.setOnClickListener(v -> startApply());
         binding.barActions.setVisibility(View.GONE);
+
+        String json = getIntent().getStringExtra(EXTRA_INTERNSHIP_JSON);
+        if (json != null) {
+            internship = new Gson().fromJson(json, Internship.class);
+            show(internship);
+            loadApplication();
+            return;
+        }
 
         String id = getIntent().getStringExtra(EXTRA_INTERNSHIP_ID);
         internshipRepository.loadById(id == null ? "" : id, this::onInternshipLoaded);
@@ -99,6 +114,12 @@ public class InternshipDetailActivity extends AppCompatActivity {
             addChip(binding.groupSkills, skill, R.color.violet_tint, R.color.violet_text);
         }
 
+        // a link to the company site, for jobs from other websites
+        if (post.url != null && !post.url.isEmpty()) {
+            binding.btnOpenLink.setVisibility(View.VISIBLE);
+            binding.btnOpenLink.setOnClickListener(v -> openLink(post.url));
+        }
+
         AnimUtils.slideUpIn(binding.contentBlock, 0);
     }
 
@@ -108,6 +129,15 @@ public class InternshipDetailActivity extends AppCompatActivity {
         chip.setBackgroundTintList(ContextCompat.getColorStateList(this, backgroundRes));
         chip.setTextColor(ContextCompat.getColor(this, textRes));
         group.addView(chip);
+    }
+
+    /** Implicit Intent: opens the link in the browser. */
+    private void openLink(String url) {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, R.string.no_app_for_link, Toast.LENGTH_SHORT).show();
+        }
     }
 
     // ---------- Save and Apply ----------
@@ -196,6 +226,10 @@ public class InternshipDetailActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 Toast.makeText(InternshipDetailActivity.this, R.string.apply_done, Toast.LENGTH_SHORT).show();
+                // a job from another website is applied for on that website
+                if (internship.isExternal() && internship.url != null) {
+                    openLink(internship.url);
+                }
                 loadApplication();
             }
 
