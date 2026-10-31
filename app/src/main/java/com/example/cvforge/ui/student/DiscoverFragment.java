@@ -19,6 +19,7 @@ import com.example.cvforge.R;
 import com.example.cvforge.data.InternshipRepository;
 import com.example.cvforge.data.model.Internship;
 import com.example.cvforge.databinding.FragmentDiscoverBinding;
+import com.example.cvforge.ui.discover.BookmarksActivity;
 import com.example.cvforge.ui.discover.FilterSheet;
 import com.example.cvforge.ui.discover.InternshipAdapter;
 import com.example.cvforge.ui.discover.InternshipDetailActivity;
@@ -60,6 +61,10 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
         binding.chipRemote.setOnClickListener(v -> toggleRemote());
         binding.chipPaidOnly.setOnClickListener(v -> togglePaid());
         binding.btnFilter.setOnClickListener(v -> FilterSheet.newInstance(filter).show(getChildFragmentManager(), "filter"));
+        binding.btnBookmarks.setOnClickListener(v -> {
+            startActivity(new Intent(requireContext(), BookmarksActivity.class));
+            AnimUtils.fadeTransition(requireActivity());
+        });
 
         // the list changes while the student types
         binding.editSearch.addTextChangedListener(new TextWatcher() {

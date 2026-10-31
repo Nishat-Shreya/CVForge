@@ -27,9 +27,15 @@ public class InternshipAdapter extends RecyclerView.Adapter<InternshipAdapter.Vi
 
     private final List<Internship> items = new ArrayList<>();
     private final OnInternshipClickListener listener;
+    private OnInternshipClickListener longClickListener;
 
     public InternshipAdapter(OnInternshipClickListener listener) {
         this.listener = listener;
+    }
+
+    /** Optional: called when a card is pressed for a long time. */
+    public void setOnLongClickListener(OnInternshipClickListener longClickListener) {
+        this.longClickListener = longClickListener;
     }
 
     public void setItems(List<Internship> newItems) {
@@ -88,6 +94,10 @@ public class InternshipAdapter extends RecyclerView.Adapter<InternshipAdapter.Vi
             binding.chipWarning.setVisibility(post.flagged ? View.VISIBLE : View.GONE);
 
             binding.getRoot().setOnClickListener(v -> listener.onInternshipClick(post));
+            binding.getRoot().setOnLongClickListener(longClickListener == null ? null : v -> {
+                longClickListener.onInternshipClick(post);
+                return true;
+            });
         }
 
         /** "Closes in 2 days" only appears when the deadline is close. */

@@ -245,4 +245,9 @@
     <string name="stipend_format">%1$d per month</string>
     <string name="unpaid">Unpaid</string>
     <string name="verified">Verified</string>
+    <string name="bookmark_removed">Bookmark removed</string>
+    <string name="bookmarks_hint">Press and hold a card to remove it.</string>
+    <string name="no_bookmarks_message">Open an internship and tap the bookmark button.</string>
+    <string name="no_bookmarks_title">Nothing saved yet</string>
+    <string name="saved_internships">Saved internships</string>
 </resources>

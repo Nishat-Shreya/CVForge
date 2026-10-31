@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.cvforge.R;
 import com.example.cvforge.data.ApplicationRepository;
+import com.example.cvforge.data.BookmarkRepository;
 import com.example.cvforge.data.CvRepository;
 import com.example.cvforge.data.InternshipRepository;
 import com.example.cvforge.data.ResultListener;
@@ -143,6 +144,8 @@ public class InternshipDetailActivity extends AppCompatActivity {
 
     private void saveInternship() {
         binding.btnSave.setEnabled(false);
+        // the bookmark is also kept on the phone, so the saved list opens offline
+        new BookmarkRepository(this).add(uid, internship);
         withStudentName(name -> applicationRepository.save(uid, name, internship, new ResultListener() {
             @Override
             public void onSuccess() {

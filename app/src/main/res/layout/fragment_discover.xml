@@ -31,6 +31,15 @@
             android:contentDescription="@string/filters"
             app:icon="@drawable/ic_filter" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBookmarks"
+            style="@style/IconCircleButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/saved_internships"
+            app:icon="@drawable/ic_bookmark" />
+
     </LinearLayout>
 
     <!-- Search -->
