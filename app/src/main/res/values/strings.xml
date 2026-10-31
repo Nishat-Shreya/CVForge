@@ -219,4 +219,15 @@
     <string name="no_match_message">Try another filter.</string>
     <string name="no_match_title">Nothing matches</string>
     <string name="paid_format">Paid · %1$d</string>
+    <string name="filter_any">Any</string>
+    <string name="filter_apply">Apply</string>
+    <string name="filter_deadline">Deadline</string>
+    <string name="filter_location_hint">Location (for example Dhaka)</string>
+    <string name="filter_paid_only">Paid internships only</string>
+    <string name="filter_reset">Reset</string>
+    <string name="filter_skill_hint">Skill (for example Java)</string>
+    <string name="filter_this_month">This month</string>
+    <string name="filter_this_week">This week</string>
+    <string name="filters">Filters</string>
+    <string name="search_hint">Search title, company or skill</string>
 </resources>

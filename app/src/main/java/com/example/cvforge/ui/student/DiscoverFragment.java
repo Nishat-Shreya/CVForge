@@ -1,6 +1,8 @@
 package com.example.cvforge.ui.student;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,26 +18,28 @@ import com.example.cvforge.R;
 import com.example.cvforge.data.InternshipRepository;
 import com.example.cvforge.data.model.Internship;
 import com.example.cvforge.databinding.FragmentDiscoverBinding;
+import com.example.cvforge.ui.discover.FilterSheet;
 import com.example.cvforge.ui.discover.InternshipAdapter;
+import com.example.cvforge.ui.discover.InternshipFilter;
 import com.example.cvforge.util.AnimUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Discover tab: the list of open internships (feature 4). Quick filters: For you (everything),
- * Remote and Paid. The full filter sheet, search and details come in later checkpoints.
+ * Discover tab: the list of open internships (feature 4), with search and filters.
+ * The details screen comes in a later checkpoint.
  */
-public class DiscoverFragment extends Fragment {
+public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
 
     private FragmentDiscoverBinding binding;
     private InternshipAdapter adapter;
     private final InternshipRepository repository = new InternshipRepository();
 
-    /** All open internships from Firestore. The quick filters work on this list. */
+    /** All open internships from Firestore. The search and the filters work on this list. */
     private List<Internship> all = new ArrayList<>();
-    private boolean remoteOnly;
-    private boolean paidOnly;
+    /** What the student searched and filtered for. */
+    private InternshipFilter filter = new InternshipFilter();
 
     @Nullable
     @Override
@@ -54,24 +58,33 @@ public class DiscoverFragment extends Fragment {
         binding.listInternships.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.listInternships.setAdapter(adapter);
 
-        binding.chipForYou.setOnClickListener(v -> {
-            remoteOnly = false;
-            paidOnly = false;
-            applyFilters();
-        });
-        binding.chipRemote.setOnClickListener(v -> {
-            remoteOnly = !remoteOnly;
-            applyFilters();
-        });
-        binding.chipPaidOnly.setOnClickListener(v -> {
-            paidOnly = !paidOnly;
-            applyFilters();
+        binding.chipForYou.setOnClickListener(v -> clearSheetFilters());
+        binding.chipRemote.setOnClickListener(v -> toggleRemote());
+        binding.chipPaidOnly.setOnClickListener(v -> togglePaid());
+        binding.btnFilter.setOnClickListener(v -> FilterSheet.newInstance(filter).show(getChildFragmentManager(), "filter"));
+
+        // the list changes while the student types
+        binding.editSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter.query = s.toString().trim();
+                applyFilter();
+            }
         });
         showChips();
 
         // A4: the blocks slide up one after the other
         AnimUtils.slideUpIn(binding.rowTitle, 0);
-        AnimUtils.slideUpIn(binding.scrollChips, 1);
+        AnimUtils.slideUpIn(binding.layoutSearch, 1);
+        AnimUtils.slideUpIn(binding.scrollChips, 2);
     }
 
     /** Loads the list every time the tab is shown, so new posts appear. */
@@ -92,7 +105,7 @@ public class DiscoverFragment extends Fragment {
                 }
                 binding.progress.setVisibility(View.GONE);
                 all = internships;
-                applyFilters();
+                applyFilter();
             }
 
             @Override
@@ -106,18 +119,45 @@ public class DiscoverFragment extends Fragment {
         });
     }
 
-    /** Shows the internships that pass the quick filters. */
-    private void applyFilters() {
+    // ---------- search and filters ----------
+
+    /** Called by the filter sheet when the student taps Apply. */
+    @Override
+    public void onFilterApplied(InternshipFilter newFilter) {
+        filter = newFilter;
+        showChips();
+        applyFilter();
+    }
+
+    /** "For you" removes the sheet filters but keeps the search words. */
+    private void clearSheetFilters() {
+        InternshipFilter cleared = new InternshipFilter();
+        cleared.query = filter.query;
+        onFilterApplied(cleared);
+    }
+
+    private void toggleRemote() {
+        filter.type = Internship.TYPE_REMOTE.equals(filter.type) ? "" : Internship.TYPE_REMOTE;
+        showChips();
+        applyFilter();
+    }
+
+    private void togglePaid() {
+        filter.paidOnly = !filter.paidOnly;
+        showChips();
+        applyFilter();
+    }
+
+    /** Shows only the internships that fit the search and the filters. */
+    private void applyFilter() {
+        long now = System.currentTimeMillis();
         List<Internship> shown = new ArrayList<>();
         for (Internship post : all) {
-            boolean remoteOk = !remoteOnly || Internship.TYPE_REMOTE.equals(post.type);
-            boolean paidOk = !paidOnly || post.stipend > 0;
-            if (remoteOk && paidOk) {
+            if (filter.matches(post, now)) {
                 shown.add(post);
             }
         }
         adapter.setItems(shown);
-        showChips();
 
         if (shown.isEmpty()) {
             boolean noInternshipsAtAll = all.isEmpty();
@@ -138,9 +178,9 @@ public class DiscoverFragment extends Fragment {
     // ---------- quick filter chips ----------
 
     private void showChips() {
-        styleChip(binding.chipForYou, !remoteOnly && !paidOnly);
-        styleChip(binding.chipRemote, remoteOnly);
-        styleChip(binding.chipPaidOnly, paidOnly);
+        styleChip(binding.chipForYou, filter.sheetFilterCount() == 0);
+        styleChip(binding.chipRemote, Internship.TYPE_REMOTE.equals(filter.type));
+        styleChip(binding.chipPaidOnly, filter.paidOnly);
     }
 
     /** A selected chip is solid violet, the others have the soft violet tint. */
