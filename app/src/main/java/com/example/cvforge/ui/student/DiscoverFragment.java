@@ -1,5 +1,6 @@
 package com.example.cvforge.ui.student;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,16 +21,14 @@ import com.example.cvforge.data.model.Internship;
 import com.example.cvforge.databinding.FragmentDiscoverBinding;
 import com.example.cvforge.ui.discover.FilterSheet;
 import com.example.cvforge.ui.discover.InternshipAdapter;
+import com.example.cvforge.ui.discover.InternshipDetailActivity;
 import com.example.cvforge.ui.discover.InternshipFilter;
 import com.example.cvforge.util.AnimUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Discover tab: the list of open internships (feature 4), with search and filters.
- * The details screen comes in a later checkpoint.
- */
+/** Discover tab: the list of open internships (feature 4), with search and filters. */
 public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
 
     private FragmentDiscoverBinding binding;
@@ -53,8 +52,7 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // tapping a card opens the details in a later checkpoint
-        adapter = new InternshipAdapter(internship -> { });
+        adapter = new InternshipAdapter(this::openDetails);
         binding.listInternships.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.listInternships.setAdapter(adapter);
 
@@ -117,6 +115,14 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
                 showEmptyState(getString(R.string.error_loading), message);
             }
         });
+    }
+
+    /** Explicit Intent: opens the detail screen and passes the internship id. */
+    private void openDetails(Internship internship) {
+        Intent intent = new Intent(requireContext(), InternshipDetailActivity.class);
+        intent.putExtra(InternshipDetailActivity.EXTRA_INTERNSHIP_ID, internship.id);
+        startActivity(intent);
+        AnimUtils.fadeTransition(requireActivity());
     }
 
     // ---------- search and filters ----------

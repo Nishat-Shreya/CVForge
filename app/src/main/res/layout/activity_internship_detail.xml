@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Internship detail. The header follows the top of the card in Docs/03-discover.png. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.discover.InternshipDetailActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/screen_padding">
+
+            <!-- Coral header with circles, back button, Verified chip and logo tile -->
+            <FrameLayout
+                android:id="@+id/headerCard"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:background="@color/coral"
+                android:clipChildren="true">
+
+                <com.example.cvforge.ui.view.CircleDecorationView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:circleCenterX="1"
+                    app:circleCenterY="0.2"
+                    app:circleColor="@color/amber"
+                    app:circleRadius="60dp" />
+
+                <com.example.cvforge.ui.view.CircleDecorationView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:circleCenterX="0.4"
+                    app:circleCenterY="1"
+                    app:circleColor="@color/violet"
+                    app:circleRadius="48dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBack"
+                    style="@style/IconCircleButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="@dimen/screen_padding"
+                    android:layout_marginTop="@dimen/screen_padding"
+                    android:contentDescription="@string/back"
+                    app:icon="@drawable/ic_arrow_back" />
+
+                <TextView
+                    android:id="@+id/chipVerified"
+                    style="@style/ChipTint.Teal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="28dp"
+                    android:layout_marginEnd="@dimen/screen_padding"
+                    android:backgroundTint="@color/white"
+                    android:text="@string/verified"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+            <!-- Logo tile overlaps the header -->
+            <TextView
+                android:id="@+id/textLogo"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginStart="@dimen/screen_padding"
+                android:layout_marginTop="-32dp"
+                android:background="@drawable/bg_tile"
+                android:backgroundTint="@color/ink"
+                android:fontFamily="@font/sora"
+                android:gravity="center"
+                android:importantForAccessibility="no"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/contentBlock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/screen_padding">
+
+                <TextView
+                    android:id="@+id/textTitle"
+                    style="@style/TextScreenTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp" />
+
+                <TextView
+                    android:id="@+id/textMeta"
+                    style="@style/TextMuted"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/groupInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:chipSpacingHorizontal="6dp"
+                    app:chipSpacingVertical="6dp" />
+
+                <TextView
+                    android:id="@+id/textWarning"
+                    style="@style/ChipTint.Coral"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/chip_warning"
+                    android:visibility="gone" />
+
+                <TextView
+                    style="@style/TextSectionTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/detail_about" />
+
+                <TextView
+                    android:id="@+id/textDescription"
+                    style="@style/TextBody"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingMultiplier="1.15" />
+
+                <TextView
+                    style="@style/TextSectionTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/detail_skills" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/groupSkills"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:chipSpacingHorizontal="6dp"
+                    app:chipSpacingVertical="6dp" />
+
+                <TextView
+                    android:id="@+id/textError"
+                    style="@style/TextMuted"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:textColor="@color/coral_text"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Bottom bar: Save and Apply -->
+    <LinearLayout
+        android:id="@+id/barActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/card"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/screen_padding">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSave"
+            style="@style/IconCircleButton"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:backgroundTint="@color/amber"
+            android:contentDescription="@string/save_internship"
+            app:cornerRadius="26dp"
+            app:icon="@drawable/ic_bookmark"
+            app:iconTint="@color/ink"
+            app:strokeWidth="0dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnApply"
+            style="@style/ButtonPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:text="@string/apply" />
+    </LinearLayout>
+</LinearLayout>

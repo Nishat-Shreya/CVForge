@@ -230,4 +230,19 @@
     <string name="filter_this_week">This week</string>
     <string name="filters">Filters</string>
     <string name="search_hint">Search title, company or skill</string>
+    <string name="applied">Applied</string>
+    <string name="apply">Apply</string>
+    <string name="apply_done">Application sent</string>
+    <string name="choose_cv_title">Apply with which CV?</string>
+    <string name="closed_for_applications">This internship is closed</string>
+    <string name="deadline_chip">Deadline: %1$s</string>
+    <string name="detail_about">About this internship</string>
+    <string name="detail_skills">Skills you need</string>
+    <string name="need_cv_first">Create and save a CV first. Then you can apply.</string>
+    <string name="not_found">This internship could not be found</string>
+    <string name="save_done">Saved to your tracker</string>
+    <string name="save_internship">Save internship</string>
+    <string name="stipend_format">%1$d per month</string>
+    <string name="unpaid">Unpaid</string>
+    <string name="verified">Verified</string>
 </resources>
