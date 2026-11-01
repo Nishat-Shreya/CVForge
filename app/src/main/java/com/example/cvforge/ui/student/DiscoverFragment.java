@@ -39,7 +39,7 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
     private InternshipAdapter adapter;
     private final InternshipRepository repository = new InternshipRepository();
 
-    private final JobRepository jobRepository = new JobRepository();
+    private JobRepository jobRepository;
 
     /** Internships posted in CVForge, and real jobs from other websites. */
     private List<Internship> cvforgeInternships = new ArrayList<>();
@@ -61,6 +61,7 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        jobRepository = new JobRepository(requireContext());
         adapter = new InternshipAdapter(this::openDetails);
         binding.listInternships.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.listInternships.setAdapter(adapter);
@@ -131,8 +132,18 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
         });
     }
 
-    /** Jobs from other websites arrive later. If they fail, the CVForge posts are still shown. */
+    /**
+     * Shows the saved jobs from Room at once, then loads fresh ones.
+     * If that fails, the saved jobs and the CVForge posts are still shown.
+     */
     private void loadExternalJobs() {
+        jobRepository.loadCachedJobs(jobs -> {
+            if (binding == null) {
+                return;
+            }
+            externalJobs = jobs;
+            combine();
+        });
         jobRepository.loadExternalJobs(new JobRepository.Listener() {
             @Override
             public void onLoaded(List<Internship> jobs) {

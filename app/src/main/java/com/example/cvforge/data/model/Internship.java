@@ -56,6 +56,11 @@ public class Internship {
         return !SOURCE_CVFORGE.equals(source);
     }
 
+    /** True when an id belongs to a job from another website (they are kept in Room, not in Firestore). */
+    public static boolean isExternalId(String id) {
+        return id != null && (id.startsWith(SOURCE_REMOTIVE + "_") || id.startsWith(SOURCE_ARBEITNOW + "_"));
+    }
+
     public boolean isOpen() {
         return STATUS_OPEN.equals(status);
     }

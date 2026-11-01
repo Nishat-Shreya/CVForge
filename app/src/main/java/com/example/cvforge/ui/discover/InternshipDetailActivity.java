@@ -18,6 +18,7 @@ import com.example.cvforge.data.ApplicationRepository;
 import com.example.cvforge.data.BookmarkRepository;
 import com.example.cvforge.data.CvRepository;
 import com.example.cvforge.data.InternshipRepository;
+import com.example.cvforge.data.JobRepository;
 import com.example.cvforge.data.ResultListener;
 import com.example.cvforge.data.UserListener;
 import com.example.cvforge.data.UserRepository;
@@ -73,7 +74,12 @@ public class InternshipDetailActivity extends AppCompatActivity {
         }
 
         String id = getIntent().getStringExtra(EXTRA_INTERNSHIP_ID);
-        internshipRepository.loadById(id == null ? "" : id, this::onInternshipLoaded);
+        // jobs from other websites are in the Room cache, CVForge posts are in Firestore
+        if (Internship.isExternalId(id)) {
+            new JobRepository(this).loadCachedById(id, this::onInternshipLoaded);
+        } else {
+            internshipRepository.loadById(id == null ? "" : id, this::onInternshipLoaded);
+        }
     }
 
     private void onInternshipLoaded(Internship loaded) {

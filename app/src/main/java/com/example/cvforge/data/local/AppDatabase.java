@@ -13,10 +13,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * The offline database: saved CVs and bookmarks. Room does not allow database calls on the main
- * thread, so every call goes through {@link #databaseExecutor}.
+ * The offline database: saved CVs, bookmarks and the cache of jobs from other websites.
+ * Room does not allow database calls on the main thread, so every call goes through
+ * {@link #databaseExecutor}.
  */
-@Database(entities = {CvEntity.class, BookmarkEntity.class}, version = 2, exportSchema = false)
+@Database(entities = {CvEntity.class, BookmarkEntity.class, JobEntity.class}, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     /** Version 1 to 2: adds the bookmarks table. The saved CVs stay as they are. */
@@ -30,6 +31,15 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     };
 
+    /** Version 2 to 3: adds the jobs table. Everything else stays as it is. */
+    private static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS `jobs` (`id` TEXT NOT NULL, `json` TEXT, "
+                    + "`fetchedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))");
+        }
+    };
+
     private static volatile AppDatabase instance;
 
     /** Runs database work on background threads. */
@@ -39,13 +49,15 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract BookmarkDao bookmarkDao();
 
+    public abstract JobDao jobDao();
+
     public static AppDatabase getInstance(Context context) {
         if (instance == null) {
             synchronized (AppDatabase.class) {
                 if (instance == null) {
                     instance = Room.databaseBuilder(context.getApplicationContext(),
                             AppDatabase.class, "cvforge.db")
-                            .addMigrations(MIGRATION_1_2)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                             .build();
                 }
             }
