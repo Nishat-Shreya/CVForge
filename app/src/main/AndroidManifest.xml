@@ -71,6 +71,10 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".service.JobSyncService"
+            android:exported="false" />
+
         <provider
             android:name=".provider.CvProvider"
             android:authorities="${applicationId}.provider"

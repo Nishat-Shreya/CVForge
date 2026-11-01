@@ -1,6 +1,9 @@
 package com.example.cvforge.ui.student;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +24,7 @@ import com.example.cvforge.data.InternshipRepository;
 import com.example.cvforge.data.JobRepository;
 import com.example.cvforge.data.model.Internship;
 import com.example.cvforge.databinding.FragmentDiscoverBinding;
+import com.example.cvforge.service.JobSyncService;
 import com.example.cvforge.ui.discover.BookmarksActivity;
 import com.example.cvforge.ui.discover.FilterSheet;
 import com.example.cvforge.ui.discover.InternshipAdapter;
@@ -134,10 +138,15 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
     }
 
     /**
-     * Shows the saved jobs from Room at once, then loads fresh ones.
-     * If that fails, the saved jobs and the CVForge posts are still shown.
+     * Shows the saved jobs from Room at once, then asks JobSyncService to refresh them in the
+     * background. The service sends a broadcast when it is done (see jobsSyncedReceiver).
      */
     private void loadExternalJobs() {
+        showCachedJobs();
+        requireContext().startService(new Intent(requireContext(), JobSyncService.class));
+    }
+
+    private void showCachedJobs() {
         jobRepository.loadCachedJobs(jobs -> {
             if (binding == null) {
                 return;
@@ -145,28 +154,36 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
             externalJobs = jobs;
             combine();
         });
-        jobRepository.loadExternalJobs(new JobRepository.Listener() {
-            @Override
-            public void onLoaded(List<Internship> jobs) {
-                if (binding == null) {
-                    return;
-                }
-                externalJobs = jobs;
-                combine();
-            }
+    }
 
-            @Override
-            public void onError(String message) {
-                // the CVForge posts stay on the screen
+    /**
+     * Component communication (W10): receives the broadcast of JobSyncService.
+     * It is registered in onStart and unregistered in onStop, so it only listens while the
+     * screen is visible.
+     */
+    private final BroadcastReceiver jobsSyncedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (binding == null) {
+                return;
             }
+            showCachedJobs();
+            if (!intent.getBooleanExtra(JobSyncService.EXTRA_FEED_OK, true)) {
+                Toast.makeText(requireContext(), R.string.feed_problem, Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 
-            @Override
-            public void onFeedProblem() {
-                if (binding != null) {
-                    Toast.makeText(requireContext(), R.string.feed_problem, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+    @Override
+    public void onStart() {
+        super.onStart();
+        requireContext().registerReceiver(jobsSyncedReceiver, new IntentFilter(JobSyncService.ACTION_JOBS_SYNCED));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        requireContext().unregisterReceiver(jobsSyncedReceiver);
     }
 
     private void combine() {
