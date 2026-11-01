@@ -254,4 +254,5 @@
     <string name="open_link">Open company link</string>
     <string name="via_source">via %1$s</string>
     <string name="feed_problem">Could not load the feed, showing saved jobs</string>
+    <string name="offline_banner">You are offline. Showing saved data.</string>
 </resources>

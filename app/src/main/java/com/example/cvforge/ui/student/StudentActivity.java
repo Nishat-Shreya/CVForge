@@ -1,6 +1,10 @@
 package com.example.cvforge.ui.student;
 
+import android.animation.ObjectAnimator;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +13,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.cvforge.R;
 import com.example.cvforge.databinding.ActivityStudentBinding;
+import com.example.cvforge.receiver.NetworkReceiver;
+import com.example.cvforge.util.AnimUtils;
 
 /** Student home: five tabs in a bottom navigation bar, one fragment per tab. */
 public class StudentActivity extends AppCompatActivity {
@@ -22,6 +28,10 @@ public class StudentActivity extends AppCompatActivity {
     private static final String KEY_TAB = "tab";
 
     private ActivityStudentBinding binding;
+    private ObjectAnimator dotPulse;
+
+    /** Shows or hides the offline banner when the connection changes. */
+    private final NetworkReceiver networkReceiver = new NetworkReceiver(this::showOnline);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +54,43 @@ public class StudentActivity extends AppCompatActivity {
         }
     }
 
+    /** W10 lifecycle: the receiver listens only while the screen is visible. */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        // the receiver only hears changes, so check the state once now
+        showOnline(NetworkReceiver.isOnline(this));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(networkReceiver);
+        if (dotPulse != null) {
+            dotPulse.cancel();
+            dotPulse = null;
+        }
+    }
+
+    /** The banner slides in when the phone goes offline. A7: its dot pulses. */
+    private void showOnline(boolean online) {
+        if (online) {
+            binding.bannerOffline.setVisibility(View.GONE);
+            if (dotPulse != null) {
+                dotPulse.cancel();
+                dotPulse = null;
+            }
+            return;
+        }
+        if (binding.bannerOffline.getVisibility() != View.VISIBLE) {
+            binding.bannerOffline.setVisibility(View.VISIBLE);
+            AnimUtils.slideDownIn(binding.bannerOffline);
+        }
+        if (dotPulse == null) {
+            dotPulse = AnimUtils.pulse(binding.dotOffline);
+        }
+    }
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
