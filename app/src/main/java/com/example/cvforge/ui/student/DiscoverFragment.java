@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -157,6 +158,13 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
             @Override
             public void onError(String message) {
                 // the CVForge posts stay on the screen
+            }
+
+            @Override
+            public void onFeedProblem() {
+                if (binding != null) {
+                    Toast.makeText(requireContext(), R.string.feed_problem, Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

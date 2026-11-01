@@ -12,6 +12,7 @@ import com.example.cvforge.network.ApiClient;
 import com.example.cvforge.network.ArbeitnowApi;
 import com.example.cvforge.network.JobMapper;
 import com.example.cvforge.network.RemotiveApi;
+import com.example.cvforge.network.RssFeedLoader;
 import com.example.cvforge.network.model.ArbeitnowResponse;
 import com.example.cvforge.network.model.RemotiveResponse;
 
@@ -34,6 +35,9 @@ public class JobRepository {
         void onLoaded(List<Internship> jobs);
 
         void onError(String message);
+
+        /** The We Work Remotely feed could not be loaded, so saved jobs are shown instead. */
+        void onFeedProblem();
     }
 
     /** Callback with one job from the cache, or null if it is not there. Runs on the main thread. */
@@ -41,14 +45,10 @@ public class JobRepository {
         void onLoaded(Internship job);
     }
 
-    /** Callback with a list of jobs from the cache. Runs on the main thread. */
-    public interface CacheListener {
-        void onLoaded(List<Internship> jobs);
-    }
-
     /** The jobs in Room count as fresh for 6 hours. */
     private static final long FRESH_MS = 6L * 60 * 60 * 1000;
 
+    private final Context context;
     private final JobDao jobDao;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final RemotiveApi remotiveApi = ApiClient.create(RemotiveApi.BASE_URL, RemotiveApi.class);
@@ -56,11 +56,13 @@ public class JobRepository {
 
     // results of the two web calls (both callbacks run on the main thread, so no locking is needed)
     private final List<Internship> collected = new ArrayList<>();
+    private boolean feedLoaded;
     private int finishedCalls;
     private int failedCalls;
     private String lastError = "";
 
     public JobRepository(Context context) {
+        this.context = context.getApplicationContext();
         jobDao = AppDatabase.getInstance(context).jobDao();
     }
 
@@ -77,6 +79,11 @@ public class JobRepository {
                 mainHandler.post(() -> loadFromWeb(cached, listener));
             }
         });
+    }
+
+    /** Callback with a list of jobs from the cache. Runs on the main thread. */
+    public interface CacheListener {
+        void onLoaded(List<Internship> jobs);
     }
 
     /** All jobs that are saved in Room, however old they are. Used to show something quickly. */
@@ -103,6 +110,21 @@ public class JobRepository {
         collected.clear();
         finishedCalls = 0;
         failedCalls = 0;
+        feedLoaded = false;
+
+        // the RSS feed is read on a background thread and parsed with XmlPullParser
+        new RssFeedLoader(context).load((jobs, fromFeed) -> {
+            feedLoaded = fromFeed;
+            if (fromFeed) {
+                collected.addAll(jobs);
+            } else {
+                listener.onFeedProblem();
+                // use the saved WWR jobs from Room, or else the sample file inside the app
+                List<Internship> saved = savedFeedJobs(oldCache);
+                collected.addAll(saved.isEmpty() ? jobs : saved);
+            }
+            callFinished(false, "", oldCache, listener);
+        });
 
         remotiveApi.getJobs("intern", 30).enqueue(new Callback<RemotiveResponse>() {
             @Override
@@ -152,14 +174,17 @@ public class JobRepository {
             failedCalls++;
             lastError = error;
         }
-        if (finishedCalls < 2) {
+        if (finishedCalls < 3) {
             return;
         }
 
-        if (failedCalls == 2) {
-            // no internet: show the older jobs from Room
+        boolean offline = failedCalls == 2 && !feedLoaded;
+        if (offline) {
+            // no internet: show the older jobs from Room, or the sample jobs if Room is empty
             if (!oldCache.isEmpty()) {
                 listener.onLoaded(toInternships(oldCache));
+            } else if (!collected.isEmpty()) {
+                listener.onLoaded(new ArrayList<>(collected));
             } else {
                 listener.onError(lastError);
             }
@@ -180,6 +205,17 @@ public class JobRepository {
             jobDao.deleteAll();
             jobDao.insertAll(entities);
         });
+    }
+
+    /** The jobs of the RSS feed that are already in Room. */
+    private List<Internship> savedFeedJobs(List<JobEntity> cache) {
+        List<Internship> saved = new ArrayList<>();
+        for (JobEntity entity : cache) {
+            if (entity.id.startsWith(Internship.SOURCE_WWR + "_")) {
+                saved.add(entity.toInternship());
+            }
+        }
+        return saved;
     }
 
     private List<Internship> toInternships(List<JobEntity> entities) {

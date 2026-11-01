@@ -126,7 +126,13 @@ public class InternshipAdapter extends RecyclerView.Adapter<InternshipAdapter.Vi
     }
 
     static String sourceName(String source) {
-        return Internship.SOURCE_REMOTIVE.equals(source) ? "Remotive" : "Arbeitnow";
+        if (Internship.SOURCE_REMOTIVE.equals(source)) {
+            return "Remotive";
+        }
+        if (Internship.SOURCE_WWR.equals(source)) {
+            return "We Work Remotely";
+        }
+        return "Arbeitnow";
     }
 
     static String typeName(Context context, String type) {

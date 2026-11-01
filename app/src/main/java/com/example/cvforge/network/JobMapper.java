@@ -59,6 +59,42 @@ public class JobMapper {
         return post;
     }
 
+    /**
+     * A job from the We Work Remotely RSS feed. The feed title is "Company: Job title".
+     * The id comes from the last part of the job link.
+     */
+    public static Internship fromRss(RssJobParser.RssItem item, long now) {
+        Internship post = new Internship();
+        String link = item.link == null ? "" : item.link.trim();
+        post.id = Internship.SOURCE_WWR + "_" + link.substring(link.lastIndexOf('/') + 1);
+        post.source = Internship.SOURCE_WWR;
+
+        String title = item.title == null ? "" : item.title.trim();
+        int colon = title.indexOf(": ");
+        post.posterName = colon > 0 ? title.substring(0, colon) : "We Work Remotely";
+        post.title = colon > 0 ? title.substring(colon + 2) : title;
+
+        post.description = TextCleaner.htmlToText(item.description, MAX_DESCRIPTION);
+        post.skills = new java.util.ArrayList<>();
+        if (item.category != null && !item.category.trim().isEmpty()) {
+            post.skills.add(item.category.trim());
+        }
+        post.location = item.region == null || item.region.trim().isEmpty() ? "Anywhere" : item.region.trim();
+        post.type = Internship.TYPE_REMOTE;
+        post.url = link;
+        post.createdAt = parseRssDate(item.pubDate, now);
+        post.deadline = now + 30 * DAY_MS;
+        return post;
+    }
+
+    private static long parseRssDate(String text, long fallback) {
+        try {
+            return new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US).parse(text.trim()).getTime();
+        } catch (ParseException | RuntimeException e) {
+            return fallback;
+        }
+    }
+
     /** True when the title looks like an internship or a first job. */
     public static boolean looksLikeInternship(String title) {
         if (title == null) {

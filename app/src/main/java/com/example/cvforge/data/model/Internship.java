@@ -19,6 +19,7 @@ public class Internship {
     public static final String SOURCE_CVFORGE = "cvforge";
     public static final String SOURCE_REMOTIVE = "remotive";
     public static final String SOURCE_ARBEITNOW = "arbeitnow";
+    public static final String SOURCE_WWR = "wwr";
 
     public String id;
     /** Where the post comes from: posted in CVForge, or loaded from a job website. */
@@ -58,7 +59,8 @@ public class Internship {
 
     /** True when an id belongs to a job from another website (they are kept in Room, not in Firestore). */
     public static boolean isExternalId(String id) {
-        return id != null && (id.startsWith(SOURCE_REMOTIVE + "_") || id.startsWith(SOURCE_ARBEITNOW + "_"));
+        return id != null && (id.startsWith(SOURCE_REMOTIVE + "_") || id.startsWith(SOURCE_ARBEITNOW + "_")
+                || id.startsWith(SOURCE_WWR + "_"));
     }
 
     public boolean isOpen() {

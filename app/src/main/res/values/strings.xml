@@ -253,4 +253,5 @@
     <string name="no_app_for_link">No app can open this link</string>
     <string name="open_link">Open company link</string>
     <string name="via_source">via %1$s</string>
+    <string name="feed_problem">Could not load the feed, showing saved jobs</string>
 </resources>
