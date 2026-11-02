@@ -27,9 +27,15 @@ public class InternshipAdapter extends RecyclerView.Adapter<InternshipAdapter.Vi
 
     private final List<Internship> items = new ArrayList<>();
     private final OnInternshipClickListener listener;
+    private OnInternshipClickListener longClickListener;
 
     public InternshipAdapter(OnInternshipClickListener listener) {
         this.listener = listener;
+    }
+
+    /** Optional: called when a card is pressed for a long time. */
+    public void setOnLongClickListener(OnInternshipClickListener longClickListener) {
+        this.longClickListener = longClickListener;
     }
 
     public void setItems(List<Internship> newItems) {
@@ -86,8 +92,23 @@ public class InternshipAdapter extends RecyclerView.Adapter<InternshipAdapter.Vi
             }
             showDeadline(context, post);
             binding.chipWarning.setVisibility(post.flagged ? View.VISIBLE : View.GONE);
+            showSource(context, post);
 
             binding.getRoot().setOnClickListener(v -> listener.onInternshipClick(post));
+            binding.getRoot().setOnLongClickListener(longClickListener == null ? null : v -> {
+                longClickListener.onInternshipClick(post);
+                return true;
+            });
+        }
+
+        /** Jobs from other websites say where they come from, for example "via Remotive". */
+        private void showSource(Context context, Internship post) {
+            if (post.isExternal()) {
+                binding.chipSource.setText(context.getString(R.string.via_source, sourceName(post.source)));
+                binding.chipSource.setVisibility(View.VISIBLE);
+            } else {
+                binding.chipSource.setVisibility(View.GONE);
+            }
         }
 
         /** "Closes in 2 days" only appears when the deadline is close. */
@@ -102,6 +123,16 @@ public class InternshipAdapter extends RecyclerView.Adapter<InternshipAdapter.Vi
                 binding.chipDeadline.setVisibility(View.GONE);
             }
         }
+    }
+
+    static String sourceName(String source) {
+        if (Internship.SOURCE_REMOTIVE.equals(source)) {
+            return "Remotive";
+        }
+        if (Internship.SOURCE_WWR.equals(source)) {
+            return "We Work Remotely";
+        }
+        return "Arbeitnow";
     }
 
     static String typeName(Context context, String type) {

@@ -16,7 +16,14 @@ public class Internship {
     public static final String STATUS_OPEN = "open";
     public static final String STATUS_CLOSED = "closed";
 
+    public static final String SOURCE_CVFORGE = "cvforge";
+    public static final String SOURCE_REMOTIVE = "remotive";
+    public static final String SOURCE_ARBEITNOW = "arbeitnow";
+    public static final String SOURCE_WWR = "wwr";
+
     public String id;
+    /** Where the post comes from: posted in CVForge, or loaded from a job website. */
+    public String source = SOURCE_CVFORGE;
 
     // who posted it: a Company, Teacher or Alumni
     public String posterId;
@@ -30,6 +37,8 @@ public class Internship {
     public int stipend;
     public String location;
     public String type = TYPE_ONSITE;
+    /** Link to apply on the company site. Used by jobs from other websites (checkpoint 32). */
+    public String url;
     /** Last day to apply, in milliseconds since 1970. */
     public long deadline;
     public String status = STATUS_OPEN;
@@ -41,6 +50,17 @@ public class Internship {
 
     // Firestore needs an empty constructor
     public Internship() {
+    }
+
+    /** True for jobs loaded from other websites. */
+    public boolean isExternal() {
+        return !SOURCE_CVFORGE.equals(source);
+    }
+
+    /** True when an id belongs to a job from another website (they are kept in Room, not in Firestore). */
+    public static boolean isExternalId(String id) {
+        return id != null && (id.startsWith(SOURCE_REMOTIVE + "_") || id.startsWith(SOURCE_ARBEITNOW + "_")
+                || id.startsWith(SOURCE_WWR + "_"));
     }
 
     public boolean isOpen() {

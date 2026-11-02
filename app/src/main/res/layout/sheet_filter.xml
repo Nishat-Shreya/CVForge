@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/screen_padding">
+
+        <TextView
+            style="@style/TextScreenTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filters" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/InputBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/filter_skill_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editSkill"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapWords"
+                android:minHeight="48dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/InputBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="@string/filter_location_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapWords"
+                android:minHeight="48dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            style="@style/TextMuted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/post_work_type"
+            android:textStyle="bold" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/groupType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:chipSpacingHorizontal="6dp"
+            app:selectionRequired="true"
+            app:singleLine="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTypeAny"
+                style="@style/RoleChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:tag=""
+                android:text="@string/filter_any"
+                android:textSize="13sp" />
+
+            <com.google.android.material.chip.Chip
+                style="@style/RoleChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="remote"
+                android:text="@string/type_remote"
+                android:textSize="13sp" />
+
+            <com.google.android.material.chip.Chip
+                style="@style/RoleChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="onsite"
+                android:text="@string/type_onsite"
+                android:textSize="13sp" />
+
+            <com.google.android.material.chip.Chip
+                style="@style/RoleChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="hybrid"
+                android:text="@string/type_hybrid"
+                android:textSize="13sp" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            style="@style/TextMuted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/filter_deadline"
+            android:textStyle="bold" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/groupDeadline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:chipSpacingHorizontal="6dp"
+            app:selectionRequired="true"
+            app:singleLine="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipDeadlineAny"
+                style="@style/RoleChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:tag="0"
+                android:text="@string/filter_any"
+                android:textSize="13sp" />
+
+            <com.google.android.material.chip.Chip
+                style="@style/RoleChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="7"
+                android:text="@string/filter_this_week"
+                android:textSize="13sp" />
+
+            <com.google.android.material.chip.Chip
+                style="@style/RoleChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="30"
+                android:text="@string/filter_this_month"
+                android:textSize="13sp" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchPaid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:minHeight="48dp"
+            android:text="@string/filter_paid_only" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReset"
+                style="@style/ButtonOutline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/filter_reset" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnApply"
+                style="@style/ButtonPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="@string/filter_apply" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

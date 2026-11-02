@@ -6,6 +6,37 @@
     android:orientation="vertical"
     tools:context=".ui.student.StudentActivity">
 
+    <!-- Offline banner: only visible while there is no internet (see NetworkReceiver) -->
+    <LinearLayout
+        android:id="@+id/bannerOffline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ink"
+        android:gravity="center_vertical"
+        android:minHeight="44dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/screen_padding"
+        android:visibility="gone">
+
+        <View
+            android:id="@+id/dotOffline"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:background="@drawable/bg_avatar"
+            android:backgroundTint="@color/coral" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:paddingVertical="8dp"
+            android:text="@string/offline_banner"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"

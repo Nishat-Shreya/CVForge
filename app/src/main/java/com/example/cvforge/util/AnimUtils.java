@@ -74,6 +74,18 @@ public class AnimUtils {
         return animator;
     }
 
+    /** A banner slides down from above its place and fades in. */
+    public static void slideDownIn(View view) {
+        if (!animationsEnabled(view.getContext())) {
+            return;
+        }
+        float distance = 24 * view.getResources().getDisplayMetrics().density;
+        view.setAlpha(0f);
+        view.setTranslationY(-distance);
+        view.animate().alpha(1f).translationY(0f).setDuration(300)
+                .setInterpolator(new DecelerateInterpolator()).start();
+    }
+
     /** A3: the bar grows from the left to the value (0 to 100) in 1.2 s. */
     public static void growBar(ProgressBar bar, int value) {
         int target = value * 10; // the bar has max 1000 so the growth looks smooth

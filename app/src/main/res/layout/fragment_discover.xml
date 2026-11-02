@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Discover list, matches the top of Docs/03-discover.png. Search, filters and the swipe cards come in later checkpoints. -->
+<!-- Discover list, matches the top of Docs/03-discover.png. The swipe cards come in checkpoint 38. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -23,7 +23,43 @@
             android:layout_weight="1"
             android:text="@string/screen_discover" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnFilter"
+            style="@style/IconCircleButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/filters"
+            app:icon="@drawable/ic_filter" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBookmarks"
+            style="@style/IconCircleButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/saved_internships"
+            app:icon="@drawable/ic_bookmark" />
+
     </LinearLayout>
+
+    <!-- Search -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutSearch"
+        style="@style/InputBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/screen_padding"
+        android:layout_marginTop="12dp"
+        android:hint="@string/search_hint">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:minHeight="48dp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Quick filters. "For you" shows everything. -->
     <HorizontalScrollView

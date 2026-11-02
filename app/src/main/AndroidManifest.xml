@@ -4,6 +4,7 @@
     package="com.example.cvforge">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".CvForgeApp"
@@ -16,6 +17,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CVForge"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.discover.BookmarksActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.discover.InternshipDetailActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.post.MyPostsActivity"
             android:exported="false" />
@@ -64,6 +71,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".service.JobSyncService"
+            android:exported="false" />
+
+        <provider
+            android:name=".provider.CvProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
