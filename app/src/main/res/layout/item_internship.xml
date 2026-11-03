@@ -78,7 +78,6 @@
                     android:layout_marginStart="6dp" />
             </LinearLayout>
 
-
             <TextView
                 android:id="@+id/chipSource"
                 style="@style/ChipTint.Sky"
@@ -86,6 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:visibility="gone" />
+
             <TextView
                 android:id="@+id/chipWarning"
                 style="@style/ChipTint.Coral"
@@ -95,5 +95,17 @@
                 android:text="@string/chip_warning"
                 android:visibility="gone" />
         </LinearLayout>
+        <!-- Match ring (A2): how many of the required skills the student has -->
+        <com.example.cvforge.ui.view.ProfileStrengthRing
+            android:id="@+id/ringMatch"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/match_label"
+            app:ringColor="@color/teal"
+            app:ringStrokeWidth="5dp"
+            app:ringTextColor="@color/ink"
+            app:ringTextSize="12sp"
+            app:ringTrackColor="@color/teal_tint" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

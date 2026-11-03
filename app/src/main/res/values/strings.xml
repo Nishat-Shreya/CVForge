@@ -255,4 +255,10 @@
     <string name="via_source">via %1$s</string>
     <string name="feed_problem">Could not load the feed, showing saved jobs</string>
     <string name="offline_banner">You are offline. Showing saved data.</string>
+    <string name="legend_role">Role needs</string>
+    <string name="legend_you">You</string>
+    <string name="match_label">Match with your skills</string>
+    <string name="match_tip">Tip: add %1$s to your skills to lift your match to %2$d%%.</string>
+    <string name="missing_format">%1$s missing</string>
+    <string name="your_match">Your match</string>
 </resources>

@@ -28,6 +28,7 @@ import com.example.cvforge.data.model.Internship;
 import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.ActivityInternshipDetailBinding;
 import com.example.cvforge.util.AnimUtils;
+import com.example.cvforge.util.MatchScore;
 
 import com.google.gson.Gson;
 
@@ -127,6 +128,54 @@ public class InternshipDetailActivity extends AppCompatActivity {
         }
 
         AnimUtils.slideUpIn(binding.contentBlock, 0);
+        loadMatch(post);
+    }
+
+    /** Feature 8: compares the skills of the student CV with the skills of the role. */
+    private void loadMatch(Internship post) {
+        if (post.skills == null || post.skills.isEmpty()) {
+            return;
+        }
+        new CvRepository(this).loadAll(uid, cvs -> {
+            if (isDestroyed()) {
+                return;
+            }
+            List<String> studentSkills = cvs.isEmpty() ? new java.util.ArrayList<>() : cvs.get(0).skills;
+            showMatch(MatchScore.compare(studentSkills, post.skills), post);
+        });
+    }
+
+    private void showMatch(MatchScore.Result result, Internship post) {
+        binding.cardMatch.setVisibility(View.VISIBLE);
+        binding.ringMatch.animateTo(result.percent, 1300);
+
+        // radar: one axis for each of the first five required skills
+        List<Boolean> hasSkill = new java.util.ArrayList<>();
+        for (String skill : post.skills) {
+            hasSkill.add(result.matched.contains(skill));
+        }
+        binding.radar.setData(post.skills, hasSkill);
+        int visible = binding.radar.hasEnoughAxes() ? View.VISIBLE : View.GONE;
+        binding.radar.setVisibility(visible);
+        binding.legend.setVisibility(visible);
+        binding.radar.animateIn();
+
+        // matched skills are teal, missing skills are coral and say "missing"
+        binding.groupMatch.removeAllViews();
+        for (String skill : result.matched) {
+            addChip(binding.groupMatch, skill, R.color.teal_tint, R.color.teal_text);
+        }
+        for (String skill : result.missing) {
+            addChip(binding.groupMatch, getString(R.string.missing_format, skill), R.color.coral_tint, R.color.coral_text);
+        }
+
+        if (result.missing.isEmpty()) {
+            binding.textMatchTip.setVisibility(View.GONE);
+        } else {
+            binding.textMatchTip.setVisibility(View.VISIBLE);
+            binding.textMatchTip.setText(getString(R.string.match_tip, result.missing.get(0),
+                    MatchScore.percentWithOneMore(result)));
+        }
     }
 
     private void addChip(ViewGroup group, String text, int backgroundRes, int textRes) {

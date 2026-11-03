@@ -20,8 +20,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.cvforge.R;
+import com.example.cvforge.data.CvRepository;
 import com.example.cvforge.data.InternshipRepository;
 import com.example.cvforge.data.JobRepository;
+import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.Internship;
 import com.example.cvforge.databinding.FragmentDiscoverBinding;
 import com.example.cvforge.service.JobSyncService;
@@ -108,7 +110,17 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
     @Override
     public void onResume() {
         super.onResume();
+        loadStudentSkills();
         load();
+    }
+
+    /** The skills of the newest CV version, for the match rings. */
+    private void loadStudentSkills() {
+        new CvRepository(requireContext()).loadAll(new UserRepository().getCurrentUid(), cvs -> {
+            if (binding != null) {
+                adapter.setStudentSkills(cvs.isEmpty() ? new ArrayList<>() : cvs.get(0).skills);
+            }
+        });
     }
 
     private void load() {

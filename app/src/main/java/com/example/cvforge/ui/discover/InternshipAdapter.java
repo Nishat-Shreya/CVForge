@@ -12,6 +12,7 @@ import com.example.cvforge.R;
 import com.example.cvforge.data.model.Internship;
 import com.example.cvforge.databinding.ItemInternshipBinding;
 import com.example.cvforge.util.AnimUtils;
+import com.example.cvforge.util.MatchScore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,8 @@ public class InternshipAdapter extends RecyclerView.Adapter<InternshipAdapter.Vi
     private final List<Internship> items = new ArrayList<>();
     private final OnInternshipClickListener listener;
     private OnInternshipClickListener longClickListener;
+    /** The skills in the student CV, used for the match ring on every card. */
+    private List<String> studentSkills = new ArrayList<>();
 
     public InternshipAdapter(OnInternshipClickListener listener) {
         this.listener = listener;
@@ -36,6 +39,11 @@ public class InternshipAdapter extends RecyclerView.Adapter<InternshipAdapter.Vi
     /** Optional: called when a card is pressed for a long time. */
     public void setOnLongClickListener(OnInternshipClickListener longClickListener) {
         this.longClickListener = longClickListener;
+    }
+
+    public void setStudentSkills(List<String> skills) {
+        studentSkills = skills == null ? new ArrayList<>() : skills;
+        notifyDataSetChanged();
     }
 
     public void setItems(List<Internship> newItems) {
@@ -93,12 +101,23 @@ public class InternshipAdapter extends RecyclerView.Adapter<InternshipAdapter.Vi
             showDeadline(context, post);
             binding.chipWarning.setVisibility(post.flagged ? View.VISIBLE : View.GONE);
             showSource(context, post);
+            showMatch(post);
 
             binding.getRoot().setOnClickListener(v -> listener.onInternshipClick(post));
             binding.getRoot().setOnLongClickListener(longClickListener == null ? null : v -> {
                 longClickListener.onInternshipClick(post);
                 return true;
             });
+        }
+
+        /** A2: the match ring fills to the percentage of required skills the student has. */
+        private void showMatch(Internship post) {
+            if (post.skills == null || post.skills.isEmpty()) {
+                binding.ringMatch.setVisibility(View.GONE);
+                return;
+            }
+            binding.ringMatch.setVisibility(View.VISIBLE);
+            binding.ringMatch.animateTo(MatchScore.compare(studentSkills, post.skills).percent, 1300);
         }
 
         /** Jobs from other websites say where they come from, for example "via Remotive". */

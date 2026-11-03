@@ -119,6 +119,106 @@
                     android:text="@string/chip_warning"
                     android:visibility="gone" />
 
+                <!-- Match Radar: the student compared with the role -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardMatch"
+                    style="@style/CardBase"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/TextSectionTitle"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/your_match" />
+
+                            <com.example.cvforge.ui.view.ProfileStrengthRing
+                                android:id="@+id/ringMatch"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:contentDescription="@string/match_label"
+                                app:ringColor="@color/teal"
+                                app:ringStrokeWidth="6dp"
+                                app:ringTextColor="@color/ink"
+                                app:ringTextSize="14sp"
+                                app:ringTrackColor="@color/teal_tint" />
+                        </LinearLayout>
+
+                        <com.example.cvforge.ui.view.MatchRadarView
+                            android:id="@+id/radar"
+                            android:layout_width="match_parent"
+                            android:layout_height="220dp"
+                            android:contentDescription="@string/match_label" />
+
+                        <LinearLayout
+                            android:id="@+id/legend"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <View
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
+                                android:background="@drawable/bg_avatar"
+                                android:backgroundTint="@color/violet" />
+
+                            <TextView
+                                style="@style/TextMuted"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:text="@string/legend_you" />
+
+                            <View
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
+                                android:layout_marginStart="16dp"
+                                android:background="@drawable/bg_avatar"
+                                android:backgroundTint="@color/coral" />
+
+                            <TextView
+                                style="@style/TextMuted"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:text="@string/legend_role" />
+                        </LinearLayout>
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/groupMatch"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            app:chipSpacingHorizontal="6dp"
+                            app:chipSpacingVertical="6dp" />
+
+                        <TextView
+                            android:id="@+id/textMatchTip"
+                            style="@style/ChipTint.Violet"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:gravity="start"
+                            android:padding="12dp"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
                 <TextView
                     style="@style/TextSectionTitle"
                     android:layout_width="wrap_content"
