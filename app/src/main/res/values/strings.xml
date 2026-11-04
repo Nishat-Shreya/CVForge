@@ -261,4 +261,11 @@
     <string name="match_tip">Tip: add %1$s to your skills to lift your match to %2$d%%.</string>
     <string name="missing_format">%1$s missing</string>
     <string name="your_match">Your match</string>
+    <string name="card_meta">%1$s · %2$s · %3$s</string>
+    <string name="deck_empty_message">New internships will show up here. Change the filters or look at the list.</string>
+    <string name="deck_empty_title">You have seen everything</string>
+    <string name="skip">Skip</string>
+    <string name="verified_company">Verified company</string>
+    <string name="view_cards">Show cards</string>
+    <string name="view_list">Show list</string>
 </resources>

@@ -1,31 +1,23 @@
 package com.example.cvforge.ui.discover;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.cvforge.R;
 import com.example.cvforge.data.ApplicationRepository;
-import com.example.cvforge.data.BookmarkRepository;
 import com.example.cvforge.data.CvRepository;
 import com.example.cvforge.data.InternshipRepository;
 import com.example.cvforge.data.JobRepository;
-import com.example.cvforge.data.ResultListener;
-import com.example.cvforge.data.UserListener;
 import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.Application;
-import com.example.cvforge.data.model.Cv;
 import com.example.cvforge.data.model.Internship;
-import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.ActivityInternshipDetailBinding;
 import com.example.cvforge.util.AnimUtils;
 import com.example.cvforge.util.MatchScore;
@@ -48,6 +40,7 @@ public class InternshipDetailActivity extends AppCompatActivity {
     private final InternshipRepository internshipRepository = new InternshipRepository();
     private final ApplicationRepository applicationRepository = new ApplicationRepository();
     private final UserRepository userRepository = new UserRepository();
+    private final ApplyFlow applyFlow = new ApplyFlow(this);
 
     private Internship internship;
     private String uid;
@@ -188,11 +181,7 @@ public class InternshipDetailActivity extends AppCompatActivity {
 
     /** Implicit Intent: opens the link in the browser. */
     private void openLink(String url) {
-        try {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, R.string.no_app_for_link, Toast.LENGTH_SHORT).show();
-        }
+        applyFlow.openLink(url);
     }
 
     // ---------- Save and Apply ----------
@@ -229,88 +218,36 @@ public class InternshipDetailActivity extends AppCompatActivity {
 
     private void saveInternship() {
         binding.btnSave.setEnabled(false);
-        // the bookmark is also kept on the phone, so the saved list opens offline
-        new BookmarkRepository(this).add(uid, internship);
-        withStudentName(name -> applicationRepository.save(uid, name, internship, new ResultListener() {
+        applyFlow.save(internship, new ApplyFlow.Callback() {
             @Override
             public void onSuccess() {
-                Toast.makeText(InternshipDetailActivity.this, R.string.save_done, Toast.LENGTH_SHORT).show();
                 loadApplication();
             }
 
             @Override
-            public void onError(String message) {
+            public void onFailure(String message) {
                 binding.btnSave.setEnabled(true);
-                showError(message);
-            }
-        }));
-    }
-
-    /** Apply needs a CV. With more than one version the student picks which one. */
-    private void startApply() {
-        binding.btnApply.setEnabled(false);
-        new CvRepository(this).loadAll(uid, cvs -> {
-            if (isDestroyed()) {
-                return;
-            }
-            if (cvs.isEmpty()) {
-                binding.btnApply.setEnabled(true);
-                Toast.makeText(this, R.string.need_cv_first, Toast.LENGTH_LONG).show();
-            } else if (cvs.size() == 1) {
-                sendApplication(cvs.get(0));
-            } else {
-                chooseCv(cvs);
+                if (message != null) {
+                    showError(message);
+                }
             }
         });
     }
 
-    private void chooseCv(List<Cv> cvs) {
-        String[] titles = new String[cvs.size()];
-        for (int i = 0; i < cvs.size(); i++) {
-            titles[i] = cvs.get(i).title;
-        }
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.choose_cv_title)
-                .setItems(titles, (dialog, which) -> sendApplication(cvs.get(which)))
-                .setOnCancelListener(dialog -> binding.btnApply.setEnabled(true))
-                .show();
-    }
-
-    private void sendApplication(Cv cv) {
-        withStudentName(name -> applicationRepository.apply(uid, name, internship, cv, new ResultListener() {
+    private void startApply() {
+        binding.btnApply.setEnabled(false);
+        applyFlow.apply(internship, new ApplyFlow.Callback() {
             @Override
             public void onSuccess() {
-                Toast.makeText(InternshipDetailActivity.this, R.string.apply_done, Toast.LENGTH_SHORT).show();
-                // a job from another website is applied for on that website
-                if (internship.isExternal() && internship.url != null) {
-                    openLink(internship.url);
-                }
                 loadApplication();
             }
 
             @Override
-            public void onError(String message) {
+            public void onFailure(String message) {
                 binding.btnApply.setEnabled(true);
-                showError(message);
-            }
-        }));
-    }
-
-    private interface NameCallback {
-        void onName(String name);
-    }
-
-    /** The application stores the student's name, so the company can see who applied. */
-    private void withStudentName(NameCallback next) {
-        userRepository.loadCurrentUser(new UserListener() {
-            @Override
-            public void onUser(User user) {
-                next.onName(user.getName());
-            }
-
-            @Override
-            public void onError(String message) {
-                showError(message);
+                if (message != null) {
+                    showError(message);
+                }
             }
         });
     }

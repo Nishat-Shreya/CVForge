@@ -24,6 +24,15 @@
             android:text="@string/screen_discover" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnView"
+            style="@style/IconCircleButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/view_list"
+            app:icon="@drawable/ic_list" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnFilter"
             style="@style/IconCircleButton"
             android:layout_width="48dp"
@@ -39,7 +48,6 @@
             android:layout_marginStart="8dp"
             android:contentDescription="@string/saved_internships"
             app:icon="@drawable/ic_bookmark" />
-
     </LinearLayout>
 
     <!-- Search -->
@@ -124,6 +132,75 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingHorizontal="@dimen/screen_padding" />
+
+        <!-- Swipe cards: drag right to apply, left to skip -->
+        <ScrollView
+            android:id="@+id/areaSwipe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/screen_padding"
+                android:paddingBottom="12dp">
+
+                <com.example.cvforge.ui.discover.SwipeCardView
+                    android:id="@+id/swipeCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:id="@+id/rowActions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSkip"
+                        style="@style/IconCircleButton"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:backgroundTint="@color/coral"
+                        android:contentDescription="@string/skip"
+                        app:cornerRadius="28dp"
+                        app:icon="@drawable/ic_close"
+                        app:iconTint="@color/ink"
+                        app:strokeWidth="0dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSaveCard"
+                        style="@style/IconCircleButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="16dp"
+                        android:backgroundTint="@color/amber"
+                        android:contentDescription="@string/save_internship"
+                        app:cornerRadius="24dp"
+                        app:icon="@drawable/ic_bookmark"
+                        app:iconTint="@color/ink"
+                        app:strokeWidth="0dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnApplyCard"
+                        style="@style/ButtonPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:minHeight="56dp"
+                        android:text="@string/apply"
+                        app:icon="@drawable/ic_arrow_forward"
+                        app:iconGravity="textEnd"
+                        app:iconTint="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
 
         <ProgressBar
             android:id="@+id/progress"

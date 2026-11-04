@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The big internship card on Discover, matches Docs/03-discover.png -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:id="@+id/cardContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp">
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CardBase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="26dp"
+            android:outlineSpotShadowColor="@color/violet"
+            app:cardElevation="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical">
+
+                <!-- Coral header with circles, Verified chip, and the logo tile that overlaps -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="96dp"
+                    android:background="@color/coral"
+                    android:clipChildren="true">
+
+                    <com.example.cvforge.ui.view.CircleDecorationView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:circleCenterX="1"
+                        app:circleCenterY="0.1"
+                        app:circleColor="@color/amber"
+                        app:circleRadius="50dp" />
+
+                    <com.example.cvforge.ui.view.CircleDecorationView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:circleCenterX="0.45"
+                        app:circleCenterY="1"
+                        app:circleColor="@color/violet"
+                        app:circleRadius="34dp" />
+
+                    <TextView
+                        android:id="@+id/chipSource"
+                        style="@style/ChipTint.Teal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="14dp"
+                        android:backgroundTint="@color/white" />
+                </FrameLayout>
+
+                <!-- Logo and match ring: they start 28dp above this row, over the banner. The row must not
+                     clip them, and it comes after the banner in the layout, so it is drawn on top. -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false">
+
+                    <TextView
+                        android:id="@+id/textLogo"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="-28dp"
+                        android:background="@drawable/bg_tile"
+                        android:backgroundTint="@color/ink"
+                        android:fontFamily="@font/sora"
+                        android:gravity="center"
+                        android:importantForAccessibility="no"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <com.example.cvforge.ui.view.ProfileStrengthRing
+                        android:id="@+id/ringMatch"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="-28dp"
+                        android:layout_marginEnd="16dp"
+                        android:contentDescription="@string/match_label"
+                        app:ringColor="@color/teal"
+                        app:ringStrokeWidth="6dp"
+                        app:ringTextColor="@color/ink"
+                        app:ringTextSize="13sp"
+                        app:ringTrackColor="@color/teal_tint" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingBottom="16dp">
+
+                    <TextView
+                        android:id="@+id/textTitle"
+                        style="@style/TextSectionTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:maxLines="2"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/textMeta"
+                        style="@style/TextMuted"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <!-- Mini radar and the skills the role needs -->
+                    <LinearLayout
+                        android:id="@+id/rowRadar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.example.cvforge.ui.view.MatchRadarView
+                            android:id="@+id/radar"
+                            android:layout_width="130dp"
+                            android:layout_height="120dp"
+                            android:contentDescription="@string/match_label" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <View
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:background="@drawable/bg_avatar"
+                                    android:backgroundTint="@color/violet" />
+
+                                <TextView
+                                    style="@style/TextMuted"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="6dp"
+                                    android:text="@string/legend_you" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <View
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:background="@drawable/bg_avatar"
+                                    android:backgroundTint="@color/coral" />
+
+                                <TextView
+                                    style="@style/TextMuted"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="6dp"
+                                    android:text="@string/legend_role" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/textSkillsLine"
+                                style="@style/TextMuted"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:maxLines="3" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/groupMatch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        app:chipSpacingHorizontal="6dp"
+                        app:chipSpacingVertical="4dp" />
+
+                    <TextView
+                        android:id="@+id/textTip"
+                        style="@style/ChipTint.Violet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="start"
+                        android:padding="12dp"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
+</merge>

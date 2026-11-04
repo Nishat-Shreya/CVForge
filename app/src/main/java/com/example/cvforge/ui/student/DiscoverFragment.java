@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,19 +28,23 @@ import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.Internship;
 import com.example.cvforge.databinding.FragmentDiscoverBinding;
 import com.example.cvforge.service.JobSyncService;
+import com.example.cvforge.ui.discover.ApplyFlow;
 import com.example.cvforge.ui.discover.BookmarksActivity;
 import com.example.cvforge.ui.discover.FilterSheet;
 import com.example.cvforge.ui.discover.InternshipAdapter;
 import com.example.cvforge.ui.discover.InternshipDetailActivity;
 import com.example.cvforge.ui.discover.InternshipFilter;
+import com.example.cvforge.ui.discover.SwipeCardView;
 import com.example.cvforge.util.AnimUtils;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-/** Discover tab: the list of open internships (feature 4), with search and filters. */
+/** Discover tab: the open internships as swipe cards or as a list, with search and filters. */
 public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
 
     private FragmentDiscoverBinding binding;
@@ -51,10 +56,20 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
     /** Internships posted in CVForge, and real jobs from other websites. */
     private List<Internship> cvforgeInternships = new ArrayList<>();
     private List<Internship> externalJobs = new ArrayList<>();
-    /** Both lists together. The search and the filters work on this list. */
-    private List<Internship> all = new ArrayList<>();
+    private List<Internship> allInternships = new ArrayList<>();
     /** What the student searched and filtered for. */
     private InternshipFilter filter = new InternshipFilter();
+
+    // swipe cards
+    private boolean cardMode = true;
+    private List<Internship> deck = new ArrayList<>();
+    private final Set<String> skippedIds = new HashSet<>();
+    private List<String> studentSkills = new ArrayList<>();
+    /** True while a card is flying out or an application is being sent. */
+    private boolean busy;
+    /** The id of the internship on the big card right now. */
+    private String shownCardId;
+    private ApplyFlow applyFlow;
 
     @Nullable
     @Override
@@ -69,6 +84,7 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
         super.onViewCreated(view, savedInstanceState);
 
         jobRepository = new JobRepository(requireContext());
+        applyFlow = new ApplyFlow((AppCompatActivity) requireActivity());
         adapter = new InternshipAdapter(this::openDetails);
         binding.listInternships.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.listInternships.setAdapter(adapter);
@@ -98,32 +114,64 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
                 applyFilter();
             }
         });
-        showChips();
 
-        // A4: the blocks slide up one after the other
+        binding.btnView.setOnClickListener(v -> setCardMode(!cardMode));
+        binding.btnSkip.setOnClickListener(v -> skipCard());
+        binding.btnApplyCard.setOnClickListener(v -> applyCard());
+        binding.btnSaveCard.setOnClickListener(v -> saveCard());
+        binding.empty.emptyState.setOnClickListener(v -> {
+            skippedIds.clear();
+            applyFilter();
+        });
+        binding.swipeCard.setListener(new SwipeCardView.Listener() {
+            @Override
+            public void onSwipeLeft() {
+                skipCard();
+            }
+
+            @Override
+            public void onSwipeRight() {
+                applyCard();
+            }
+
+            @Override
+            public void onCardClick() {
+                if (!deck.isEmpty()) {
+                    openDetails(deck.get(0));
+                }
+            }
+        });
+
+        styleChips();
+        setCardMode(requireContext().getSharedPreferences("discover", Context.MODE_PRIVATE)
+                .getBoolean("card_mode", true));
         AnimUtils.slideUpIn(binding.rowTitle, 0);
         AnimUtils.slideUpIn(binding.layoutSearch, 1);
         AnimUtils.slideUpIn(binding.scrollChips, 2);
     }
 
-    /** Loads the list every time the tab is shown, so new posts appear. */
     @Override
     public void onResume() {
         super.onResume();
         loadStudentSkills();
-        load();
+        loadInternships();
     }
 
     /** The skills of the newest CV version, for the match rings. */
     private void loadStudentSkills() {
         new CvRepository(requireContext()).loadAll(new UserRepository().getCurrentUid(), cvs -> {
             if (binding != null) {
-                adapter.setStudentSkills(cvs.isEmpty() ? new ArrayList<>() : cvs.get(0).skills);
+                studentSkills = cvs.isEmpty() ? new ArrayList<>() : cvs.get(0).skills;
+                adapter.setStudentSkills(studentSkills);
+                if (cardMode && !deck.isEmpty() && !busy) {
+                    shownCardId = deck.get(0).id;
+                    binding.swipeCard.bind(deck.get(0), studentSkills);
+                }
             }
         });
     }
 
-    private void load() {
+    private void loadInternships() {
         binding.progress.setVisibility(View.VISIBLE);
         binding.empty.emptyState.setVisibility(View.GONE);
         repository.loadOpen(new InternshipRepository.InternshipListListener() {
@@ -147,6 +195,18 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
                 showEmptyState(getString(R.string.error_loading), message);
             }
         });
+    }
+
+    /** Explicit Intent: opens the detail screen and passes the internship id. */
+    private void openDetails(Internship internship) {
+        Intent intent = new Intent(requireContext(), InternshipDetailActivity.class);
+        intent.putExtra(InternshipDetailActivity.EXTRA_INTERNSHIP_ID, internship.id);
+        // a job from another website is not in Firestore, so the whole job travels with the Intent
+        if (internship.isExternal()) {
+            intent.putExtra(InternshipDetailActivity.EXTRA_INTERNSHIP_JSON, new Gson().toJson(internship));
+        }
+        startActivity(intent);
+        AnimUtils.fadeTransition(requireActivity());
     }
 
     /**
@@ -199,30 +259,18 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
     }
 
     private void combine() {
-        all = new ArrayList<>(cvforgeInternships);
-        all.addAll(externalJobs);
+        allInternships = new ArrayList<>(cvforgeInternships);
+        allInternships.addAll(externalJobs);
         applyFilter();
     }
 
-    /** Explicit Intent: opens the detail screen and passes the internship id. */
-    private void openDetails(Internship internship) {
-        Intent intent = new Intent(requireContext(), InternshipDetailActivity.class);
-        intent.putExtra(InternshipDetailActivity.EXTRA_INTERNSHIP_ID, internship.id);
-        // a job from another website is not in Firestore, so the whole job travels with the Intent
-        if (internship.isExternal()) {
-            intent.putExtra(InternshipDetailActivity.EXTRA_INTERNSHIP_JSON, new Gson().toJson(internship));
-        }
-        startActivity(intent);
-        AnimUtils.fadeTransition(requireActivity());
-    }
-
-    // ---------- search and filters ----------
+    // ---------- filters ----------
 
     /** Called by the filter sheet when the student taps Apply. */
     @Override
     public void onFilterApplied(InternshipFilter newFilter) {
         filter = newFilter;
-        showChips();
+        styleChips();
         applyFilter();
     }
 
@@ -235,13 +283,13 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
 
     private void toggleRemote() {
         filter.type = Internship.TYPE_REMOTE.equals(filter.type) ? "" : Internship.TYPE_REMOTE;
-        showChips();
+        styleChips();
         applyFilter();
     }
 
     private void togglePaid() {
         filter.paidOnly = !filter.paidOnly;
-        showChips();
+        styleChips();
         applyFilter();
     }
 
@@ -249,15 +297,25 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
     private void applyFilter() {
         long now = System.currentTimeMillis();
         List<Internship> shown = new ArrayList<>();
-        for (Internship post : all) {
-            if (filter.matches(post, now)) {
-                shown.add(post);
+        for (Internship internship : allInternships) {
+            if (filter.matches(internship, now)) {
+                shown.add(internship);
             }
         }
         adapter.setItems(shown);
 
-        if (shown.isEmpty()) {
-            boolean noInternshipsAtAll = all.isEmpty();
+        // the card deck: the same internships, without the ones the student already skipped
+        deck = new ArrayList<>();
+        for (Internship internship : shown) {
+            if (!skippedIds.contains(internship.id)) {
+                deck.add(internship);
+            }
+        }
+
+        if (cardMode) {
+            showTopCard();
+        } else if (shown.isEmpty()) {
+            boolean noInternshipsAtAll = allInternships.isEmpty();
             showEmptyState(
                     getString(noInternshipsAtAll ? R.string.no_internships_title : R.string.no_match_title),
                     getString(noInternshipsAtAll ? R.string.no_internships_message : R.string.no_match_message));
@@ -266,21 +324,125 @@ public class DiscoverFragment extends Fragment implements FilterSheet.Listener {
         }
     }
 
+    // ---------- swipe cards (A6) ----------
+
+    /** Shows the first internship of the deck as the big card, or a message when the deck is empty. */
+    private void showTopCard() {
+        busy = false;
+        if (deck.isEmpty()) {
+            binding.areaSwipe.setVisibility(View.GONE);
+            boolean noInternshipsAtAll = allInternships.isEmpty();
+            showEmptyState(
+                    getString(noInternshipsAtAll ? R.string.no_internships_title : R.string.deck_empty_title),
+                    getString(noInternshipsAtAll ? R.string.no_internships_message : R.string.deck_empty_message));
+            return;
+        }
+        binding.empty.emptyState.setVisibility(View.GONE);
+        binding.areaSwipe.setVisibility(View.VISIBLE);
+        // a refresh of the list must not restart the card that is already shown
+        Internship top = deck.get(0);
+        if (!top.id.equals(shownCardId)) {
+            shownCardId = top.id;
+            binding.swipeCard.bind(top, studentSkills);
+        }
+    }
+
+    /** The card has left the screen: take it out of the deck and show the next one. */
+    private void cardGone(boolean skipped) {
+        Internship gone = deck.remove(0);
+        shownCardId = null;
+        if (skipped) {
+            skippedIds.add(gone.id);
+        }
+        showTopCard();
+    }
+
+    private void skipCard() {
+        if (busy || deck.isEmpty()) {
+            return;
+        }
+        busy = true;
+        binding.swipeCard.flyOut(SwipeCardView.LEFT, () -> cardGone(true));
+    }
+
+    /** Swipe right and the Apply button: the card only leaves when the application was sent. */
+    private void applyCard() {
+        if (busy || deck.isEmpty()) {
+            return;
+        }
+        busy = true;
+        applyFlow.apply(deck.get(0), new ApplyFlow.Callback() {
+            @Override
+            public void onSuccess() {
+                if (binding != null) {
+                    binding.swipeCard.flyOut(SwipeCardView.RIGHT, () -> cardGone(false));
+                }
+            }
+
+            @Override
+            public void onFailure(String message) {
+                busy = false;
+                if (binding != null) {
+                    binding.swipeCard.springBack();
+                    if (message != null) {
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
+    private void saveCard() {
+        if (busy || deck.isEmpty()) {
+            return;
+        }
+        busy = true;
+        applyFlow.save(deck.get(0), new ApplyFlow.Callback() {
+            @Override
+            public void onSuccess() {
+                if (binding != null) {
+                    binding.swipeCard.flyOut(SwipeCardView.UP, () -> cardGone(false));
+                }
+            }
+
+            @Override
+            public void onFailure(String message) {
+                busy = false;
+            }
+        });
+    }
+
+    /** Switches between the swipe cards and the list. */
+    private void setCardMode(boolean cards) {
+        cardMode = cards;
+        requireContext().getSharedPreferences("discover", Context.MODE_PRIVATE)
+                .edit().putBoolean("card_mode", cards).apply();
+
+        binding.btnView.setIconResource(cards ? R.drawable.ic_list : R.drawable.ic_cards);
+        binding.btnView.setContentDescription(getString(cards ? R.string.view_list : R.string.view_cards));
+        // the search box and the quick chips are for the list
+        int listVisibility = cards ? View.GONE : View.VISIBLE;
+        binding.layoutSearch.setVisibility(listVisibility);
+        binding.scrollChips.setVisibility(listVisibility);
+        binding.listInternships.setVisibility(listVisibility);
+        binding.areaSwipe.setVisibility(cards ? View.VISIBLE : View.GONE);
+        binding.empty.emptyState.setVisibility(View.GONE);
+        applyFilter();
+    }
+
     private void showEmptyState(String title, String message) {
         binding.empty.textEmptyTitle.setText(title);
         binding.empty.textEmptyMessage.setText(message);
         binding.empty.emptyState.setVisibility(View.VISIBLE);
     }
 
-    // ---------- quick filter chips ----------
-
-    private void showChips() {
+    /** A selected chip is solid violet, the others have the soft violet tint. */
+    private void styleChips() {
         styleChip(binding.chipForYou, filter.sheetFilterCount() == 0);
         styleChip(binding.chipRemote, Internship.TYPE_REMOTE.equals(filter.type));
         styleChip(binding.chipPaidOnly, filter.paidOnly);
     }
 
-    /** A selected chip is solid violet, the others have the soft violet tint. */
     private void styleChip(TextView chip, boolean selected) {
         int background = selected ? R.color.violet : R.color.violet_tint;
         int text = selected ? R.color.white : R.color.violet_text;
