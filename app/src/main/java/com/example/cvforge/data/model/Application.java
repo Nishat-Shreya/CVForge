@@ -56,6 +56,8 @@ public class Application {
     public long appliedAt;
     /** Time of the last status change. The Ghosting Detector reads this. */
     public long lastChangeAt;
+    /** When the interview is, set by the company (0 = no interview yet). */
+    public long interviewAt;
     /** Deadline of the internship, copied when the student saves it. */
     public long deadline;
 
@@ -65,6 +67,43 @@ public class Application {
 
     public static String idFor(String studentId, String internshipId) {
         return studentId + "_" + internshipId;
+    }
+
+    /** The Kanban board has four columns. Shortlisted counts as Applied. */
+    public static String columnOf(String status) {
+        if (STATUS_SAVED.equals(status)) {
+            return STATUS_SAVED;
+        }
+        if (STATUS_INTERVIEW.equals(status)) {
+            return STATUS_INTERVIEW;
+        }
+        if (STATUS_OFFER.equals(status)) {
+            return STATUS_OFFER;
+        }
+        return STATUS_APPLIED;
+    }
+
+    /**
+     * The column this card is in. A rejected card stays in the column where it was rejected,
+     * which is the status before "rejected" in the timeline.
+     */
+    public String column() {
+        if (!STATUS_REJECTED.equals(status)) {
+            return columnOf(status);
+        }
+        for (int i = statusHistory.size() - 1; i >= 0; i--) {
+            String before = statusHistory.get(i).status;
+            if (!STATUS_REJECTED.equals(before)) {
+                return columnOf(before);
+            }
+        }
+        return STATUS_APPLIED;
+    }
+
+    /** True when the company has not answered for 7 days after the student applied (feature 13). */
+    public boolean isGhosted(long now) {
+        boolean waiting = STATUS_APPLIED.equals(status);
+        return waiting && now - lastChangeAt >= 7L * 24 * 60 * 60 * 1000;
     }
 
     /** Sets a new status and adds it to the timeline. */

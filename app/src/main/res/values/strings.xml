@@ -268,4 +268,17 @@
     <string name="verified_company">Verified company</string>
     <string name="view_cards">Show cards</string>
     <string name="view_list">Show list</string>
+    <string name="banner_interview">Interview with %1$s</string>
+    <string name="chip_interview_at">Interview %1$s</string>
+    <string name="chip_no_reply">No reply · %1$d d</string>
+    <string name="chip_rejected">Rejected</string>
+    <string name="chip_shortlisted">Shortlisted</string>
+    <string name="column_applied">Applied</string>
+    <string name="column_empty">Nothing here yet</string>
+    <string name="column_interview">Interview</string>
+    <string name="column_offer">Offer</string>
+    <string name="column_saved">Saved</string>
+    <string name="in_days">in %1$d days</string>
+    <string name="in_hours">in %1$d h</string>
+    <string name="in_minutes">in %1$d min</string>
 </resources>

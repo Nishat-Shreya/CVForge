@@ -4,6 +4,10 @@ import com.example.cvforge.data.model.Application;
 import com.example.cvforge.data.model.Cv;
 import com.example.cvforge.data.model.Internship;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** Applications and saved internships of students. They live in the Firestore "applications" collection. */
 public class ApplicationRepository {
@@ -13,9 +17,34 @@ public class ApplicationRepository {
         void onLoaded(Application application);
     }
 
+    /** Callback for the live list of applications. Runs on the main thread. */
+    public interface ListListener {
+        void onChanged(List<Application> applications);
+
+        void onError(String message);
+    }
+
     private static final String APPLICATIONS = "applications";
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    /**
+     * Listens to all applications of a student. The listener is called now and again every time
+     * something changes in Firestore, also when a company changes a status.
+     * Call remove() on the result when the screen stops.
+     */
+    public ListenerRegistration listen(String studentId, ListListener listener) {
+        return db.collection(APPLICATIONS).whereEqualTo("studentId", studentId)
+                .addSnapshotListener((snapshot, error) -> {
+                    if (error != null) {
+                        listener.onError(error.getMessage());
+                        return;
+                    }
+                    if (snapshot != null) {
+                        listener.onChanged(new ArrayList<>(snapshot.toObjects(Application.class)));
+                    }
+                });
+    }
 
     /** Loads the application of a student for one internship, or null if there is none. */
     public void load(String studentId, String internshipId, ApplicationListener listener) {
