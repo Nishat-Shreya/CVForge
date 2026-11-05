@@ -3,6 +3,7 @@ package com.example.cvforge.ui.student;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.cvforge.R;
 import com.example.cvforge.data.ApplicationRepository;
+import com.example.cvforge.data.ResultListener;
 import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.Application;
 import com.example.cvforge.databinding.FragmentTrackerBinding;
 import com.example.cvforge.ui.tracker.KanbanAdapter;
+import com.example.cvforge.ui.tracker.KanbanColumn;
 import com.example.cvforge.util.AnimUtils;
 import com.google.firebase.firestore.ListenerRegistration;
 
@@ -48,7 +51,8 @@ public class TrackerFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // tapping a card opens its details in a later checkpoint
-        kanbanAdapter = new KanbanAdapter(application -> { });
+        kanbanAdapter = new KanbanAdapter(application -> { }, this::moveCard);
+        binding.listColumns.setOnDragListener(this::scrollBoardWhileDragging);
         binding.listColumns.setAdapter(kanbanAdapter);
 
         AnimUtils.slideUpIn(binding.rowTitle, 0);
@@ -87,6 +91,45 @@ public class TrackerFragment extends Fragment {
             registration = null;
         }
         stopCountdownPulse();
+    }
+
+    // ---------- drag and drop ----------
+
+    /** A card was dropped in another column: the new status is saved, and Offer starts confetti. */
+    private void moveCard(Application application, KanbanColumn target) {
+        repository.changeStatus(application, target.status, new ResultListener() {
+            @Override
+            public void onSuccess() {
+            }
+
+            @Override
+            public void onError(String message) {
+                if (binding != null) {
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        // the board already shows the move, because Firestore tells the listener about local writes at once
+        if (target == KanbanColumn.OFFER) {
+            binding.confetti.burst();
+        }
+    }
+
+    /** While a card is dragged near the left or right edge, the board scrolls sideways. */
+    private boolean scrollBoardWhileDragging(View board, DragEvent event) {
+        if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+            return event.getLocalState() instanceof Application;
+        }
+        if (event.getAction() == DragEvent.ACTION_DRAG_LOCATION) {
+            float edge = 64 * getResources().getDisplayMetrics().density;
+            if (event.getX() < edge) {
+                binding.listColumns.scrollBy(-40, 0);
+            } else if (event.getX() > board.getWidth() - edge) {
+                binding.listColumns.scrollBy(40, 0);
+            }
+        }
+        // the drop itself is handled by the column under the finger
+        return event.getAction() != DragEvent.ACTION_DROP;
     }
 
     // ---------- next interview banner ----------

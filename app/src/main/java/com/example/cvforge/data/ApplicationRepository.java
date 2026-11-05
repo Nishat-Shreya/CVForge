@@ -87,6 +87,25 @@ public class ApplicationRepository {
         });
     }
 
+    /**
+     * Moves a card to another status, for example when the student drags it to another column.
+     * The change is added to the status timeline, so the history stays complete.
+     */
+    public void changeStatus(Application application, String newStatus, ResultListener listener) {
+        long now = System.currentTimeMillis();
+        application.changeStatus(newStatus, now);
+        if (Application.STATUS_APPLIED.equals(newStatus) && application.appliedAt == 0) {
+            application.appliedAt = now;
+        }
+        db.collection(APPLICATIONS).document(application.id)
+                .update("status", application.status,
+                        "statusHistory", application.statusHistory,
+                        "lastChangeAt", application.lastChangeAt,
+                        "appliedAt", application.appliedAt)
+                .addOnSuccessListener(unused -> listener.onSuccess())
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
     private Application newApplication(String studentId, String studentName, Internship internship) {
         Application application = new Application();
         application.id = Application.idFor(studentId, internship.id);

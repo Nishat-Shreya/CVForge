@@ -1,7 +1,9 @@
 package com.example.cvforge.ui.tracker;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.text.format.DateFormat;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cvforge.R;
@@ -80,6 +83,32 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
             binding.textCompany.setText(application.companyName);
             showChips(context, application);
             binding.getRoot().setOnClickListener(v -> listener.onCardClick(application));
+            setUpDrag(application);
+        }
+
+        /**
+         * A8: a long press lifts the card. It follows the finger tilted by 3 degrees with a violet
+         * border, and the original stays faded until the card is dropped in a column.
+         */
+        private void setUpDrag(Application application) {
+            View card = binding.getRoot();
+            card.setAlpha(1f);
+            card.setOnLongClickListener(v -> {
+                v.setAlpha(0.35f);
+                ClipData clip = ClipData.newPlainText("application", application.id);
+                ViewCompat.startDragAndDrop(v, clip, new CardDragShadow(v), application, 0);
+                return true;
+            });
+            card.setOnDragListener((v, event) -> {
+                if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+                    return true;
+                }
+                if (event.getAction() == DragEvent.ACTION_DRAG_ENDED) {
+                    v.setAlpha(1f);
+                }
+                // false lets the drop reach the column behind the card
+                return false;
+            });
         }
 
         /** Status always has a text label as well as a color. */

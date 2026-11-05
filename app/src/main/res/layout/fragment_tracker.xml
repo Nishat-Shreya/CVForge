@@ -133,4 +133,10 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </LinearLayout>
 
+
+    <!-- Confetti burst when a card reaches Offer (A13) -->
+    <com.example.cvforge.ui.view.ConfettiView
+        android:id="@+id/confetti"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>

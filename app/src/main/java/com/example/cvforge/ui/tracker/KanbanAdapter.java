@@ -1,6 +1,7 @@
 package com.example.cvforge.ui.tracker;
 
 import android.content.res.ColorStateList;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cvforge.R;
 import com.example.cvforge.data.model.Application;
 import com.example.cvforge.databinding.ItemKanbanColumnBinding;
 
@@ -22,12 +24,19 @@ public class KanbanAdapter extends RecyclerView.Adapter<KanbanAdapter.ViewHolder
 
     private static final KanbanColumn[] COLUMNS = KanbanColumn.values();
 
+    /** Called when a card is dropped in another column. */
+    public interface OnCardMovedListener {
+        void onCardMoved(Application application, KanbanColumn target);
+    }
+
     private final CardAdapter.OnCardClickListener listener;
+    private final OnCardMovedListener movedListener;
     /** One list of cards for each column, in the order of COLUMNS. */
     private final List<List<Application>> cardsByColumn = new ArrayList<>();
 
-    public KanbanAdapter(CardAdapter.OnCardClickListener listener) {
+    public KanbanAdapter(CardAdapter.OnCardClickListener listener, OnCardMovedListener movedListener) {
         this.listener = listener;
+        this.movedListener = movedListener;
         for (int i = 0; i < COLUMNS.length; i++) {
             cardsByColumn.add(new ArrayList<>());
         }
@@ -80,6 +89,41 @@ public class KanbanAdapter extends RecyclerView.Adapter<KanbanAdapter.ViewHolder
             super(binding.getRoot());
             this.binding = binding;
             binding.listCards.setLayoutManager(new LinearLayoutManager(binding.getRoot().getContext()));
+            binding.getRoot().setOnDragListener(this::onDrag);
+        }
+
+        /** The whole column is a drop target. It lights up while a card is over it. */
+        private boolean onDrag(View view, DragEvent event) {
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    return event.getLocalState() instanceof Application;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    highlight(true);
+                    return true;
+                case DragEvent.ACTION_DRAG_EXITED:
+                case DragEvent.ACTION_DRAG_ENDED:
+                    highlight(false);
+                    return true;
+                case DragEvent.ACTION_DROP:
+                    highlight(false);
+                    Application dropped = (Application) event.getLocalState();
+                    if (!column.status.equals(dropped.column())) {
+                        movedListener.onCardMoved(dropped, column);
+                    }
+                    return true;
+                default:
+                    return true;
+            }
+        }
+
+        private void highlight(boolean on) {
+            if (!on) {
+                binding.getRoot().setBackground(null);
+                return;
+            }
+            int tint = ContextCompat.getColor(itemView.getContext(), column.tintColor);
+            binding.getRoot().setBackgroundResource(R.drawable.bg_tile);
+            binding.getRoot().setBackgroundTintList(ColorStateList.valueOf(tint));
         }
 
         void bind(KanbanColumn column, List<Application> cards) {
