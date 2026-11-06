@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One column of the Kanban board: a header pill and the cards below it -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="190dp"
+    android:layout_height="match_parent"
+    android:layout_marginEnd="12dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/headerColumn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_chip"
+        android:gravity="center_vertical"
+        android:minHeight="44dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="14dp">
+
+        <View
+            android:id="@+id/dotColumn"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:background="@drawable/bg_avatar" />
+
+        <TextView
+            android:id="@+id/textColumnName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/sora"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textColumnCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sora"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listCards"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp" />
+
+        <!-- Shown when the column has no cards: a dashed box -->
+        <TextView
+            android:id="@+id/textEmptyColumn"
+            style="@style/TextMuted"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/bg_dashed"
+            android:gravity="center"
+            android:text="@string/column_empty" />
+    </FrameLayout>
+</LinearLayout>

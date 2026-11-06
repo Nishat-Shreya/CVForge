@@ -4,6 +4,7 @@ import com.example.cvforge.data.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,24 @@ public class UserRepository {
     public String getCurrentUid() {
         FirebaseUser user = auth.getCurrentUser();
         return user == null ? null : user.getUid();
+    }
+
+    /**
+     * Saves the push token of this phone in the users document. A Cloud Function reads it to
+     * send the student a notification (checkpoint 44). Does nothing when nobody is signed in.
+     */
+    public void saveFcmToken(String token) {
+        String uid = getCurrentUid();
+        if (uid == null || token == null) {
+            return;
+        }
+        db.collection(USERS).document(uid).update("fcmToken", token);
+    }
+
+    /** Asks Firebase for the token of this phone and saves it. Called after every login. */
+    public void saveCurrentFcmToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnSuccessListener(this::saveFcmToken);
     }
 
     public boolean isLoggedIn() {

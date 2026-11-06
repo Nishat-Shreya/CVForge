@@ -1,15 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Placeholder, replaced when this screen is built -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Tracker, matches Docs/05-tracker.png -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/screen_padding">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textTitle"
-        style="@style/TextScreenTitle"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/rowTitle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/screen_tracker" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/screen_padding"
+        android:paddingTop="16dp">
+
+        <TextView
+            android:id="@+id/textTitle"
+            style="@style/TextScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/screen_tracker" />
+    </LinearLayout>
+
+    <!-- Next interview banner. Hidden when no interview is planned. -->
+    <FrameLayout
+        android:id="@+id/bannerInterview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/screen_padding"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_banner"
+        android:clipToOutline="true"
+        android:visibility="gone">
+
+        <com.example.cvforge.ui.view.CircleDecorationView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:circleCenterX="1"
+            app:circleCenterY="0"
+            app:circleColor="@color/violet"
+            app:circleRadius="48dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_tile"
+                android:backgroundTint="@color/amber"
+                android:importantForAccessibility="no"
+                android:padding="11dp"
+                android:src="@drawable/ic_calendar"
+                app:tint="@color/ink" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textBannerTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sora"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textBannerTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.8"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/chipCountdown"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_chip"
+                android:backgroundTint="@color/coral"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <View
+                    android:id="@+id/dotCountdown"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/bg_avatar"
+                    android:backgroundTint="@color/ink" />
+
+                <TextView
+                    android:id="@+id/textCountdown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:fontFamily="@font/dm_sans"
+                    android:textColor="@color/ink"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- The board: four columns, scrolls sideways -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listColumns"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/screen_padding"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </LinearLayout>
+
+
+    <!-- Confetti burst when a card reaches Offer (A13) -->
+    <com.example.cvforge.ui.view.ConfettiView
+        android:id="@+id/confetti"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>

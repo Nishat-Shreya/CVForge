@@ -1,6 +1,7 @@
 package com.example.cvforge.ui.student;
 
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -14,7 +15,12 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.cvforge.R;
 import com.example.cvforge.databinding.ActivityStudentBinding;
 import com.example.cvforge.receiver.NetworkReceiver;
+import com.example.cvforge.service.CvForgeMessagingService;
+import com.example.cvforge.ui.tracker.ApplicationDetailActivity;
 import com.example.cvforge.util.AnimUtils;
+import com.example.cvforge.util.NotificationHelper;
+import com.example.cvforge.util.NotificationPermission;
+import com.example.cvforge.util.ReminderScheduler;
 
 /** Student home: five tabs in a bottom navigation bar, one fragment per tab. */
 public class StudentActivity extends AppCompatActivity {
@@ -33,9 +39,18 @@ public class StudentActivity extends AppCompatActivity {
     /** Shows or hides the offline banner when the connection changes. */
     private final NetworkReceiver networkReceiver = new NetworkReceiver(this::showOnline);
 
+    private NotificationPermission notificationPermission;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NotificationHelper.createChannel(this);
+        notificationPermission = new NotificationPermission(this);
+        if (savedInstanceState == null) {
+            notificationPermission.requestIfNeeded();
+        }
+        // keeps the reminder alarms up to date in the background (WorkManager)
+        ReminderScheduler.enqueueRefresh(this);
         binding = ActivityStudentBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -45,6 +60,11 @@ public class StudentActivity extends AppCompatActivity {
         binding.bottomNav.addTab(R.string.tab_tracker, R.drawable.ic_nav_tracker);
         binding.bottomNav.addTab(R.string.tab_profile, R.drawable.ic_nav_profile);
         binding.bottomNav.setOnTabSelectedListener(this::showTab);
+
+        // a tap on a notification can open an application: "application:ID"
+        if (savedInstanceState == null) {
+            openTarget(getIntent().getStringExtra(CvForgeMessagingService.EXTRA_TARGET));
+        }
 
         // after a rotation the fragment manager brings the open tab back by itself
         int tab = savedInstanceState == null ? TAB_HOME : savedInstanceState.getInt(KEY_TAB, TAB_HOME);
@@ -95,6 +115,16 @@ public class StudentActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_TAB, binding.bottomNav.getSelectedIndex());
+    }
+
+    /** Opens the screen that a notification asked for. Other targets are added with the chat. */
+    private void openTarget(String target) {
+        String prefix = "application:";
+        if (target != null && target.startsWith(prefix)) {
+            Intent intent = new Intent(this, ApplicationDetailActivity.class);
+            intent.putExtra(ApplicationDetailActivity.EXTRA_APPLICATION_ID, target.substring(prefix.length()));
+            startActivity(intent);
+        }
     }
 
     /** A12: the new tab fades in over the old one. */

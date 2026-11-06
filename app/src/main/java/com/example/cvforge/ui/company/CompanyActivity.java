@@ -9,6 +9,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.cvforge.R;
 import com.example.cvforge.databinding.ActivityCompanyBinding;
+import com.example.cvforge.ui.post.ApplicantsFragment;
+import com.example.cvforge.util.NotificationHelper;
+import com.example.cvforge.util.NotificationPermission;
 
 /** Company home: Dashboard, Postings, Applicants and Profile tabs. */
 public class CompanyActivity extends AppCompatActivity {
@@ -17,9 +20,16 @@ public class CompanyActivity extends AppCompatActivity {
 
     private ActivityCompanyBinding binding;
 
+    private NotificationPermission notificationPermission;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NotificationHelper.createChannel(this);
+        notificationPermission = new NotificationPermission(this);
+        if (savedInstanceState == null) {
+            notificationPermission.requestIfNeeded();
+        }
         binding = ActivityCompanyBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -56,7 +66,7 @@ public class CompanyActivity extends AppCompatActivity {
             case 1:
                 return TitleFragment.newInstance(R.string.tab_postings, false, true);
             case 2:
-                return TitleFragment.newInstance(R.string.tab_applicants, false, false);
+                return new ApplicantsFragment();
             case 3:
                 return TitleFragment.newInstance(R.string.tab_profile, true, false);
             default:
