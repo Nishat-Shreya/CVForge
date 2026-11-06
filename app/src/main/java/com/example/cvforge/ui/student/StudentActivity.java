@@ -51,6 +51,7 @@ public class StudentActivity extends AppCompatActivity {
         }
         // keeps the reminder alarms up to date in the background (WorkManager)
         ReminderScheduler.enqueueRefresh(this);
+        ReminderScheduler.enqueueDigest(this);
         binding = ActivityStudentBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

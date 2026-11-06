@@ -316,4 +316,7 @@
     <string name="reminder_deadline_title">Deadline tomorrow</string>
     <string name="reminder_interview_text">%1$s at %2$s. Good luck!</string>
     <string name="reminder_interview_title">Interview in 1 hour</string>
+    <string name="digest_both">%1$s and %2$s today</string>
+    <string name="digest_one">%1$s today</string>
+    <string name="digest_title">Good morning</string>
 </resources>

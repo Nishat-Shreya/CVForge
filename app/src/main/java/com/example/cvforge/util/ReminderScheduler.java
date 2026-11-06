@@ -15,8 +15,10 @@ import androidx.work.WorkManager;
 
 import com.example.cvforge.data.model.Application;
 import com.example.cvforge.receiver.ReminderReceiver;
+import com.example.cvforge.service.DigestWorker;
 import com.example.cvforge.service.ReminderWorker;
 
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +34,7 @@ public class ReminderScheduler {
     private static final String KEY_CODES = "scheduled_codes";
     private static final String WORK_PERIODIC = "reminder_refresh";
     private static final String WORK_NOW = "reminder_refresh_now";
+    private static final String WORK_DIGEST = "morning_digest";
 
     private ReminderScheduler() {
     }
@@ -104,6 +107,24 @@ public class ReminderScheduler {
         workManager.enqueueUniquePeriodicWork(WORK_PERIODIC, ExistingPeriodicWorkPolicy.KEEP,
                 new PeriodicWorkRequest.Builder(ReminderWorker.class, 6, TimeUnit.HOURS).build());
         refreshNow(context);
+    }
+
+    /** The morning digest: once a day at about 8:00. The first run waits until the next 8:00. */
+    public static void enqueueDigest(Context context) {
+        Calendar next = Calendar.getInstance();
+        next.set(Calendar.HOUR_OF_DAY, 8);
+        next.set(Calendar.MINUTE, 0);
+        next.set(Calendar.SECOND, 0);
+        if (next.getTimeInMillis() <= System.currentTimeMillis()) {
+            next.add(Calendar.DAY_OF_YEAR, 1);
+        }
+        long delay = next.getTimeInMillis() - System.currentTimeMillis();
+
+        PeriodicWorkRequest request = new PeriodicWorkRequest.Builder(DigestWorker.class, 24, TimeUnit.HOURS)
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                .build();
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(WORK_DIGEST,
+                ExistingPeriodicWorkPolicy.KEEP, request);
     }
 
     /** Runs the worker once now. BootReceiver uses it after a restart. */

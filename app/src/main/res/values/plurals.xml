@@ -4,4 +4,12 @@
         <item quantity="one">Closes in %d day</item>
         <item quantity="other">Closes in %d days</item>
     </plurals>
+    <plurals name="digest_deadlines">
+        <item quantity="one">%d deadline</item>
+        <item quantity="other">%d deadlines</item>
+    </plurals>
+    <plurals name="digest_interviews">
+        <item quantity="one">%d interview</item>
+        <item quantity="other">%d interviews</item>
+    </plurals>
 </resources>
