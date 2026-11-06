@@ -25,7 +25,7 @@ import java.util.UUID;
  * certificates and links. Save writes to Room and to Firestore, and the draft is kept on
  * the phone every time the screen goes to the background (W8 lifecycle, onPause).
  */
-public class CvEditorActivity extends AppCompatActivity {
+public class CvEditorActivity extends AppCompatActivity implements BulletWriterSheet.Listener {
 
     /** Id of the CV version to edit. Without it the editor starts a new CV. */
     public static final String EXTRA_CV_ID = "cv_id";
@@ -53,6 +53,8 @@ public class CvEditorActivity extends AppCompatActivity {
         binding.toolbar.textTitle.setText(R.string.edit_cv);
         binding.toolbar.btnBack.setOnClickListener(v -> finish());
         binding.btnSave.setOnClickListener(v -> saveCv());
+        binding.btnBulletWriter.setOnClickListener(v ->
+                new BulletWriterSheet().show(getSupportFragmentManager(), "bullet_writer"));
 
         setUpLists();
         playEntranceAnimation();
@@ -77,6 +79,13 @@ public class CvEditorActivity extends AppCompatActivity {
                 certificateAdapter, v -> certificateAdapter.addItem());
         setUpSection(binding.sectionLinks, R.string.section_links, R.string.add_link,
                 linkAdapter, v -> linkAdapter.addItem());
+    }
+
+    /** The student tapped a suggestion in the Bullet writer: it goes into the Experience list. */
+    @Override
+    public void onBulletChosen(String role, String bullet) {
+        experienceAdapter.addBullet(role, bullet);
+        Toast.makeText(this, getString(R.string.bullet_added, role), Toast.LENGTH_SHORT).show();
     }
 
     private void setUpSection(IncludeListSectionBinding section, int titleRes, int addRes,

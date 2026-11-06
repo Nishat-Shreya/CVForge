@@ -187,6 +187,14 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBulletWriter"
+                style="@style/ButtonOutline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/screen_padding"
+                android:text="@string/bullet_writer" />
+
             <!-- Lists: each one is the same reusable section layout -->
             <include
                 android:id="@+id/sectionEducation"

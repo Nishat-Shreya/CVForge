@@ -343,4 +343,12 @@
     <string name="ai_error_service">AI service is not available right now.</string>
     <string name="ai_error_with_template">%1$s Using a ready template instead.</string>
     <string name="ai_writing">Writing a draft with AI…</string>
+    <string name="bullet_added">Added to %1$s</string>
+    <string name="bullet_fill_both">Please fill in the role and what you did.</string>
+    <string name="bullet_intro">Tell me what you did. I suggest three CV lines. Tap one to add it.</string>
+    <string name="bullet_role_hint">Role or project (e.g. Tutor)</string>
+    <string name="bullet_tap_to_add">Tap a line to add it to your CV</string>
+    <string name="bullet_work_hint">What did you do?</string>
+    <string name="bullet_write">Write bullets</string>
+    <string name="bullet_writer">Bullet writer</string>
 </resources>

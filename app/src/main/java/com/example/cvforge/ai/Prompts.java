@@ -10,6 +10,16 @@ public class Prompts {
     private Prompts() {
     }
 
+    /** Three CV bullet points from a plain description of the work (feature 10). */
+    public static String bulletPoints(String role, String work) {
+        return "Write 3 CV bullet points in English for a student who worked as \"" + role
+                + "\". What the student did, in their own words: \"" + work + "\".\n"
+                + "Rules:\n"
+                + "- Each bullet starts with a strong action verb and is at most 20 words.\n"
+                + "- Use only facts from the description. Do not invent numbers, tools or results.\n"
+                + "- Return exactly 3 lines, one bullet per line, without dashes, numbers or extra text.";
+    }
+
     /** A short follow-up email for an application that got no reply for a week (feature 13). */
     public static String followUpEmail(String studentName, String company, String jobTitle) {
         return "Write a short, polite follow-up email in English from a student named " + studentName

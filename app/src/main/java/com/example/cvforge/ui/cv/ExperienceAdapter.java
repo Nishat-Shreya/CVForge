@@ -10,6 +10,7 @@ import com.example.cvforge.data.model.Cv;
 import com.example.cvforge.databinding.ItemExperienceBinding;
 import com.example.cvforge.util.ListText;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /** Editable list of work experience. Bullet points are typed one per line. */
@@ -22,6 +23,25 @@ public class ExperienceAdapter extends EditableListAdapter<Cv.Experience, Experi
     @Override
     protected Cv.Experience createItem() {
         return new Cv.Experience();
+    }
+
+    /** Adds a bullet to the entry with this role. If there is none, a new entry is made. */
+    public void addBullet(String role, String bullet) {
+        Cv.Experience target = null;
+        for (Cv.Experience item : items) {
+            if (item.role != null && item.role.equalsIgnoreCase(role)) {
+                target = item;
+            }
+        }
+        if (target == null) {
+            target = createItem();
+            target.role = role;
+            items.add(target);
+        }
+        List<String> bullets = new ArrayList<>(target.bullets);
+        bullets.add(bullet);
+        target.bullets = bullets;
+        notifyDataSetChanged();
     }
 
     @NonNull
