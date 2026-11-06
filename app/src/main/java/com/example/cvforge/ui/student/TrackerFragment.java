@@ -1,6 +1,7 @@
 package com.example.cvforge.ui.student;
 
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.DragEvent;
@@ -19,6 +20,7 @@ import com.example.cvforge.data.ResultListener;
 import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.Application;
 import com.example.cvforge.databinding.FragmentTrackerBinding;
+import com.example.cvforge.ui.tracker.ApplicationDetailActivity;
 import com.example.cvforge.ui.tracker.KanbanAdapter;
 import com.example.cvforge.ui.tracker.KanbanColumn;
 import com.example.cvforge.util.AnimUtils;
@@ -50,8 +52,7 @@ public class TrackerFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // tapping a card opens its details in a later checkpoint
-        kanbanAdapter = new KanbanAdapter(application -> { }, this::moveCard);
+        kanbanAdapter = new KanbanAdapter(this::openApplication, this::moveCard);
         binding.listColumns.setOnDragListener(this::scrollBoardWhileDragging);
         binding.listColumns.setAdapter(kanbanAdapter);
 
@@ -91,6 +92,14 @@ public class TrackerFragment extends Fragment {
             registration = null;
         }
         stopCountdownPulse();
+    }
+
+    /** Explicit Intent: a tap on a card opens its notes and timeline. */
+    private void openApplication(Application application) {
+        Intent intent = new Intent(requireContext(), ApplicationDetailActivity.class);
+        intent.putExtra(ApplicationDetailActivity.EXTRA_APPLICATION_ID, application.id);
+        startActivity(intent);
+        AnimUtils.fadeTransition(requireActivity());
     }
 
     // ---------- drag and drop ----------

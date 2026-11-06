@@ -281,4 +281,11 @@
     <string name="in_days">in %1$d days</string>
     <string name="in_hours">in %1$d h</string>
     <string name="in_minutes">in %1$d min</string>
+    <string name="notes_hint">Questions, contacts, things to prepare</string>
+    <string name="notes_private">Only you can see these notes.</string>
+    <string name="notes_saved">Notes saved</string>
+    <string name="notes_title">My notes</string>
+    <string name="open_internship">Open internship</string>
+    <string name="save_notes">Save notes</string>
+    <string name="timeline_title">Status timeline</string>
 </resources>

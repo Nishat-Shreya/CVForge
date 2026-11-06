@@ -46,6 +46,23 @@ public class ApplicationRepository {
                 });
     }
 
+    /** Listens to one application. The application is null if it was deleted. */
+    public ListenerRegistration listenOne(String applicationId, ApplicationListener listener) {
+        return db.collection(APPLICATIONS).document(applicationId)
+                .addSnapshotListener((snapshot, error) -> {
+                    if (error == null && snapshot != null) {
+                        listener.onLoaded(snapshot.toObject(Application.class));
+                    }
+                });
+    }
+
+    /** Saves the private notes of the student. */
+    public void saveNotes(String applicationId, String notes, ResultListener listener) {
+        db.collection(APPLICATIONS).document(applicationId).update("notes", notes)
+                .addOnSuccessListener(unused -> listener.onSuccess())
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
     /** Loads the application of a student for one internship, or null if there is none. */
     public void load(String studentId, String internshipId, ApplicationListener listener) {
         String id = Application.idFor(studentId, internshipId);
