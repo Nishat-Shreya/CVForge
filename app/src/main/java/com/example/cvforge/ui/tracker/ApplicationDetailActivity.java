@@ -22,7 +22,7 @@ import com.example.cvforge.databinding.ActivityApplicationDetailBinding;
 import com.example.cvforge.ui.discover.InternshipDetailActivity;
 import com.example.cvforge.util.AnimUtils;
 import com.example.cvforge.util.CalendarHelper;
-import com.example.cvforge.util.FollowUpEmail;
+import com.example.cvforge.util.FollowUpFlow;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.Date;
@@ -193,17 +193,12 @@ public class ApplicationDetailActivity extends AppCompatActivity {
         }
     }
 
-    /** Implicit Intent (ACTION_SENDTO): the email app opens with the follow-up text filled in. */
+    /** Gemini writes the draft, then the email app opens (Intent ACTION_SENDTO). */
     private void openFollowUpEmail() {
         if (application == null) {
             return;
         }
-        try {
-            startActivity(FollowUpEmail.intent(this, application.studentName, application.companyName,
-                    application.internshipTitle));
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, R.string.no_email_app, Toast.LENGTH_SHORT).show();
-        }
+        FollowUpFlow.start(this, application.studentName, application.companyName, application.internshipTitle);
     }
 
     /** Opens the internship details (explicit Intent with the internship id). */

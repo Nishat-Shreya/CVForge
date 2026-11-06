@@ -1,7 +1,6 @@
 package com.example.cvforge.ui.student;
 
 import android.animation.ObjectAnimator;
-import android.content.ActivityNotFoundException;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -26,7 +25,7 @@ import com.example.cvforge.data.model.Cv;
 import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.FragmentHomeBinding;
 import com.example.cvforge.util.AnimUtils;
-import com.example.cvforge.util.FollowUpEmail;
+import com.example.cvforge.util.FollowUpFlow;
 import com.example.cvforge.util.StreakTracker;
 import com.example.cvforge.util.StrengthScore;
 
@@ -211,14 +210,10 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    /** Implicit Intent (ACTION_SENDTO): the email app opens with the follow-up text filled in. */
+    /** Gemini writes the draft, then the email app opens (Intent ACTION_SENDTO). */
     private void openFollowUp(Application application) {
-        try {
-            startActivity(FollowUpEmail.intent(requireContext(), application.studentName,
-                    application.companyName, application.internshipTitle));
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(requireContext(), R.string.no_email_app, Toast.LENGTH_SHORT).show();
-        }
+        FollowUpFlow.start(requireContext(), application.studentName,
+                application.companyName, application.internshipTitle);
     }
 
     private void showStreak() {

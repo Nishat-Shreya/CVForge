@@ -338,4 +338,9 @@
     <string name="ghosting_text">%1$s has not answered about %2$s. A short follow-up can help.</string>
     <string name="ghosting_title">No reply in %1$d days</string>
     <string name="no_email_app">No email app found</string>
+    <string name="ai_error_network">No internet connection. Check your network and try again.</string>
+    <string name="ai_error_quota">The AI limit is reached for now. Please try again later.</string>
+    <string name="ai_error_service">AI service is not available right now.</string>
+    <string name="ai_error_with_template">%1$s Using a ready template instead.</string>
+    <string name="ai_writing">Writing a draft with AI…</string>
 </resources>
