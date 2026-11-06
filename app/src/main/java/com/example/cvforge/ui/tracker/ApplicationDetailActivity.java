@@ -40,6 +40,7 @@ public class ApplicationDetailActivity extends AppCompatActivity {
     private ListenerRegistration registration;
     /** The notes are copied into the text field only once, so live updates never erase typing. */
     private boolean notesShown;
+    private boolean notesLoading;
     private String savedNotes = "";
 
     @Override
@@ -98,15 +99,26 @@ public class ApplicationDetailActivity extends AppCompatActivity {
             binding.chipInterview.setVisibility(View.GONE);
         }
 
-        if (!notesShown) {
-            savedNotes = loaded.notes == null ? "" : loaded.notes;
-            binding.editNotes.setText(savedNotes);
-            notesShown = true;
+        if (!notesLoading) {
+            loadNotesOnce();
         }
         timelineAdapter.setSteps(loaded.statusHistory);
     }
 
-    /** Saves the notes of the student. */
+    /** The notes are in their own collection that only the student can read. They are loaded once. */
+    private void loadNotesOnce() {
+        notesLoading = true;
+        repository.loadNotes(applicationId, notes -> {
+            if (isDestroyed()) {
+                return;
+            }
+            savedNotes = notes;
+            binding.editNotes.setText(notes);
+            notesShown = true;
+        });
+    }
+
+    /** Saves the notes. Only the student can read them, a company never sees them. */
     private void saveNotes(boolean showMessage) {
         if (application == null || !notesShown) {
             return;
@@ -116,7 +128,7 @@ public class ApplicationDetailActivity extends AppCompatActivity {
             return;
         }
         savedNotes = notes;
-        repository.saveNotes(applicationId, notes, new ResultListener() {
+        repository.saveNotes(applicationId, application.studentId, notes, new ResultListener() {
             @Override
             public void onSuccess() {
                 if (showMessage) {

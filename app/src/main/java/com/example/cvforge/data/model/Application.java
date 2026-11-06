@@ -60,8 +60,6 @@ public class Application {
     public long interviewAt;
     /** Deadline of the internship, copied when the student saves it. */
     public long deadline;
-    /** The private notes of the student. */
-    public String notes = "";
 
     // Firestore needs an empty constructor
     public Application() {

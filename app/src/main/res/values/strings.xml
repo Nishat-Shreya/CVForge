@@ -288,4 +288,19 @@
     <string name="open_internship">Open internship</string>
     <string name="save_notes">Save notes</string>
     <string name="timeline_title">Status timeline</string>
+    <string name="action_interview">Interview</string>
+    <string name="action_offer">Send offer</string>
+    <string name="action_shortlist">Shortlist</string>
+    <string name="applicants_open">Applicants</string>
+    <string name="interview_planned">Interview planned</string>
+    <string name="job_selector">%1$s · %2$d applicants</string>
+    <string name="no_applicants_message">Applicants for this step will show up here.</string>
+    <string name="no_applicants_title">No applicants here</string>
+    <string name="reject">Reject</string>
+    <string name="reject_message">%1$s will see that the application was rejected.</string>
+    <string name="reject_title">Reject this applicant?</string>
+    <string name="select_internship">Choose an internship</string>
+    <string name="tab_interview">Interview %1$d</string>
+    <string name="tab_new">New %1$d</string>
+    <string name="tab_shortlisted">Shortlisted %1$d</string>
 </resources>

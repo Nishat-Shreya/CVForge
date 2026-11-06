@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.cvforge.R;
 import com.example.cvforge.databinding.ActivityCompanyBinding;
+import com.example.cvforge.ui.post.ApplicantsFragment;
 
 /** Company home: Dashboard, Postings, Applicants and Profile tabs. */
 public class CompanyActivity extends AppCompatActivity {
@@ -56,7 +57,7 @@ public class CompanyActivity extends AppCompatActivity {
             case 1:
                 return TitleFragment.newInstance(R.string.tab_postings, false, true);
             case 2:
-                return TitleFragment.newInstance(R.string.tab_applicants, false, false);
+                return new ApplicantsFragment();
             case 3:
                 return TitleFragment.newInstance(R.string.tab_profile, true, false);
             default:

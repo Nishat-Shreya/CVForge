@@ -25,6 +25,7 @@ public class ApplicationRepository {
     }
 
     private static final String APPLICATIONS = "applications";
+    private static final String NOTES = "applicationNotes";
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -46,6 +47,71 @@ public class ApplicationRepository {
                 });
     }
 
+    /** Listens to all applications to the internships of a poster. Saved internships are left out. */
+    public ListenerRegistration listenByPoster(String posterId, ListListener listener) {
+        return db.collection(APPLICATIONS).whereEqualTo("posterId", posterId)
+                .addSnapshotListener((snapshot, error) -> {
+                    if (error != null) {
+                        listener.onError(error.getMessage());
+                        return;
+                    }
+                    if (snapshot == null) {
+                        return;
+                    }
+                    List<Application> list = new ArrayList<>();
+                    for (Application application : snapshot.toObjects(Application.class)) {
+                        if (!Application.STATUS_SAVED.equals(application.status)) {
+                            list.add(application);
+                        }
+                    }
+                    listener.onChanged(list);
+                });
+    }
+
+    /** The poster plans an interview: the status becomes "interview" and the time is saved. */
+    public void scheduleInterview(Application application, long interviewAt, ResultListener listener) {
+        application.interviewAt = interviewAt;
+        long now = System.currentTimeMillis();
+        application.changeStatus(Application.STATUS_INTERVIEW, now);
+        db.collection(APPLICATIONS).document(application.id)
+                .update("status", application.status,
+                        "statusHistory", application.statusHistory,
+                        "lastChangeAt", application.lastChangeAt,
+                        "interviewAt", interviewAt)
+                .addOnSuccessListener(unused -> listener.onSuccess())
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
+    /**
+     * Callback for the private notes. Runs on the main thread.
+     */
+    public interface NotesListener {
+        void onLoaded(String notes);
+    }
+
+    /**
+     * The private notes are kept in their own collection, so a company that can read the
+     * application can never read the notes.
+     */
+    public void loadNotes(String applicationId, NotesListener listener) {
+        db.collection(NOTES).document(applicationId).get()
+                .addOnSuccessListener(snapshot -> {
+                    String notes = snapshot.getString("notes");
+                    listener.onLoaded(notes == null ? "" : notes);
+                })
+                .addOnFailureListener(e -> listener.onLoaded(""));
+    }
+
+    /** Saves the private notes of the student. */
+    public void saveNotes(String applicationId, String studentId, String notes, ResultListener listener) {
+        java.util.Map<String, Object> data = new java.util.HashMap<>();
+        data.put("studentId", studentId);
+        data.put("notes", notes);
+        db.collection(NOTES).document(applicationId).set(data)
+                .addOnSuccessListener(unused -> listener.onSuccess())
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
     /** Listens to one application. The application is null if it was deleted. */
     public ListenerRegistration listenOne(String applicationId, ApplicationListener listener) {
         return db.collection(APPLICATIONS).document(applicationId)
@@ -54,13 +120,6 @@ public class ApplicationRepository {
                         listener.onLoaded(snapshot.toObject(Application.class));
                     }
                 });
-    }
-
-    /** Saves the private notes of the student. */
-    public void saveNotes(String applicationId, String notes, ResultListener listener) {
-        db.collection(APPLICATIONS).document(applicationId).update("notes", notes)
-                .addOnSuccessListener(unused -> listener.onSuccess())
-                .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
     /** Loads the application of a student for one internship, or null if there is none. */
