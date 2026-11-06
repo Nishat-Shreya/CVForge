@@ -319,4 +319,14 @@
     <string name="digest_both">%1$s and %2$s today</string>
     <string name="digest_one">%1$s today</string>
     <string name="digest_title">Good morning</string>
+    <string name="add_to_calendar">Add to calendar</string>
+    <string name="calendar_added">Interview added to your calendar</string>
+    <string name="calendar_event_description">Interview planned in CVForge. Prepare your answers and a short demo.</string>
+    <string name="calendar_event_title">Interview: %1$s at %2$s</string>
+    <string name="calendar_offer_message">Put the interview with %1$s in your calendar.</string>
+    <string name="calendar_offer_title">Add to your calendar?</string>
+    <string name="calendar_permission_message">CVForge can put your interview in the calendar of your phone. If you do not allow it, the calendar app opens and you tap Save yourself.</string>
+    <string name="calendar_permission_title">Allow calendar access?</string>
+    <string name="no_calendar_app">No calendar app found</string>
+    <string name="yes_add">Add</string>
 </resources>

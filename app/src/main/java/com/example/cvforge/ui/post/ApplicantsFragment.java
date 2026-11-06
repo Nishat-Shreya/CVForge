@@ -2,6 +2,7 @@ package com.example.cvforge.ui.post;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.example.cvforge.data.model.Application;
 import com.example.cvforge.data.model.Internship;
 import com.example.cvforge.databinding.FragmentApplicantsBinding;
 import com.example.cvforge.util.AnimUtils;
+import com.example.cvforge.util.CalendarHelper;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.gson.Gson;
 
@@ -330,6 +332,7 @@ public class ApplicantsFragment extends Fragment implements ApplicantAdapter.Lis
             @Override
             public void onSuccess() {
                 showMessage(getString(R.string.interview_planned));
+                offerCalendar(application, time);
             }
 
             @Override
@@ -337,6 +340,26 @@ public class ApplicantsFragment extends Fragment implements ApplicantAdapter.Lis
                 showMessage(message);
             }
         });
+    }
+
+    /** The company can also put the interview in its own calendar (implicit Intent, no permission needed). */
+    private void offerCalendar(Application application, long time) {
+        if (binding == null) {
+            return;
+        }
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.calendar_offer_title)
+                .setMessage(getString(R.string.calendar_offer_message, application.studentName))
+                .setPositiveButton(R.string.yes_add, (dialog, which) -> {
+                    try {
+                        startActivity(CalendarHelper.insertIntent(requireContext(), application.studentName,
+                                application.internshipTitle, time));
+                    } catch (ActivityNotFoundException e) {
+                        showMessage(getString(R.string.no_calendar_app));
+                    }
+                })
+                .setNegativeButton(R.string.not_now, null)
+                .show();
     }
 
     private void showMessage(String message) {

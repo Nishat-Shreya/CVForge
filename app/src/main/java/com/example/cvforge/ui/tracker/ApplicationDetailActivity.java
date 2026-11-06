@@ -1,11 +1,15 @@
 package com.example.cvforge.ui.tracker;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +21,7 @@ import com.example.cvforge.data.model.Application;
 import com.example.cvforge.databinding.ActivityApplicationDetailBinding;
 import com.example.cvforge.ui.discover.InternshipDetailActivity;
 import com.example.cvforge.util.AnimUtils;
+import com.example.cvforge.util.CalendarHelper;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.Date;
@@ -41,6 +46,9 @@ public class ApplicationDetailActivity extends AppCompatActivity {
     /** The notes are copied into the text field only once, so live updates never erase typing. */
     private boolean notesShown;
     private boolean notesLoading;
+    /** Asks for the calendar permissions. The answer decides how the interview is added. */
+    private final ActivityResultLauncher<String[]> calendarPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(), result -> addInterviewToCalendar());
     private String savedNotes = "";
 
     @Override
@@ -55,6 +63,7 @@ public class ApplicationDetailActivity extends AppCompatActivity {
         binding.listTimeline.setAdapter(timelineAdapter);
         binding.btnSaveNotes.setOnClickListener(v -> saveNotes(true));
         binding.btnOpenInternship.setOnClickListener(v -> openInternship());
+        binding.btnAddCalendar.setOnClickListener(v -> onAddToCalendarClick());
 
         AnimUtils.slideUpIn(binding.cardStatus, 0);
     }
@@ -95,8 +104,10 @@ public class ApplicationDetailActivity extends AppCompatActivity {
             CharSequence when = DateFormat.format("EEE d MMM, h:mm a", new Date(loaded.interviewAt));
             binding.chipInterview.setText(getString(R.string.chip_interview_at, when));
             binding.chipInterview.setVisibility(View.VISIBLE);
+            binding.btnAddCalendar.setVisibility(View.VISIBLE);
         } else {
             binding.chipInterview.setVisibility(View.GONE);
+            binding.btnAddCalendar.setVisibility(View.GONE);
         }
 
         if (!notesLoading) {
@@ -141,6 +152,40 @@ public class ApplicationDetailActivity extends AppCompatActivity {
                 Toast.makeText(ApplicationDetailActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /** W10 runtime permission: explain first, then ask. Without the permission the calendar app opens instead. */
+    private void onAddToCalendarClick() {
+        if (application == null) {
+            return;
+        }
+        if (CalendarHelper.hasPermission(this)) {
+            addInterviewToCalendar();
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.calendar_permission_title)
+                .setMessage(R.string.calendar_permission_message)
+                .setPositiveButton(R.string.allow, (dialog, which) -> calendarPermissionLauncher.launch(CalendarHelper.permissions()))
+                .setNegativeButton(R.string.not_now, (dialog, which) -> addInterviewToCalendar())
+                .show();
+    }
+
+    /** With permission: the event is written directly. Otherwise the calendar app opens with the event filled in. */
+    private void addInterviewToCalendar() {
+        if (application == null) {
+            return;
+        }
+        if (CalendarHelper.hasPermission(this)
+                && CalendarHelper.insertEvent(this, application.companyName, application.internshipTitle, application.interviewAt)) {
+            Toast.makeText(this, R.string.calendar_added, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            startActivity(CalendarHelper.insertIntent(this, application.companyName, application.internshipTitle, application.interviewAt));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, R.string.no_calendar_app, Toast.LENGTH_SHORT).show();
+        }
     }
 
     /** Opens the internship details (explicit Intent with the internship id). */
