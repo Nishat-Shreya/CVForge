@@ -24,6 +24,8 @@ import com.example.cvforge.ui.tracker.ApplicationDetailActivity;
 import com.example.cvforge.ui.tracker.KanbanAdapter;
 import com.example.cvforge.ui.tracker.KanbanColumn;
 import com.example.cvforge.util.AnimUtils;
+import com.example.cvforge.util.ExactAlarmPermission;
+import com.example.cvforge.util.ReminderScheduler;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.Date;
@@ -72,6 +74,8 @@ public class TrackerFragment extends Fragment {
                 if (binding != null) {
                     kanbanAdapter.setApplications(applications);
                     showNextInterview(applications);
+                    // the alarms follow the board, for example when a company plans an interview
+                    ReminderScheduler.schedule(requireContext(), applications);
                 }
             }
 
@@ -159,6 +163,7 @@ public class TrackerFragment extends Fragment {
         }
 
         binding.bannerInterview.setVisibility(View.VISIBLE);
+        ExactAlarmPermission.requestOnce(requireActivity());
         binding.textBannerTitle.setText(getString(R.string.banner_interview, next.companyName));
         binding.textBannerTime.setText(DateFormat.format("EEE d MMM, h:mm a", new Date(next.interviewAt)));
         binding.textCountdown.setText(countdownText(next.interviewAt - now));

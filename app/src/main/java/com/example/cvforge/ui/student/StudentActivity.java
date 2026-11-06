@@ -20,6 +20,7 @@ import com.example.cvforge.ui.tracker.ApplicationDetailActivity;
 import com.example.cvforge.util.AnimUtils;
 import com.example.cvforge.util.NotificationHelper;
 import com.example.cvforge.util.NotificationPermission;
+import com.example.cvforge.util.ReminderScheduler;
 
 /** Student home: five tabs in a bottom navigation bar, one fragment per tab. */
 public class StudentActivity extends AppCompatActivity {
@@ -48,6 +49,8 @@ public class StudentActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             notificationPermission.requestIfNeeded();
         }
+        // keeps the reminder alarms up to date in the background (WorkManager)
+        ReminderScheduler.enqueueRefresh(this);
         binding = ActivityStudentBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

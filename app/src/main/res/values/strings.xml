@@ -309,4 +309,11 @@
     <string name="not_now">Not now</string>
     <string name="notification_permission_message">CVForge sends a notification when a company changes the status of your application, and before interviews and deadlines.</string>
     <string name="notification_permission_title">Allow notifications?</string>
+    <string name="exact_alarm_message">Your interview reminder should arrive on time. Please allow alarms and reminders for CVForge in the next screen. Without it the reminder can come a few minutes late.</string>
+    <string name="exact_alarm_title">Allow exact alarms?</string>
+    <string name="open_settings">Open settings</string>
+    <string name="reminder_deadline_text">%1$s at %2$s closes in 1 day. Apply now.</string>
+    <string name="reminder_deadline_title">Deadline tomorrow</string>
+    <string name="reminder_interview_text">%1$s at %2$s. Good luck!</string>
+    <string name="reminder_interview_title">Interview in 1 hour</string>
 </resources>

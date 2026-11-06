@@ -51,6 +51,9 @@ dependencies {
     // QR code on the CV
     implementation 'com.google.zxing:core:3.5.1'
 
+    // WorkManager: background work that survives a restart (reminders)
+    implementation 'androidx.work:work-runtime:2.7.1'
+
     // Networking: Retrofit turns web addresses into Java methods, Gson reads the JSON
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'

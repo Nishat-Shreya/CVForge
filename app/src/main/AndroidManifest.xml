@@ -9,6 +9,9 @@
     <!-- Android 13 and newer ask the user before notifications can be shown -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- Exact times for interview reminders. From Android 12 the user allows it in the settings. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <application
         android:name=".CvForgeApp"
         android:allowBackup="true"
@@ -84,6 +87,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".receiver.ReminderReceiver"
+            android:exported="false" />
 
         <service
             android:name=".service.CvForgeMessagingService"
