@@ -16,6 +16,7 @@ import androidx.work.WorkManager;
 import com.example.cvforge.data.model.Application;
 import com.example.cvforge.receiver.ReminderReceiver;
 import com.example.cvforge.service.DigestWorker;
+import com.example.cvforge.service.GhostingWorker;
 import com.example.cvforge.service.ReminderWorker;
 
 import java.util.Calendar;
@@ -35,6 +36,7 @@ public class ReminderScheduler {
     private static final String WORK_PERIODIC = "reminder_refresh";
     private static final String WORK_NOW = "reminder_refresh_now";
     private static final String WORK_DIGEST = "morning_digest";
+    private static final String WORK_GHOSTING = "ghosting_check";
 
     private ReminderScheduler() {
     }
@@ -107,6 +109,13 @@ public class ReminderScheduler {
         workManager.enqueueUniquePeriodicWork(WORK_PERIODIC, ExistingPeriodicWorkPolicy.KEEP,
                 new PeriodicWorkRequest.Builder(ReminderWorker.class, 6, TimeUnit.HOURS).build());
         refreshNow(context);
+    }
+
+    /** The Ghosting Detector: once a day. */
+    public static void enqueueGhosting(Context context) {
+        PeriodicWorkRequest request = new PeriodicWorkRequest.Builder(GhostingWorker.class, 24, TimeUnit.HOURS).build();
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(WORK_GHOSTING,
+                ExistingPeriodicWorkPolicy.KEEP, request);
     }
 
     /** The morning digest: once a day at about 8:00. The first run waits until the next 8:00. */

@@ -22,6 +22,7 @@ import com.example.cvforge.databinding.ActivityApplicationDetailBinding;
 import com.example.cvforge.ui.discover.InternshipDetailActivity;
 import com.example.cvforge.util.AnimUtils;
 import com.example.cvforge.util.CalendarHelper;
+import com.example.cvforge.util.FollowUpEmail;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.Date;
@@ -64,6 +65,7 @@ public class ApplicationDetailActivity extends AppCompatActivity {
         binding.btnSaveNotes.setOnClickListener(v -> saveNotes(true));
         binding.btnOpenInternship.setOnClickListener(v -> openInternship());
         binding.btnAddCalendar.setOnClickListener(v -> onAddToCalendarClick());
+        binding.btnFollowUp.setOnClickListener(v -> openFollowUpEmail());
 
         AnimUtils.slideUpIn(binding.cardStatus, 0);
     }
@@ -109,6 +111,9 @@ public class ApplicationDetailActivity extends AppCompatActivity {
             binding.chipInterview.setVisibility(View.GONE);
             binding.btnAddCalendar.setVisibility(View.GONE);
         }
+
+        // feature 13: no reply for 7 days, so a follow-up email can be drafted
+        binding.btnFollowUp.setVisibility(loaded.isGhosted(System.currentTimeMillis()) ? View.VISIBLE : View.GONE);
 
         if (!notesLoading) {
             loadNotesOnce();
@@ -185,6 +190,19 @@ public class ApplicationDetailActivity extends AppCompatActivity {
             startActivity(CalendarHelper.insertIntent(this, application.companyName, application.internshipTitle, application.interviewAt));
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, R.string.no_calendar_app, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /** Implicit Intent (ACTION_SENDTO): the email app opens with the follow-up text filled in. */
+    private void openFollowUpEmail() {
+        if (application == null) {
+            return;
+        }
+        try {
+            startActivity(FollowUpEmail.intent(this, application.studentName, application.companyName,
+                    application.internshipTitle));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, R.string.no_email_app, Toast.LENGTH_SHORT).show();
         }
     }
 

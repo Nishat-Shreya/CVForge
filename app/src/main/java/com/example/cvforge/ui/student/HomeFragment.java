@@ -1,7 +1,9 @@
 package com.example.cvforge.ui.student;
 
 import android.animation.ObjectAnimator;
+import android.content.ActivityNotFoundException;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +14,25 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.firebase.firestore.ListenerRegistration;
+
 import com.example.cvforge.R;
+import com.example.cvforge.data.ApplicationRepository;
 import com.example.cvforge.data.CvRepository;
 import com.example.cvforge.data.UserListener;
 import com.example.cvforge.data.UserRepository;
+import com.example.cvforge.data.model.Application;
 import com.example.cvforge.data.model.Cv;
 import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.FragmentHomeBinding;
 import com.example.cvforge.util.AnimUtils;
+import com.example.cvforge.util.FollowUpEmail;
 import com.example.cvforge.util.StreakTracker;
 import com.example.cvforge.util.StrengthScore;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /** Home tab, matches Docs/02-home.png. */
@@ -33,6 +41,9 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private FocusAdapter focusAdapter;
     private ObjectAnimator bellPulse;
+    private ListenerRegistration registration;
+    private StrengthScore.Result lastStrength;
+    private List<Application> applications = new ArrayList<>();
     private final UserRepository userRepository = new UserRepository();
 
     @Nullable
@@ -117,18 +128,97 @@ public class HomeFragment extends Fragment {
         binding.chipLevel.setText(getString(R.string.level_format, level, getString(nameRes)));
     }
 
-    /** Today's Focus: improve the CV (while it is not complete) and browse internships. */
+    /**
+     * Today's Focus: a follow-up for an application with no reply for 7 days, the next interview,
+     * improve the CV (while it is not complete) and browse internships.
+     */
     private void showFocus(StrengthScore.Result result) {
+        lastStrength = result;
+        rebuildFocus();
+    }
+
+    private void rebuildFocus() {
+        if (lastStrength == null || binding == null) {
+            return;
+        }
         List<FocusItem> items = new ArrayList<>();
-        if (result.tipRes != 0) {
-            items.add(new FocusItem("CV", getString(result.tipRes),
-                    getString(R.string.focus_cv_subtitle, result.score), getString(R.string.chip_improve),
+        long now = System.currentTimeMillis();
+
+        // feature 13: no reply for 7 days, with a button for a follow-up email
+        for (Application application : applications) {
+            if (application.isGhosted(now)) {
+                long days = (now - application.lastChangeAt) / (24L * 60 * 60 * 1000);
+                items.add(new FocusItem(initials(application.companyName),
+                        getString(R.string.focus_no_reply_title, days),
+                        getString(R.string.post_meta, application.companyName, application.internshipTitle),
+                        getString(R.string.draft_followup), R.color.coral_tint, R.color.coral_text,
+                        () -> openFollowUp(application)));
+            }
+        }
+
+        // the next interview
+        Application nextInterview = null;
+        for (Application application : applications) {
+            if (application.interviewAt > now
+                    && (nextInterview == null || application.interviewAt < nextInterview.interviewAt)) {
+                nextInterview = application;
+            }
+        }
+        if (nextInterview != null) {
+            CharSequence when = DateFormat.format("EEE d MMM, h:mm a", new Date(nextInterview.interviewAt));
+            items.add(new FocusItem(initials(nextInterview.companyName),
+                    getString(R.string.focus_interview_title, when),
+                    getString(R.string.post_meta, nextInterview.companyName, nextInterview.internshipTitle),
+                    getString(R.string.chip_interview), R.color.violet_tint, R.color.violet_text,
+                    () -> openTab(StudentActivity.TAB_TRACKER)));
+        }
+
+        if (lastStrength.tipRes != 0) {
+            items.add(new FocusItem("CV", getString(lastStrength.tipRes),
+                    getString(R.string.focus_cv_subtitle, lastStrength.score), getString(R.string.chip_improve),
                     R.color.violet_tint, R.color.violet_text, () -> openTab(StudentActivity.TAB_CV)));
         }
         items.add(new FocusItem("IN", getString(R.string.focus_discover_title),
                 getString(R.string.focus_discover_subtitle), getString(R.string.chip_browse),
                 R.color.teal_tint, R.color.teal_text, () -> openTab(StudentActivity.TAB_DISCOVER)));
         focusAdapter.setItems(items);
+    }
+
+    /** Home listens to the applications while it is visible, so the focus cards stay current. */
+    @Override
+    public void onStart() {
+        super.onStart();
+        registration = new ApplicationRepository().listen(userRepository.getCurrentUid(), new ApplicationRepository.ListListener() {
+            @Override
+            public void onChanged(List<Application> list) {
+                applications = list;
+                rebuildFocus();
+            }
+
+            @Override
+            public void onError(String message) {
+                // Home still works without the application cards
+            }
+        });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (registration != null) {
+            registration.remove();
+            registration = null;
+        }
+    }
+
+    /** Implicit Intent (ACTION_SENDTO): the email app opens with the follow-up text filled in. */
+    private void openFollowUp(Application application) {
+        try {
+            startActivity(FollowUpEmail.intent(requireContext(), application.studentName,
+                    application.companyName, application.internshipTitle));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(requireContext(), R.string.no_email_app, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showStreak() {

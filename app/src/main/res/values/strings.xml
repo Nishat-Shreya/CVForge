@@ -329,4 +329,13 @@
     <string name="calendar_permission_title">Allow calendar access?</string>
     <string name="no_calendar_app">No calendar app found</string>
     <string name="yes_add">Add</string>
+    <string name="chip_interview">Interview</string>
+    <string name="draft_followup">Draft follow-up</string>
+    <string name="focus_interview_title">Interview %1$s</string>
+    <string name="focus_no_reply_title">No reply in %1$d days</string>
+    <string name="followup_body">Dear %1$s team,\n\nI applied for the %2$s position a week ago. I am still very interested and would be happy to answer any questions or share more about my projects.\n\nThank you for your time.\n\nBest regards,\n%3$s</string>
+    <string name="followup_subject">Following up on my application: %1$s</string>
+    <string name="ghosting_text">%1$s has not answered about %2$s. A short follow-up can help.</string>
+    <string name="ghosting_title">No reply in %1$d days</string>
+    <string name="no_email_app">No email app found</string>
 </resources>
