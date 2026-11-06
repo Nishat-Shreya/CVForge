@@ -303,4 +303,10 @@
     <string name="tab_interview">Interview %1$d</string>
     <string name="tab_new">New %1$d</string>
     <string name="tab_shortlisted">Shortlisted %1$d</string>
+    <string name="allow">Allow</string>
+    <string name="channel_description">Application status changes, interview reminders and chat messages</string>
+    <string name="channel_name">Updates</string>
+    <string name="not_now">Not now</string>
+    <string name="notification_permission_message">CVForge sends a notification when a company changes the status of your application, and before interviews and deadlines.</string>
+    <string name="notification_permission_title">Allow notifications?</string>
 </resources>

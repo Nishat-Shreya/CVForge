@@ -3,6 +3,8 @@ package com.example.cvforge.ui;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.example.cvforge.data.UserRepository;
+import com.example.cvforge.service.CvForgeMessagingService;
 import com.example.cvforge.data.model.User;
 import com.example.cvforge.ui.admin.AdminActivity;
 import com.example.cvforge.ui.alumni.AlumniActivity;
@@ -20,7 +22,14 @@ public class RoleRouter {
 
     /** Opens the screen for this user and closes the login screens. */
     public static void open(Activity from, User user) {
+        // the push token of this phone is saved for the account that just signed in
+        new UserRepository().saveCurrentFcmToken();
         Intent intent = new Intent(from, targetFor(user));
+        // a tap on a notification can name a screen (for example "application:ID"), keep it
+        String target = from.getIntent().getStringExtra(CvForgeMessagingService.EXTRA_TARGET);
+        if (target != null) {
+            intent.putExtra(CvForgeMessagingService.EXTRA_TARGET, target);
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         from.startActivity(intent);
         AnimUtils.fadeTransition(from);

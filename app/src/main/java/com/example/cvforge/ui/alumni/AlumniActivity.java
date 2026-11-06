@@ -14,13 +14,22 @@ import com.example.cvforge.ui.auth.LogoutHelper;
 import com.example.cvforge.ui.post.ApplicantsActivity;
 import com.example.cvforge.ui.post.MyPostsActivity;
 import com.example.cvforge.util.AnimUtils;
+import com.example.cvforge.util.NotificationHelper;
+import com.example.cvforge.util.NotificationPermission;
 
 /** Alumni home screen. The real features are added in later checkpoints. */
 public class AlumniActivity extends AppCompatActivity {
 
+    private NotificationPermission notificationPermission;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NotificationHelper.createChannel(this);
+        notificationPermission = new NotificationPermission(this);
+        if (savedInstanceState == null) {
+            notificationPermission.requestIfNeeded();
+        }
         ActivityAlumniBinding binding = ActivityAlumniBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
