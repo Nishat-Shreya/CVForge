@@ -167,6 +167,17 @@ public class InternshipDetailActivity extends AppCompatActivity {
             addChip(binding.groupMatch, getString(R.string.missing_format, skill), R.color.coral_tint, R.color.coral_text);
         }
 
+        binding.btnRoadmap.setVisibility(result.missing.isEmpty() ? View.GONE : View.VISIBLE);
+        binding.btnRoadmap.setOnClickListener(v -> {
+            Intent intent = new Intent(this, RoadmapActivity.class);
+            intent.putExtra(RoadmapActivity.EXTRA_INTERNSHIP_ID, post.id);
+            intent.putExtra(RoadmapActivity.EXTRA_TITLE, post.title);
+            intent.putStringArrayListExtra(RoadmapActivity.EXTRA_MISSING,
+                    new java.util.ArrayList<>(result.missing));
+            startActivity(intent);
+            AnimUtils.fadeTransition(this);
+        });
+
         if (result.missing.isEmpty()) {
             binding.textMatchTip.setVisibility(View.GONE);
         } else {

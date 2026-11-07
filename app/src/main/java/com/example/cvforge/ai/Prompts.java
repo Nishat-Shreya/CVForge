@@ -35,6 +35,18 @@ public class Prompts {
                 + "- Do not use markdown and do not add any text outside the JSON.";
     }
 
+    /** A short learning plan for the skills a student is missing for an internship (feature 11). */
+    public static String roadmap(String jobTitle, String missingSkills) {
+        return "A student wants the internship \"" + jobTitle + "\" but does not have these skills yet: "
+                + missingSkills + ".\n"
+                + "Write a learning roadmap with one step for each skill, at most 5 steps.\n"
+                + "Rules:\n"
+                + "- Each step is one line in this format: Skill | one concrete thing to do | time needed\n"
+                + "- Example: SQL | Build a small library database and write 10 queries | 1 week\n"
+                + "- Use only free, beginner-friendly practice. Keep each line under 25 words.\n"
+                + "- Return only the lines, without numbers, dashes or extra text.";
+    }
+
     /** A short follow-up email for an application that got no reply for a week (feature 13). */
     public static String followUpEmail(String studentName, String company, String jobTitle) {
         return "Write a short, polite follow-up email in English from a student named " + studentName

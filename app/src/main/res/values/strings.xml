@@ -355,4 +355,14 @@
     <string name="tailor_done">Saved as a new version. Check it before you apply.</string>
     <string name="tailor_no_cv">Create a CV first, then I can tailor it.</string>
     <string name="tailor_working">Tailoring your CV…</string>
+    <string name="roadmap_builtin_note">%1$s This is a simple built-in plan. Tap Try again to ask the AI.</string>
+    <string name="roadmap_builtin_task">Learn the basics of %1$s with a free beginner course, then build one small project that uses it.</string>
+    <string name="roadmap_builtin_time">1 to 2 weeks</string>
+    <string name="roadmap_done">Step done</string>
+    <string name="roadmap_failed">Could not make the roadmap. Check your internet and try again.</string>
+    <string name="roadmap_goal">Goal: %1$s. Missing skills: %2$s</string>
+    <string name="roadmap_open">Learn the missing skills</string>
+    <string name="roadmap_progress">%1$d of %2$d steps done</string>
+    <string name="roadmap_retry">Try again</string>
+    <string name="roadmap_title">Skill roadmap</string>
 </resources>

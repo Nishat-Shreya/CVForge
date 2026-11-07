@@ -47,6 +47,9 @@
             android:name=".ui.discover.InternshipDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.discover.RoadmapActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.post.MyPostsActivity"
             android:exported="false" />
         <activity
