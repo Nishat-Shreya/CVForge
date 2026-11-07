@@ -351,4 +351,8 @@
     <string name="bullet_work_hint">What did you do?</string>
     <string name="bullet_write">Write bullets</string>
     <string name="bullet_writer">Bullet writer</string>
+    <string name="tailor_cv">✦ Tailor my CV to this job</string>
+    <string name="tailor_done">Saved as a new version. Check it before you apply.</string>
+    <string name="tailor_no_cv">Create a CV first, then I can tailor it.</string>
+    <string name="tailor_working">Tailoring your CV…</string>
 </resources>

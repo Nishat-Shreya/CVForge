@@ -217,8 +217,21 @@
                             android:gravity="start"
                             android:padding="12dp"
                             android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/btnTailor"
+                            style="@style/ChipTint.Coral"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:minHeight="48dp"
+                            android:text="@string/tailor_cv"
+                            android:textSize="14sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+
                 <TextView
                     style="@style/TextSectionTitle"
                     android:layout_width="wrap_content"

@@ -20,6 +20,21 @@ public class Prompts {
                 + "- Return exactly 3 lines, one bullet per line, without dashes, numbers or extra text.";
     }
 
+    /** Rewrites headline, summary and skill order of a CV for one internship (feature 9). */
+    public static String tailorCv(String cvJson, String jobTitle, String jobDescription, String jobSkills) {
+        return "You adapt a student's CV for one internship. Here is the CV as JSON:\n" + cvJson
+                + "\n\nInternship: " + jobTitle + "\nRequired skills: " + jobSkills
+                + "\nDescription: " + jobDescription + "\n\n"
+                + "Return ONLY a JSON object with these keys: "
+                + "\"headline\" (string, max 8 words), \"summary\" (string, max 50 words), "
+                + "\"skills\" (array of strings).\n"
+                + "Rules:\n"
+                + "- Use only facts that are in the CV. Do not invent skills, experience, numbers or degrees.\n"
+                + "- \"skills\" must only contain skills from the CV skills, with the ones that fit this "
+                + "internship first.\n"
+                + "- Do not use markdown and do not add any text outside the JSON.";
+    }
+
     /** A short follow-up email for an application that got no reply for a week (feature 13). */
     public static String followUpEmail(String studentName, String company, String jobTitle) {
         return "Write a short, polite follow-up email in English from a student named " + studentName

@@ -11,14 +11,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.cvforge.R;
+import com.example.cvforge.ai.TailorCv;
 import com.example.cvforge.data.ApplicationRepository;
 import com.example.cvforge.data.CvRepository;
 import com.example.cvforge.data.InternshipRepository;
 import com.example.cvforge.data.JobRepository;
+import com.example.cvforge.data.ResultListener;
 import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.Application;
+import com.example.cvforge.data.model.Cv;
 import com.example.cvforge.data.model.Internship;
 import com.example.cvforge.databinding.ActivityInternshipDetailBinding;
+import com.example.cvforge.ui.cv.CvEditorActivity;
 import com.example.cvforge.util.AnimUtils;
 import com.example.cvforge.util.MatchScore;
 
@@ -57,6 +61,7 @@ public class InternshipDetailActivity extends AppCompatActivity {
         binding.btnBack.setOnClickListener(v -> finish());
         binding.btnSave.setOnClickListener(v -> saveInternship());
         binding.btnApply.setOnClickListener(v -> startApply());
+        binding.btnTailor.setOnClickListener(v -> tailorCv());
         binding.barActions.setVisibility(View.GONE);
 
         String json = getIntent().getStringExtra(EXTRA_INTERNSHIP_JSON);
@@ -169,6 +174,79 @@ public class InternshipDetailActivity extends AppCompatActivity {
             binding.textMatchTip.setText(getString(R.string.match_tip, result.missing.get(0),
                     MatchScore.percentWithOneMore(result)));
         }
+    }
+
+    // ---------- Tailor my CV (feature 9) ----------
+
+    /** Gemini adapts the newest CV to this job. The result is saved as a new CV version. */
+    private void tailorCv() {
+        binding.btnTailor.setEnabled(false);
+        binding.btnTailor.setText(R.string.tailor_working);
+        // soft blink while the AI works (A7 style loop, skipped when animations are off)
+        android.animation.ObjectAnimator blink = null;
+        if (AnimUtils.animationsEnabled(this)) {
+            blink = android.animation.ObjectAnimator.ofFloat(binding.btnTailor, View.ALPHA, 1f, 0.4f);
+            blink.setDuration(700);
+            blink.setRepeatMode(android.animation.ValueAnimator.REVERSE);
+            blink.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+            blink.start();
+        }
+        final android.animation.ObjectAnimator blinkAnimator = blink;
+
+        CvRepository cvRepository = new CvRepository(this);
+        cvRepository.loadAll(uid, cvs -> {
+            if (isDestroyed()) {
+                return;
+            }
+            if (cvs.isEmpty()) {
+                finishTailor(blinkAnimator, getString(R.string.tailor_no_cv));
+                return;
+            }
+            new TailorCv(this).tailor(cvs.get(0), internship, new TailorCv.Callback() {
+                @Override
+                public void onTailored(Cv tailored) {
+                    cvRepository.save(tailored, new ResultListener() {
+                        @Override
+                        public void onSuccess() {
+                            openTailored(blinkAnimator, tailored);
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            // it is saved on the phone, Firestore gets it later
+                            openTailored(blinkAnimator, tailored);
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(String message) {
+                    if (!isDestroyed()) {
+                        finishTailor(blinkAnimator, message);
+                    }
+                }
+            });
+        });
+    }
+
+    private void openTailored(android.animation.ObjectAnimator blink, Cv tailored) {
+        if (isDestroyed()) {
+            return;
+        }
+        finishTailor(blink, getString(R.string.tailor_done));
+        Intent intent = new Intent(this, CvEditorActivity.class);
+        intent.putExtra(CvEditorActivity.EXTRA_CV_ID, tailored.id);
+        startActivity(intent);
+    }
+
+    private void finishTailor(android.animation.ObjectAnimator blink, String message) {
+        if (blink != null) {
+            blink.cancel();
+        }
+        binding.btnTailor.setAlpha(1f);
+        binding.btnTailor.setEnabled(true);
+        binding.btnTailor.setText(R.string.tailor_cv);
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     private void addChip(ViewGroup group, String text, int backgroundRes, int textRes) {
