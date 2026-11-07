@@ -47,6 +47,29 @@ public class Prompts {
                 + "- Return only the lines, without numbers, dashes or extra text.";
     }
 
+    /**
+     * One turn of the interview coach (feature 12). The chat so far is in "transcript".
+     * On the last turn the coach gives a short summary instead of a new question.
+     */
+    public static String interviewTurn(String role, String company, String transcript, boolean first, boolean last) {
+        String task;
+        if (first) {
+            task = "Start the interview. Ask the first question only.";
+        } else if (last) {
+            task = "Give short feedback on the last answer, then a final summary: two strengths and "
+                    + "two things to improve. Do not ask another question.";
+        } else {
+            task = "Give 1 or 2 sentences of kind, concrete feedback on the last answer, then ask the "
+                    + "next question.";
+        }
+        return "You are a friendly interview coach. You practise an interview with a student for the "
+                + "internship \"" + role + "\" at " + company + ".\n"
+                + (transcript.isEmpty() ? "" : "Chat so far:\n" + transcript + "\n")
+                + task + "\n"
+                + "Rules: plain text only, no markdown, maximum 70 words. Mix a question about motivation, "
+                + "a technical or role question and a teamwork question across the interview.";
+    }
+
     /** A short follow-up email for an application that got no reply for a week (feature 13). */
     public static String followUpEmail(String studentName, String company, String jobTitle) {
         return "Write a short, polite follow-up email in English from a student named " + studentName

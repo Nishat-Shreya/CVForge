@@ -18,6 +18,15 @@
     <!-- Put an interview in the phone calendar. The app asks the user at runtime. -->
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <!-- Interview coach: the student can speak the answer. Asked at runtime. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Android 11+: lets the app find the speech recognition service -->
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
 
     <application
         android:name=".CvForgeApp"
@@ -49,6 +58,10 @@
         <activity
             android:name=".ui.discover.RoadmapActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.coach.CoachActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.post.MyPostsActivity"
             android:exported="false" />

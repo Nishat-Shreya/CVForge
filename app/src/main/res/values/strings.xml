@@ -365,4 +365,13 @@
     <string name="roadmap_progress">%1$d of %2$d steps done</string>
     <string name="roadmap_retry">Try again</string>
     <string name="roadmap_title">Skill roadmap</string>
+    <string name="coach_answer_hint">Your answer</string>
+    <string name="coach_failed">%1$s Tap Send to try again.</string>
+    <string name="coach_listening">Listening…</string>
+    <string name="coach_mic_denied">Microphone not allowed. You can still type your answer.</string>
+    <string name="coach_open">Practice interview</string>
+    <string name="coach_send">Send</string>
+    <string name="coach_speak">Speak your answer</string>
+    <string name="coach_title">Interview coach</string>
+    <string name="coach_typing">Coach is typing…</string>
 </resources>

@@ -19,6 +19,7 @@ import com.example.cvforge.data.ApplicationRepository;
 import com.example.cvforge.data.ResultListener;
 import com.example.cvforge.data.model.Application;
 import com.example.cvforge.databinding.ActivityApplicationDetailBinding;
+import com.example.cvforge.ui.coach.CoachActivity;
 import com.example.cvforge.ui.discover.InternshipDetailActivity;
 import com.example.cvforge.util.AnimUtils;
 import com.example.cvforge.util.CalendarHelper;
@@ -66,6 +67,7 @@ public class ApplicationDetailActivity extends AppCompatActivity {
         binding.btnOpenInternship.setOnClickListener(v -> openInternship());
         binding.btnAddCalendar.setOnClickListener(v -> onAddToCalendarClick());
         binding.btnFollowUp.setOnClickListener(v -> openFollowUpEmail());
+        binding.btnPractice.setOnClickListener(v -> openCoach());
 
         AnimUtils.slideUpIn(binding.cardStatus, 0);
     }
@@ -199,6 +201,18 @@ public class ApplicationDetailActivity extends AppCompatActivity {
             return;
         }
         FollowUpFlow.start(this, application.studentName, application.companyName, application.internshipTitle);
+    }
+
+    /** Explicit Intent: practice an interview for this internship with the AI coach. */
+    private void openCoach() {
+        if (application == null) {
+            return;
+        }
+        Intent intent = new Intent(this, CoachActivity.class);
+        intent.putExtra(CoachActivity.EXTRA_ROLE, application.internshipTitle);
+        intent.putExtra(CoachActivity.EXTRA_COMPANY, application.companyName);
+        startActivity(intent);
+        AnimUtils.fadeTransition(this);
     }
 
     /** Opens the internship details (explicit Intent with the internship id). */
