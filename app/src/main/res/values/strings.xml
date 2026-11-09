@@ -374,4 +374,16 @@
     <string name="coach_speak">Speak your answer</string>
     <string name="coach_title">Interview coach</string>
     <string name="coach_typing">Coach is typing…</string>
+    <string name="nothing_flagged">No flagged posts</string>
+    <string name="nothing_flagged_message">Posts that look suspicious will show up here.</string>
+    <string name="scam_ask_ai">Ask AI for a second opinion</string>
+    <string name="scam_decide_alone">Decide with the rule checks.</string>
+    <string name="scam_keep">Keep post</string>
+    <string name="scam_kept">Post kept</string>
+    <string name="scam_opinion">AI says %1$s. %2$s</string>
+    <string name="scam_poster">%1$s (%2$s)</string>
+    <string name="scam_remove">Remove post</string>
+    <string name="scam_removed">Post removed</string>
+    <string name="tab_accounts">Accounts</string>
+    <string name="tab_flagged_posts">Flagged posts</string>
 </resources>

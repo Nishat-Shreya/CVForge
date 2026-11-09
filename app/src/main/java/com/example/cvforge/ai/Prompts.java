@@ -70,6 +70,20 @@ public class Prompts {
                 + "a technical or role question and a teamwork question across the interview.";
     }
 
+    /** Second opinion on a post that the rule checks flagged (feature 14). */
+    public static String scamReview(String title, String description, String poster, String posterRole,
+                                    int stipend, String ruleReasons) {
+        return "You help an admin of a student internship app to find fake internship posts.\n"
+                + "Post title: " + title + "\nPosted by: " + poster + " (" + posterRole + ")\n"
+                + "Monthly stipend: " + stipend + "\nDescription: " + description + "\n"
+                + "The simple rule checks found: " + ruleReasons + "\n\n"
+                + "Is this post likely a scam (asks for money, moves chat to WhatsApp, promises too much)?\n"
+                + "Answer in exactly two lines:\n"
+                + "VERDICT: SAFE or SUSPICIOUS or SCAM\n"
+                + "REASON: one short sentence (max 25 words)\n"
+                + "Be careful: the rule checks can be wrong, so judge the text yourself.";
+    }
+
     /** A short follow-up email for an application that got no reply for a week (feature 13). */
     public static String followUpEmail(String studentName, String company, String jobTitle) {
         return "Write a short, polite follow-up email in English from a student named " + studentName

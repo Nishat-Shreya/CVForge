@@ -9,7 +9,8 @@ import java.util.Locale;
 
 /**
  * Simple rule checks that find suspicious internship posts (feature 14).
- * No AI is used here. An optional AI second opinion is added in checkpoint 55.
+ * No AI is used here. Flagged posts go to the admin screen, where the admin can ask for an
+ * AI second opinion (ScamReview, checkpoint 55).
  */
 public class ScamChecker {
 

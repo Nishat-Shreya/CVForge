@@ -71,6 +71,30 @@ public class InternshipRepository {
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
+    /** Open posts that the scam check flagged. The admin reviews them. Newest first. */
+    public void loadFlagged(InternshipListListener listener) {
+        db.collection(INTERNSHIPS).whereEqualTo("flagged", true).get()
+                .addOnSuccessListener(snapshot -> {
+                    List<Internship> list = new ArrayList<>();
+                    for (Internship internship : snapshot.toObjects(Internship.class)) {
+                        if (internship.isOpen()) {
+                            list.add(internship);
+                        }
+                    }
+                    Collections.sort(list, (a, b) -> Long.compare(b.createdAt, a.createdAt));
+                    listener.onLoaded(list);
+                })
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
+    /** Admin decision "keep": the post stays open and is no longer flagged. */
+    public void clearFlag(String id, ResultListener listener) {
+        db.collection(INTERNSHIPS).document(id)
+                .update("flagged", false, "flagReasons", new ArrayList<String>())
+                .addOnSuccessListener(unused -> listener.onSuccess())
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
     public void loadById(String id, InternshipListener listener) {
         db.collection(INTERNSHIPS).document(id).get()
                 .addOnSuccessListener(snapshot -> listener.onLoaded(snapshot.toObject(Internship.class)))

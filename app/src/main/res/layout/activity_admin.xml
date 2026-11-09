@@ -11,6 +11,34 @@
         android:id="@+id/toolbar"
         layout="@layout/include_toolbar" />
 
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/groupTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/screen_padding"
+        app:chipSpacingHorizontal="6dp"
+        app:selectionRequired="true"
+        app:singleLine="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAccounts"
+            style="@style/RoleChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/tab_accounts"
+            android:textSize="13sp" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipPosts"
+            style="@style/RoleChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tab_flagged_posts"
+            android:textSize="13sp" />
+    </com.google.android.material.chip.ChipGroup>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -22,6 +50,14 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingHorizontal="@dimen/screen_padding" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listFlagged"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/screen_padding"
+            android:visibility="gone" />
 
         <ProgressBar
             android:id="@+id/progress"
