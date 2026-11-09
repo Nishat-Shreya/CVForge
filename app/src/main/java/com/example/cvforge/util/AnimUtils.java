@@ -106,4 +106,17 @@ public class AnimUtils {
         }
         activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
+
+    /** A1 style count-up: the number grows from 0 to the value in 1.2 s. */
+    public static void countUp(android.widget.TextView view, int value) {
+        if (!animationsEnabled(view.getContext()) || value == 0) {
+            view.setText(String.valueOf(value));
+            return;
+        }
+        android.animation.ValueAnimator animator = android.animation.ValueAnimator.ofInt(0, value);
+        animator.setDuration(1200);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.addUpdateListener(a -> view.setText(String.valueOf(a.getAnimatedValue())));
+        animator.start();
+    }
 }

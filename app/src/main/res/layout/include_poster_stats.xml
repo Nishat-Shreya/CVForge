@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Teacher and Alumni dashboard numbers and the latest activity on their posts -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/statsRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/card_gap"
+        android:orientation="horizontal">
+
+        <include
+            android:id="@+id/tileOpen"
+            layout="@layout/include_stat_tile" />
+
+        <Space
+            android:layout_width="@dimen/card_gap"
+            android:layout_height="0dp" />
+
+        <include
+            android:id="@+id/tileApplicants"
+            layout="@layout/include_stat_tile" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/card_gap"
+        android:orientation="horizontal">
+
+        <include
+            android:id="@+id/tilePending"
+            layout="@layout/include_stat_tile" />
+
+        <Space
+            android:layout_width="@dimen/card_gap"
+            android:layout_height="0dp" />
+
+        <include
+            android:id="@+id/tileEndorsed"
+            layout="@layout/include_stat_tile" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textActivityTitle"
+        style="@style/TextSectionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" />
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/CardBase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+
+        <LinearLayout
+            android:id="@+id/listActivity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="14dp">
+
+            <TextView
+                android:id="@+id/textNoActivity"
+                style="@style/TextMuted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

@@ -11,17 +11,19 @@ import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.ActivityAlumniBinding;
 import com.example.cvforge.ui.auth.LogoutHelper;
-import com.example.cvforge.ui.teacher.EndorseActivity;
 import com.example.cvforge.ui.post.ApplicantsActivity;
+import com.example.cvforge.ui.teacher.EndorseActivity;
 import com.example.cvforge.ui.post.MyPostsActivity;
+import com.example.cvforge.ui.post.PosterDashboard;
 import com.example.cvforge.util.AnimUtils;
 import com.example.cvforge.util.NotificationHelper;
 import com.example.cvforge.util.NotificationPermission;
 
-/** Alumni home screen. The real features are added in later checkpoints. */
+/** Alumni home screen: numbers and activity on their opportunities, applicants and endorsements. */
 public class AlumniActivity extends AppCompatActivity {
 
     private NotificationPermission notificationPermission;
+    private PosterDashboard dashboard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,7 @@ public class AlumniActivity extends AppCompatActivity {
         }
         ActivityAlumniBinding binding = ActivityAlumniBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        dashboard = new PosterDashboard(this, binding.stats, true);
 
         binding.btnPost.setOnClickListener(v -> {
             startActivity(new Intent(this, MyPostsActivity.class));
@@ -60,5 +63,18 @@ public class AlumniActivity extends AppCompatActivity {
                 binding.textGreeting.setText(message);
             }
         });
+    }
+
+    /** The numbers are loaded again every time the screen comes back (after endorsing or posting). */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        dashboard.start();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        dashboard.stop();
     }
 }

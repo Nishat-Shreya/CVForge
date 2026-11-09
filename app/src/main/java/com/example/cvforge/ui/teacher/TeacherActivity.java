@@ -13,14 +13,16 @@ import com.example.cvforge.databinding.ActivityTeacherBinding;
 import com.example.cvforge.ui.auth.LogoutHelper;
 import com.example.cvforge.ui.post.ApplicantsActivity;
 import com.example.cvforge.ui.post.MyPostsActivity;
+import com.example.cvforge.ui.post.PosterDashboard;
 import com.example.cvforge.util.AnimUtils;
 import com.example.cvforge.util.NotificationHelper;
 import com.example.cvforge.util.NotificationPermission;
 
-/** Teacher home screen. The real features are added in later checkpoints. */
+/** Teacher home screen: numbers and activity on their posts, postings, applicants and endorsements. */
 public class TeacherActivity extends AppCompatActivity {
 
     private NotificationPermission notificationPermission;
+    private PosterDashboard dashboard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,7 @@ public class TeacherActivity extends AppCompatActivity {
         }
         ActivityTeacherBinding binding = ActivityTeacherBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        dashboard = new PosterDashboard(this, binding.stats, false);
 
         binding.btnPost.setOnClickListener(v -> {
             startActivity(new Intent(this, MyPostsActivity.class));
@@ -59,5 +62,18 @@ public class TeacherActivity extends AppCompatActivity {
                 binding.textGreeting.setText(message);
             }
         });
+    }
+
+    /** The numbers are loaded again every time the screen comes back (after endorsing or posting). */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        dashboard.start();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        dashboard.stop();
     }
 }

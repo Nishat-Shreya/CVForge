@@ -414,4 +414,12 @@
     <string name="request_send">Send request</string>
     <string name="request_sent">Request sent</string>
     <string name="request_title">Request endorsement</string>
+    <string name="dash_activity_row">%1$s · %2$s · %3$s</string>
+    <string name="dash_no_activity">No applications yet. Post an internship and students can apply.</string>
+    <string name="dash_title_alumni">Your opportunities</string>
+    <string name="dash_title_teacher">Department activity</string>
+    <string name="stat_applicants">Applicants</string>
+    <string name="stat_endorsed">Endorsed</string>
+    <string name="stat_open_posts">Open posts</string>
+    <string name="stat_pending_endorse">Endorsement requests</string>
 </resources>
