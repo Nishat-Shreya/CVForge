@@ -38,8 +38,7 @@ while companies, teachers and alumni post internships, endorse skills and chat w
 11. [Firebase](#-firebase)
 12. [How to run](#-how-to-run)
 13. [Project structure](#-project-structure)
-14. [Limitations and future work](#-limitations-and-future-work)
-15. [Author](#-author)
+14. [Author](#-author)
 
 ---
 
@@ -446,15 +445,6 @@ app/src/main/java/com/example/cvforge/
 │   └── view/   Custom views
 └── util/       Helpers: PDF, QR, match score, scam rules, reminders, profile photo
 ```
-
----
-
-## 🔭 Limitations and future work
-
-- Notifications while the app is fully closed need Cloud Functions on the paid plan. The functions are written in `functions/` but not deployed.
-- The QR code points to a public profile page (`cvforge-93934.web.app/u/<uid>`) that is not hosted yet.
-- There are unit tests for rules, parsers and planners, but no automatic UI tests yet.
-- Future ideas: a public profile web page, CV import from a file, more job feeds, and a tablet layout.
 
 ---
 
