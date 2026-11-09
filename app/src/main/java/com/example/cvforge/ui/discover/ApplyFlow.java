@@ -95,6 +95,13 @@ public class ApplyFlow {
 
     private void sendApplication(Internship post, Cv cv, Callback callback) {
         String uid = userRepository.getCurrentUid();
+        // the companies see which skills are verified, so the list is refreshed first
+        new com.example.cvforge.data.EndorsementRepository().fillVerifiedSkills(cv, uid, () ->
+                sendWithVerifiedSkills(post, cv, callback));
+    }
+
+    private void sendWithVerifiedSkills(Internship post, Cv cv, Callback callback) {
+        String uid = userRepository.getCurrentUid();
         withStudentName(callback, name -> applicationRepository.apply(uid, name, post, cv, new ResultListener() {
             @Override
             public void onSuccess() {

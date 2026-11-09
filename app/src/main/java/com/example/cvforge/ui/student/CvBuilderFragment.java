@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.cvforge.R;
 import com.example.cvforge.data.CvRepository;
+import com.example.cvforge.data.EndorsementRepository;
 import com.example.cvforge.data.ResultListener;
 import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.local.CvEntity;
@@ -115,6 +116,15 @@ public class CvBuilderFragment extends Fragment implements CvVersionAdapter.List
         binding.preview.setCv(selected == null ? CvSample.create() : cv);
         showTemplate(CvTemplate.fromId(cv.template));
         showStrength();
+        if (selected != null) {
+            // add the verified skills, then draw the preview and the PDF again
+            Cv shown = cv;
+            new EndorsementRepository().fillVerifiedSkills(shown, userRepository.getCurrentUid(), () -> {
+                if (binding != null && cv == shown) {
+                    binding.preview.setCv(shown);
+                }
+            });
+        }
     }
 
     // ---------- versions ----------

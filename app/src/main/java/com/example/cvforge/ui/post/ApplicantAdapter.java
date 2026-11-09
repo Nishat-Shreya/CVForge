@@ -125,6 +125,11 @@ public class ApplicantAdapter extends RecyclerView.Adapter<ApplicantAdapter.View
 
         private void showSkills(Context context, Cv cv) {
             binding.groupSkills.removeAllViews();
+            // endorsed by a teacher or alumni (feature 15)
+            if (cv.verifiedSkills != null && !cv.verifiedSkills.isEmpty()) {
+                addChip(context, context.getString(R.string.endorsement_count, cv.verifiedSkills.size()),
+                        R.color.teal, R.color.ink);
+            }
             if (cv.skills == null) {
                 return;
             }

@@ -138,6 +138,14 @@ public class UserRepository {
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
+    /** Verified Teacher and Alumni accounts. A student picks one of them to ask for an endorsement. */
+    public void loadEndorsers(UserListListener listener) {
+        db.collection(USERS).whereEqualTo("verified", true)
+                .whereIn("role", java.util.Arrays.asList(User.ROLE_TEACHER, User.ROLE_ALUMNI)).get()
+                .addOnSuccessListener(snapshot -> listener.onUsers(snapshot.toObjects(User.class)))
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
     /** Admin approves an account: sets verified = true. */
     public void approveUser(String uid, ResultListener listener) {
         db.collection(USERS).document(uid).update("verified", true)

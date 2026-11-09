@@ -34,6 +34,11 @@ public class Cv {
     public List<Experience> experience = new ArrayList<>();
     public List<Certificate> certificates = new ArrayList<>();
     public List<Link> links = new ArrayList<>();
+    /**
+     * Skills that a teacher or alumni endorsed (feature 15). It is filled from the
+     * "endorsements" collection when the CV is shown or sent, so it is never typed by hand.
+     */
+    public List<String> verifiedSkills = new ArrayList<>();
 
     // Firestore needs an empty constructor
     public Cv() {

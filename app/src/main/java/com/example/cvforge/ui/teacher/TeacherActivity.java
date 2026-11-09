@@ -41,6 +41,10 @@ public class TeacherActivity extends AppCompatActivity {
             startActivity(new Intent(this, ApplicantsActivity.class));
             AnimUtils.fadeTransition(this);
         });
+        binding.btnEndorse.setOnClickListener(v -> {
+            startActivity(new Intent(this, EndorseActivity.class));
+            AnimUtils.fadeTransition(this);
+        });
         binding.btnLogout.setOnClickListener(v -> LogoutHelper.logOut(this));
         AnimUtils.slideUpIn(binding.heroCard, 0);
 

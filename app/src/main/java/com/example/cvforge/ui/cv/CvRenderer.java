@@ -197,6 +197,12 @@ public class CvRenderer {
             y += drawText(ListText.join(cv.skills, separator), paint(body, 11f, color(R.color.ink)),
                     MARGIN, y, CONTENT_WIDTH, true);
         }
+        // skills that a teacher or alumni confirmed
+        if (cv.verifiedSkills != null && !cv.verifiedSkills.isEmpty()) {
+            y += 4f;
+            y += drawText("Verified by teacher or alumni: " + ListText.join(cv.verifiedSkills, ", "),
+                    paint(bodyBold, 10f, color(R.color.teal_text)), MARGIN, y, CONTENT_WIDTH, true);
+        }
         return y + 14f;
     }
 
