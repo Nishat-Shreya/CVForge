@@ -448,4 +448,16 @@
     <string name="slots_none_student_message">Alumni have not offered a time yet. Check again later.</string>
     <string name="slots_open">Mentor slots</string>
     <string name="slots_title">Mentor slots</string>
+    <string name="chat_error">Could not load the chat: %1$s</string>
+    <string name="chat_hint">Message</string>
+    <string name="chat_hint_name">Message %1$s</string>
+    <string name="chat_send">Send message</string>
+    <string name="chat_send_failed">Message not sent. Check your internet.</string>
+    <string name="chat_typing">The other person is typing</string>
+    <string name="quick_confirm">Confirm time</string>
+    <string name="quick_confirm_text">I confirm the time. See you then!</string>
+    <string name="quick_move">Move time</string>
+    <string name="quick_move_text">Could we move it to another time, please?</string>
+    <string name="quick_thanks">Thank you</string>
+    <string name="quick_thanks_text">Thank you very much!</string>
 </resources>

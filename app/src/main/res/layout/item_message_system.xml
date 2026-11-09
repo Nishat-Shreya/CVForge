@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A notice in the middle, for example "Interview set: tomorrow, 11:00 AM" -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp">
+
+    <TextView
+        android:id="@+id/textMessage"
+        style="@style/ChipTint.Amber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:minHeight="32dp"
+        android:paddingHorizontal="16dp"
+        android:textSize="13sp" />
+</FrameLayout>
