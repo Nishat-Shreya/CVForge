@@ -2,6 +2,7 @@ package com.example.cvforge.ui.company;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -38,6 +39,19 @@ public class CompanyActivity extends AppCompatActivity {
         binding.bottomNav.addTab(R.string.tab_applicants, R.drawable.ic_nav_applicants);
         binding.bottomNav.addTab(R.string.tab_profile, R.drawable.ic_nav_profile);
         binding.bottomNav.setOnTabSelectedListener(this::showTab);
+        // back on another tab goes to the Dashboard first, back on the Dashboard leaves the app
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (binding.bottomNav.getSelectedIndex() != 0) {
+                    binding.bottomNav.select(0, true);
+                    showTab(0);
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                }
+            }
+        });
 
         int tab = savedInstanceState == null ? 0 : savedInstanceState.getInt(KEY_TAB, 0);
         binding.bottomNav.select(tab, false);

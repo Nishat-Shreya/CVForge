@@ -275,7 +275,7 @@
                 android:layout_marginStart="6dp"
                 android:background="?attr/selectableItemBackground"
                 android:gravity="center"
-                android:minHeight="44dp"
+                android:minHeight="48dp"
                 android:paddingHorizontal="4dp"
                 android:text="@string/log_in"
                 android:textColor="@color/violet_text" />

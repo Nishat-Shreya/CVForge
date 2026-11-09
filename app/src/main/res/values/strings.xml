@@ -470,4 +470,16 @@
     <string name="interview_set_message">Interview set: %1$s</string>
     <string name="slot_open_chat">Open chat</string>
     <string name="slot_options_title">Mentor talk</string>
+    <string name="badge_days">%1$d days</string>
+    <string name="badge_earned">%1$s badge, earned</string>
+    <string name="badge_first_cv">First CV</string>
+    <string name="badge_github">GitHub</string>
+    <string name="badge_locked">%1$s badge, not earned yet</string>
+    <string name="badge_streak">3-day streak</string>
+    <string name="badge_verified">Verified</string>
+    <string name="change_photo">Change profile photo</string>
+    <string name="profile_edit">Edit profile</string>
+    <string name="stat_badges">Badges</string>
+    <string name="stat_endorsements">Endorsements</string>
+    <string name="stat_streak">Day streak</string>
 </resources>
