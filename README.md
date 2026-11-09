@@ -451,7 +451,7 @@ app/src/main/java/com/example/cvforge/
 ## 👤 Author
 
 **Nishat Tasin Shreya**
-Roll 2307035 · Batch 2K22
+Roll 2307035 · Batch 2K23
 Department of Computer Science and Engineering
 Khulna University of Engineering & Technology (KUET)
 
