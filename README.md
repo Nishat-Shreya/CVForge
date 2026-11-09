@@ -44,7 +44,7 @@ applicants, plan interviews and talk to students in chat. An admin verifies Comp
 - Discover internships from CVForge posts and from outside job feeds, with search, filters, swipe cards and bookmarks
 - Match Radar and match ring: how well the CV fits the skills an internship asks for
 - Apply with one tap, choose which CV version to send
-- Kanban tracker: drag a card between Applied, Shortlisted, Interview and Offer, private notes, status timeline, live updates
+- Kanban tracker with four columns (Saved, Applied, Interview, Offer): drag a card to change its status, private notes, status timeline, live updates. A company can also mark an applicant as Shortlisted or Rejected, and the student sees it on the card
 - Reminders for deadlines and interviews, a morning digest, and an interview that can be added to the phone calendar
 - AI helpers (Gemini): bullet writer, "Tailor my CV" for one job, skill gap roadmap, interview coach (voice or typing), follow-up email draft
 - Verified endorsements from teachers and alumni, mentor slots with alumni, badges and a day streak
@@ -67,7 +67,7 @@ applicants, plan interviews and talk to students in chat. An admin verifies Comp
 - Review flagged posts: rule reasons, an optional AI second opinion (SAFE, SUSPICIOUS or SCAM), then Keep or Remove
 
 ### For all roles
-- Profile photos (tap the avatar to change it)
+- Profile photos for students, companies, teachers and alumni (tap the avatar to change it)
 - Chat between student and company/teacher (per application) and between student and alumni (per booked slot), with typing dots and unread badges
 - Chat message notifications while the app is running
 - Scam post alert: rule checks when a post is created, flagged posts go to the admin
@@ -109,7 +109,9 @@ applicants, plan interviews and talk to students in chat. An admin verifies Comp
 | AI | Gemini through Firebase AI Logic, model `gemini-3.5-flash-lite` (`AiRepository.MODEL_NAME`) |
 | Other | ZXing (QR code), Android `PdfDocument`, `SpeechRecognizer`, `CalendarContract`, Credential Manager (Google sign-in) |
 | Android versions | `minSdk 23`, `targetSdk 32`, `compileSdk 34` |
-| Tests | JUnit unit tests (46) |
+| Build | Android Gradle Plugin 7.2.0, Gradle 7.3.3 (Groovy build files), Java 8 source level |
+| Library versions | Firebase BoM 33.14.0, Room 2.4.3, Retrofit 2.9.0, Gson 2.9.1, WorkManager 2.7.1, ZXing core 3.5.1, Material 1.6.1, AppCompat 1.5.1 |
+| Tests | JUnit unit tests for the scam rules, match score, filters, parsers, mappers, reminder and digest planners and application status logic |
 
 ## Architecture
 
@@ -186,8 +188,11 @@ Gemini is not called with a key from the app: it goes through Firebase AI Logic.
 
 ![Firestore data](screenshots/firebase/firestore-data.jpg)
 
-Profile photos are saved as Base64 text in Firestore. Firebase Storage is not used. The Realtime Database is not used either
-(there is no `FirebaseDatabase` in the code).
+Firebase Storage and the Firebase Realtime Database are not used (there is no `FirebaseStorage` or `FirebaseDatabase` in the
+code). Cloud Firestore covers all live data. Profile photos are stored as small Base64 text in the `profilePhotos` collection.
+
+Chat messages, the typing indicator, applications and the Tracker board update live through Cloud Firestore real-time
+listeners, so changes reach the other user at once without refreshing the screen.
 
 ![Firestore rules](screenshots/firebase/firestore-rules.jpg)
 
@@ -200,28 +205,37 @@ scam second opinion. **App Check** protects these calls (Play Integrity in relea
 
 ## How to run
 
-1. Clone the repository and open it in Android Studio.
-2. Create your own Firebase project and register the Android app with the id `com.example.cvforge`.
+**You need:** Android Studio Chipmunk (2021.2.1) or newer with its bundled JDK 11, an internet connection, and a Google account for Firebase.
+The project uses Android Gradle Plugin 7.2.0 and Gradle 7.3.3 (the wrapper downloads Gradle by itself).
+
+1. Clone the repository and open the folder in Android Studio. Android Studio creates `local.properties` (the SDK path) by itself.
+2. Create your own Firebase project and register an Android app with the package name `com.example.cvforge`.
 3. Download `google-services.json` and put it in the `app/` folder. It is not in the repository, because it belongs to one Firebase project.
 4. In the Firebase console turn on:
    - **Authentication**: Email/Password and Google
-   - **Cloud Firestore** (create the database, then publish rules that allow the collections above)
-   - **Firebase AI Logic** (Gemini Developer API)
-   - **App Check**: register the app. For debug builds run the app once, copy the debug token shown in Logcat and add it under *Manage debug tokens*.
-5. For Google sign-in add the **SHA-1 and SHA-256** of your debug keystore to the Android app in Firebase, then download `google-services.json` again.
-6. Build and run on a device or emulator (Android 6.0 or newer).
+   - **Cloud Firestore**: create the database
+   - **Firebase AI Logic**: Gemini Developer API (no key is added to the app)
+   - **App Check**: register the app. For debug builds, run the app once, copy the debug token shown in Logcat and add it under *Manage debug tokens*.
+5. For Google sign-in add the **SHA-1 and SHA-256** of your debug keystore (Gradle `signingReport`) to the Android app in Firebase, then download `google-services.json` again.
+6. Set the Firestore security rules (see below), then build and run on a device or emulator with Android 6.0 or newer.
 7. To try the admin screen, set `role` to `admin` by hand on one document of the `users` collection.
 
-Push notifications from the server need Cloud Functions, which need the paid Firebase plan. The app does not rely on them:
-the `functions/` folder has two written functions (status change and chat message), but they are not deployed.
-Without them, reminders, the morning digest and in-app chat notifications still work, only server push does not.
+**Firestore rules are not in the repository.** Create your own in the Firebase console (Firestore, Rules tab). A simple safe plan:
+only signed-in users can read or write; a user can write only his or her own `users`, `profilePhotos`, `cvs` and `applicationNotes`
+documents; `internships` can be created only by verified posters; `applications`, `endorsements` and `mentorSlots` can be changed
+only by the people they belong to; `chats` and their `messages` can be read and written only by the two participants.
+Test the rules in the Rules Playground before you publish them.
+
+**Push notifications.** Real server push notifications need Cloud Functions, which need the paid Firebase plan. The `functions/`
+folder has two functions (status change and chat message), written for Node.js 20, but they are not deployed.
+Without them, local reminders, the morning digest and the in-app chat notifications while the app is running still work.
 
 ## Project structure
 
 ```
 app/src/main/java/com/example/cvforge/
 ├── ai/         Gemini calls and prompts (bullets, tailor CV, roadmap, coach, scam review)
-├── data/       Repositories, models, Room database (local) and models (model)
+├── data/       Repositories; local/ has the Room database, model/ has the data classes
 ├── network/    Retrofit APIs, RSS parser and loader, job mapper
 ├── provider/   CvProvider (own ContentProvider) and its contract
 ├── receiver/   BootReceiver, ReminderReceiver, NetworkReceiver
