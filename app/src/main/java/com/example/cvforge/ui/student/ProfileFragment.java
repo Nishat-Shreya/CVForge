@@ -16,6 +16,7 @@ import com.example.cvforge.data.EndorsementRepository;
 import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.Endorsement;
 import com.example.cvforge.databinding.FragmentProfileBinding;
+import com.example.cvforge.ui.profile.BookSlotActivity;
 import com.example.cvforge.ui.profile.EndorsementAdapter;
 import com.example.cvforge.ui.profile.RequestEndorsementActivity;
 import com.example.cvforge.util.AnimUtils;
@@ -23,7 +24,7 @@ import com.example.cvforge.util.AnimUtils;
 import java.util.List;
 
 /**
- * Profile tab for now: the verified endorsements and a button to ask for a new one.
+ * Profile tab for now: the verified endorsements and buttons to ask for one or book a mentor.
  * The rest of the profile is built in a later checkpoint.
  */
 public class ProfileFragment extends Fragment {
@@ -46,6 +47,7 @@ public class ProfileFragment extends Fragment {
         binding.listEndorsements.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.listEndorsements.setAdapter(adapter);
         binding.btnRequestEndorsement.setOnClickListener(v -> open(RequestEndorsementActivity.class));
+        binding.btnBookMentor.setOnClickListener(v -> open(BookSlotActivity.class));
         AnimUtils.slideUpIn(binding.textTitle, 0);
         AnimUtils.slideUpIn(binding.listEndorsements, 1);
     }

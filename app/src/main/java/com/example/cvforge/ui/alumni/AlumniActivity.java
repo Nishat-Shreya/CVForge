@@ -45,6 +45,10 @@ public class AlumniActivity extends AppCompatActivity {
             startActivity(new Intent(this, ApplicantsActivity.class));
             AnimUtils.fadeTransition(this);
         });
+        binding.btnSlots.setOnClickListener(v -> {
+            startActivity(new Intent(this, SlotsActivity.class));
+            AnimUtils.fadeTransition(this);
+        });
         binding.btnEndorse.setOnClickListener(v -> {
             startActivity(new Intent(this, EndorseActivity.class));
             AnimUtils.fadeTransition(this);

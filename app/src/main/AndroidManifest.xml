@@ -65,6 +65,12 @@
             android:name=".ui.teacher.EndorseActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.alumni.SlotsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.profile.BookSlotActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.coach.CoachActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

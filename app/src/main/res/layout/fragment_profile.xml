@@ -47,5 +47,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="@string/endorsements_request" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBookMentor"
+            style="@style/ButtonOutline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/slots_book_open" />
     </LinearLayout>
 </ScrollView>
