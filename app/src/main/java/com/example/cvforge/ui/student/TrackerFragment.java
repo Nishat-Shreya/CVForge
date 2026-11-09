@@ -23,6 +23,7 @@ import com.example.cvforge.databinding.FragmentTrackerBinding;
 import com.example.cvforge.ui.tracker.ApplicationDetailActivity;
 import com.example.cvforge.ui.tracker.KanbanAdapter;
 import com.example.cvforge.ui.tracker.KanbanColumn;
+import com.example.cvforge.ui.chat.ChatsActivity;
 import com.example.cvforge.util.AnimUtils;
 import com.example.cvforge.util.ExactAlarmPermission;
 import com.example.cvforge.util.ReminderScheduler;
@@ -57,6 +58,10 @@ public class TrackerFragment extends Fragment {
         kanbanAdapter = new KanbanAdapter(this::openApplication, this::moveCard);
         binding.listColumns.setOnDragListener(this::scrollBoardWhileDragging);
         binding.listColumns.setAdapter(kanbanAdapter);
+        binding.btnChat.setOnClickListener(v -> {
+            startActivity(new Intent(requireContext(), ChatsActivity.class));
+            AnimUtils.fadeTransition(requireActivity());
+        });
 
         AnimUtils.slideUpIn(binding.rowTitle, 0);
     }

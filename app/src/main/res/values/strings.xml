@@ -460,4 +460,14 @@
     <string name="quick_move_text">Could we move it to another time, please?</string>
     <string name="quick_thanks">Thank you</string>
     <string name="quick_thanks_text">Thank you very much!</string>
+    <string name="chat_context_application">%1$s · %2$s</string>
+    <string name="chat_context_mentor">Mentor talk · %1$s</string>
+    <string name="chat_with_company">Chat with the company</string>
+    <string name="chats_none">No chats yet</string>
+    <string name="chats_none_message">A chat opens when you apply for an internship, or when you book a mentor slot.</string>
+    <string name="chats_open">Messages</string>
+    <string name="chats_title">Messages</string>
+    <string name="interview_set_message">Interview set: %1$s</string>
+    <string name="slot_open_chat">Open chat</string>
+    <string name="slot_options_title">Mentor talk</string>
 </resources>

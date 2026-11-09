@@ -29,6 +29,8 @@ public class ApplicantAdapter extends RecyclerView.Adapter<ApplicantAdapter.View
         void onPrimaryAction(Application application);
 
         void onReject(Application application);
+
+        void onChat(Application application);
     }
 
     private final List<Application> applicants = new ArrayList<>();
@@ -93,6 +95,7 @@ public class ApplicantAdapter extends RecyclerView.Adapter<ApplicantAdapter.View
             binding.getRoot().setOnClickListener(v -> listener.onOpenCv(application));
             binding.btnPrimary.setOnClickListener(v -> listener.onPrimaryAction(application));
             binding.btnReject.setOnClickListener(v -> listener.onReject(application));
+            binding.btnChat.setOnClickListener(v -> listener.onChat(application));
         }
 
         private String initials(String name) {

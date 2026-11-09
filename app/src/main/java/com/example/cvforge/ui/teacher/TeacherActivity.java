@@ -11,6 +11,7 @@ import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.ActivityTeacherBinding;
 import com.example.cvforge.ui.auth.LogoutHelper;
+import com.example.cvforge.ui.chat.ChatsActivity;
 import com.example.cvforge.ui.post.ApplicantsActivity;
 import com.example.cvforge.ui.post.MyPostsActivity;
 import com.example.cvforge.ui.post.PosterDashboard;
@@ -42,6 +43,10 @@ public class TeacherActivity extends AppCompatActivity {
         });
         binding.btnApplicants.setOnClickListener(v -> {
             startActivity(new Intent(this, ApplicantsActivity.class));
+            AnimUtils.fadeTransition(this);
+        });
+        binding.btnMessages.setOnClickListener(v -> {
+            startActivity(new Intent(this, ChatsActivity.class));
             AnimUtils.fadeTransition(this);
         });
         binding.btnEndorse.setOnClickListener(v -> {

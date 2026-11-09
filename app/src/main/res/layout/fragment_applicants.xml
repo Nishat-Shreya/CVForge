@@ -22,6 +22,13 @@
             android:layout_weight="1"
             android:text="@string/tab_applicants" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnChat"
+            style="@style/IconCircleButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/open_chat"
+            app:icon="@drawable/ic_chat" />
     </LinearLayout>
 
     <!-- Job selector -->

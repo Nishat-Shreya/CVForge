@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +21,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.cvforge.R;
 import com.example.cvforge.data.ApplicationRepository;
+import com.example.cvforge.data.ChatRepository;
 import com.example.cvforge.data.InternshipRepository;
 import com.example.cvforge.data.ResultListener;
+import com.example.cvforge.data.UserListener;
 import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.Application;
 import com.example.cvforge.data.model.Internship;
+import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.FragmentApplicantsBinding;
+import com.example.cvforge.ui.chat.ChatActivity;
+import com.example.cvforge.ui.chat.ChatsActivity;
 import com.example.cvforge.util.AnimUtils;
 import com.example.cvforge.util.CalendarHelper;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -33,6 +39,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -78,6 +85,10 @@ public class ApplicantsFragment extends Fragment implements ApplicantAdapter.Lis
         binding.tabNew.setOnClickListener(v -> chooseTab(TAB_NEW));
         binding.tabShortlisted.setOnClickListener(v -> chooseTab(TAB_SHORTLISTED));
         binding.tabInterview.setOnClickListener(v -> chooseTab(TAB_INTERVIEW));
+        binding.btnChat.setOnClickListener(v -> {
+            startActivity(new Intent(requireContext(), ChatsActivity.class));
+            AnimUtils.fadeTransition(requireActivity());
+        });
 
         AnimUtils.slideUpIn(binding.rowTitle, 0);
         AnimUtils.slideUpIn(binding.btnJob, 1);
@@ -300,6 +311,19 @@ public class ApplicantsFragment extends Fragment implements ApplicantAdapter.Lis
                 .show();
     }
 
+    /** Application Chat: the poster talks to the student about this application. */
+    @Override
+    public void onChat(Application application) {
+        startActivity(ChatActivity.intent(requireContext(), ChatRepository.applicationChatId(application.id),
+                application.studentId, application.studentName, User.ROLE_STUDENT, applicationContext(application)));
+        AnimUtils.fadeTransition(requireActivity());
+    }
+
+    /** "Android Intern · Nexa Labs", shown in the banner of the chat. */
+    private String applicationContext(Application application) {
+        return getString(R.string.chat_context_application, application.internshipTitle, application.companyName);
+    }
+
     private void changeStatus(Application application, String newStatus) {
         // a Cloud Function sends the student a push notification (checkpoint 44)
         applicationRepository.changeStatus(application, newStatus, new ResultListener() {
@@ -332,12 +356,33 @@ public class ApplicantsFragment extends Fragment implements ApplicantAdapter.Lis
             @Override
             public void onSuccess() {
                 showMessage(getString(R.string.interview_planned));
+                announceInterview(application, time);
                 offerCalendar(application, time);
             }
 
             @Override
             public void onError(String message) {
                 showMessage(message);
+            }
+        });
+    }
+
+    /** The "Interview set" notice appears in the chat of this application, for both people. */
+    private void announceInterview(Application application, long time) {
+        new UserRepository().loadCurrentUser(new UserListener() {
+            @Override
+            public void onUser(User user) {
+                String when = DateFormat.format("EEE d MMM, h:mm a", new Date(time)).toString();
+                new ChatRepository().announce(ChatRepository.applicationChatId(application.id),
+                        new ChatRepository.Person(uid, user.getName(), user.getRole()),
+                        new ChatRepository.Person(application.studentId, application.studentName, User.ROLE_STUDENT),
+                        applicationContext(application),
+                        getString(R.string.interview_set_message, when));
+            }
+
+            @Override
+            public void onError(String message) {
+                // the interview is planned anyway, only the chat notice is missing
             }
         });
     }

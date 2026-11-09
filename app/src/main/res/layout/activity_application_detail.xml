@@ -87,6 +87,14 @@
                         android:visibility="gone" />
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnChat"
+                        style="@style/ButtonPrimary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/chat_with_company" />
+
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnPractice"
                         style="@style/ButtonOutline"
                         android:layout_width="match_parent"

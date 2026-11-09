@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.cvforge.R;
+import com.example.cvforge.data.ChatRepository;
 import com.example.cvforge.data.MentorRepository;
 import com.example.cvforge.data.ResultListener;
 import com.example.cvforge.data.UserListener;
@@ -19,6 +20,7 @@ import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.MentorSlot;
 import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.ActivitySlotsBinding;
+import com.example.cvforge.ui.chat.ChatActivity;
 import com.example.cvforge.ui.profile.SlotAdapter;
 
 import java.util.Calendar;
@@ -126,12 +128,15 @@ public class SlotsActivity extends AppCompatActivity {
         });
     }
 
-    /** Open slot: delete it. A booked slot has no action. */
+    /** Open slot: delete it. Booked slot: open the Mentor Chat with the student. */
     private void onSlotAction(MentorSlot slot) {
         if (slot.isOpen()) {
             confirmDelete(slot);
             return;
         }
+        String time = DateFormat.format("EEE d MMM, HH:mm", new Date(slot.startAt)).toString();
+        startActivity(ChatActivity.intent(this, ChatRepository.slotChatId(slot.id), slot.bookedById,
+                slot.bookedByName, User.ROLE_STUDENT, getString(R.string.chat_context_mentor, time)));
     }
 
     private void confirmDelete(MentorSlot slot) {

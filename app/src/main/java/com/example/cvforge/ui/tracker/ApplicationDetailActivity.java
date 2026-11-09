@@ -16,9 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.cvforge.R;
 import com.example.cvforge.data.ApplicationRepository;
+import com.example.cvforge.data.ChatRepository;
 import com.example.cvforge.data.ResultListener;
 import com.example.cvforge.data.model.Application;
+import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.ActivityApplicationDetailBinding;
+import com.example.cvforge.ui.chat.ChatActivity;
 import com.example.cvforge.ui.coach.CoachActivity;
 import com.example.cvforge.ui.discover.InternshipDetailActivity;
 import com.example.cvforge.util.AnimUtils;
@@ -68,6 +71,7 @@ public class ApplicationDetailActivity extends AppCompatActivity {
         binding.btnAddCalendar.setOnClickListener(v -> onAddToCalendarClick());
         binding.btnFollowUp.setOnClickListener(v -> openFollowUpEmail());
         binding.btnPractice.setOnClickListener(v -> openCoach());
+        binding.btnChat.setOnClickListener(v -> openChat());
 
         AnimUtils.slideUpIn(binding.cardStatus, 0);
     }
@@ -116,6 +120,11 @@ public class ApplicationDetailActivity extends AppCompatActivity {
 
         // feature 13: no reply for 7 days, so a follow-up email can be drafted
         binding.btnFollowUp.setVisibility(loaded.isGhosted(System.currentTimeMillis()) ? View.VISIBLE : View.GONE);
+
+        // the chat needs a poster in CVForge: saved only, and jobs from other websites have none
+        boolean canChat = loaded.posterId != null && !loaded.posterId.isEmpty()
+                && !Application.STATUS_SAVED.equals(loaded.status);
+        binding.btnChat.setVisibility(canChat ? View.VISIBLE : View.GONE);
 
         if (!notesLoading) {
             loadNotesOnce();
@@ -212,6 +221,17 @@ public class ApplicationDetailActivity extends AppCompatActivity {
         intent.putExtra(CoachActivity.EXTRA_ROLE, application.internshipTitle);
         intent.putExtra(CoachActivity.EXTRA_COMPANY, application.companyName);
         startActivity(intent);
+        AnimUtils.fadeTransition(this);
+    }
+
+    /** Application Chat: the student talks to the company about this application. */
+    private void openChat() {
+        if (application == null || application.posterId == null) {
+            return;
+        }
+        startActivity(ChatActivity.intent(this, ChatRepository.applicationChatId(application.id),
+                application.posterId, application.companyName, User.ROLE_COMPANY,
+                getString(R.string.chat_context_application, application.internshipTitle, application.companyName)));
         AnimUtils.fadeTransition(this);
     }
 

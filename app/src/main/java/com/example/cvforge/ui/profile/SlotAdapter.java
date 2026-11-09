@@ -89,11 +89,11 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.ViewHolder> {
             b.textStatus.setText(forStudent && mine ? R.string.slot_booked_by_you : R.string.slot_booked);
             b.textStatus.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.amber_tint));
             b.textStatus.setTextColor(ContextCompat.getColor(context, R.color.amber_text));
-            // the student who booked can put the session in the calendar
-            boolean calendar = forStudent && mine;
-            b.btnAction.setText(R.string.slot_add_calendar);
+            // the alumni and the student who booked can open the chat of this slot
+            boolean chat = !forStudent || mine;
+            b.btnAction.setText(R.string.slot_open_chat);
             b.btnAction.setEnabled(true);
-            b.btnAction.setVisibility(calendar ? android.view.View.VISIBLE : android.view.View.GONE);
+            b.btnAction.setVisibility(chat ? android.view.View.VISIBLE : android.view.View.GONE);
         }
     }
 

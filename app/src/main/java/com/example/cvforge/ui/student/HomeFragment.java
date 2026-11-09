@@ -1,6 +1,7 @@
 package com.example.cvforge.ui.student;
 
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -17,13 +18,16 @@ import com.google.firebase.firestore.ListenerRegistration;
 
 import com.example.cvforge.R;
 import com.example.cvforge.data.ApplicationRepository;
+import com.example.cvforge.data.ChatRepository;
 import com.example.cvforge.data.CvRepository;
 import com.example.cvforge.data.UserListener;
 import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.Application;
+import com.example.cvforge.data.model.Chat;
 import com.example.cvforge.data.model.Cv;
 import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.FragmentHomeBinding;
+import com.example.cvforge.ui.chat.ChatsActivity;
 import com.example.cvforge.util.AnimUtils;
 import com.example.cvforge.util.FollowUpFlow;
 import com.example.cvforge.util.StreakTracker;
@@ -41,6 +45,7 @@ public class HomeFragment extends Fragment {
     private FocusAdapter focusAdapter;
     private ObjectAnimator bellPulse;
     private ListenerRegistration registration;
+    private ListenerRegistration chatRegistration;
     private StrengthScore.Result lastStrength;
     private List<Application> applications = new ArrayList<>();
     private final UserRepository userRepository = new UserRepository();
@@ -64,7 +69,10 @@ public class HomeFragment extends Fragment {
         binding.textGreeting.setText(greetingForNow());
         binding.btnImproveCv.setOnClickListener(v -> openTab(StudentActivity.TAB_CV));
         // chat, notifications and "See all" are built in later checkpoints
-        binding.btnChat.setOnClickListener(v -> showComingSoon());
+        binding.btnChat.setOnClickListener(v -> {
+            startActivity(new Intent(requireContext(), ChatsActivity.class));
+            AnimUtils.fadeTransition(requireActivity());
+        });
         binding.btnBell.setOnClickListener(v -> showComingSoon());
         binding.textSeeAll.setOnClickListener(v -> showComingSoon());
 
@@ -199,6 +207,20 @@ public class HomeFragment extends Fragment {
                 // Home still works without the application cards
             }
         });
+
+        // the coral badge on the chat icon counts the unread messages
+        String uid = userRepository.getCurrentUid();
+        chatRegistration = new ChatRepository().listenMyChats(uid, new ChatRepository.ChatsListener() {
+            @Override
+            public void onChats(List<Chat> chats) {
+                showChatBadge(ChatRepository.totalUnread(chats, uid));
+            }
+
+            @Override
+            public void onError(String message) {
+                // no badge
+            }
+        });
     }
 
     @Override
@@ -207,6 +229,10 @@ public class HomeFragment extends Fragment {
         if (registration != null) {
             registration.remove();
             registration = null;
+        }
+        if (chatRegistration != null) {
+            chatRegistration.remove();
+            chatRegistration = null;
         }
     }
 
@@ -246,6 +272,21 @@ public class HomeFragment extends Fragment {
             return getString(R.string.greeting_morning);
         }
         return getString(hour < 18 ? R.string.greeting_afternoon : R.string.greeting_evening);
+    }
+
+    /** A10: the badge pops in with a short scale. */
+    private void showChatBadge(int unread) {
+        if (binding == null) {
+            return;
+        }
+        boolean wasHidden = binding.textChatBadge.getVisibility() != View.VISIBLE;
+        binding.textChatBadge.setVisibility(unread > 0 ? View.VISIBLE : View.GONE);
+        binding.textChatBadge.setText(String.valueOf(unread));
+        if (unread > 0 && wasHidden && AnimUtils.animationsEnabled(requireContext())) {
+            binding.textChatBadge.setScaleX(0f);
+            binding.textChatBadge.setScaleY(0f);
+            binding.textChatBadge.animate().scaleX(1f).scaleY(1f).setDuration(250).start();
+        }
     }
 
     private String firstName(String name) {

@@ -99,6 +99,18 @@
                 android:textColor="@color/coral_text"
                 app:strokeColor="@color/coral" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnChat"
+                style="@style/IconCircleButton"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="@color/violet_tint"
+                android:contentDescription="@string/open_chat"
+                app:cornerRadius="26dp"
+                app:icon="@drawable/ic_chat"
+                app:iconTint="@color/violet_text"
+                app:strokeWidth="0dp" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

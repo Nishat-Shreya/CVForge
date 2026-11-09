@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.cvforge.R;
+import com.example.cvforge.data.ChatRepository;
 import com.example.cvforge.data.MentorRepository;
 import com.example.cvforge.data.ResultListener;
 import com.example.cvforge.data.UserListener;
@@ -20,6 +21,7 @@ import com.example.cvforge.data.UserRepository;
 import com.example.cvforge.data.model.MentorSlot;
 import com.example.cvforge.data.model.User;
 import com.example.cvforge.databinding.ActivitySlotsBinding;
+import com.example.cvforge.ui.chat.ChatActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -118,13 +120,34 @@ public class BookSlotActivity extends AppCompatActivity {
         binding.empty.emptyState.setVisibility(adapter.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
-    /** Open slot: book it. A slot this student booked: add it to the calendar. */
+    /** Open slot: book it. A slot this student booked: choose the chat or the calendar. */
     private void onAction(MentorSlot slot) {
         if (slot.isOpen()) {
             confirmBooking(slot);
         } else {
-            addToCalendar(slot);
+            showBookedOptions(slot);
         }
+    }
+
+    private void showBookedOptions(MentorSlot slot) {
+        String[] options = {getString(R.string.slot_open_chat), getString(R.string.slot_add_calendar)};
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.slot_options_title)
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        openChat(slot);
+                    } else {
+                        addToCalendar(slot);
+                    }
+                })
+                .show();
+    }
+
+    /** Mentor Chat: the student talks to the alumni about this booking. */
+    private void openChat(MentorSlot slot) {
+        String time = DateFormat.format("EEE d MMM, HH:mm", new Date(slot.startAt)).toString();
+        startActivity(ChatActivity.intent(this, ChatRepository.slotChatId(slot.id), slot.mentorId,
+                slot.mentorName, User.ROLE_ALUMNI, getString(R.string.chat_context_mentor, time)));
     }
 
     private void confirmBooking(MentorSlot slot) {
@@ -142,6 +165,8 @@ public class BookSlotActivity extends AppCompatActivity {
             public void onSuccess() {
                 Toast.makeText(BookSlotActivity.this, R.string.slot_booked_done, Toast.LENGTH_SHORT).show();
                 load();
+                // the chat opens right after booking, to say hello and agree on how to meet
+                openChat(slot);
             }
 
             @Override

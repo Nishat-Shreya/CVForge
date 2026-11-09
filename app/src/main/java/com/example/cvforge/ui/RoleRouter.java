@@ -9,6 +9,7 @@ import com.example.cvforge.data.model.User;
 import com.example.cvforge.ui.admin.AdminActivity;
 import com.example.cvforge.ui.alumni.AlumniActivity;
 import com.example.cvforge.ui.auth.PendingActivity;
+import com.example.cvforge.ui.chat.ChatsActivity;
 import com.example.cvforge.ui.company.CompanyActivity;
 import com.example.cvforge.ui.student.StudentActivity;
 import com.example.cvforge.ui.teacher.TeacherActivity;
@@ -27,11 +28,16 @@ public class RoleRouter {
         Intent intent = new Intent(from, targetFor(user));
         // a tap on a notification can name a screen (for example "application:ID"), keep it
         String target = from.getIntent().getStringExtra(CvForgeMessagingService.EXTRA_TARGET);
-        if (target != null) {
+        boolean openChats = target != null && target.startsWith("chat:");
+        if (target != null && !openChats) {
             intent.putExtra(CvForgeMessagingService.EXTRA_TARGET, target);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         from.startActivity(intent);
+        // a chat notification: the chat list opens on top of the home screen
+        if (openChats && !(User.needsApproval(user.getRole()) && !user.isVerified())) {
+            from.startActivity(new Intent(from, ChatsActivity.class));
+        }
         AnimUtils.fadeTransition(from);
     }
 
